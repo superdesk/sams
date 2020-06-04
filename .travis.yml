@@ -1,0 +1,38 @@
+language: python
+
+python: 3.6
+
+dist: bionic
+
+services:
+    - docker
+
+cache: pip
+
+before_install:
+    - |
+      if [ "$SERVER" == "true" ]; then
+        cd server
+        pip install -r dev-requirements.txt
+        pip install -e .
+        cd ..
+      fi
+    - |
+      if [ "$SKIP_SERVER_INSTALL" != "true" ]; then
+        docker-compose -f .travis-docker-compose.yml up -d
+        cd server
+        pip install -r requirements.txt
+        cd ..
+      fi
+
+jobs:
+    include:
+      - name: "lint"
+        script: cd server && flake8 && cd ../tests/server && flake8
+        env:
+          - SERVER=true
+          - SKIP_SERVER_INSTALL=true
+      - name: "server-unit"
+        script: pytest tests/server --disable-pytest-warnings
+        env:
+          - SERVER=true
