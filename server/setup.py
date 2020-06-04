@@ -23,7 +23,6 @@ install_requires = [
     'flask-script>=2.0.5,<3.0',
     'gunicorn>=19.7.1',
     'honcho>=1.0.1',
-    'Superdesk-Core>=1.33'
 ]
 
 setup(
@@ -39,6 +38,9 @@ setup(
     platforms=['any'],
     packages=find_packages(exclude=['tests']),
     install_requires=install_requires,
+    dependency_links=[
+        'http://github.com/superdesk/superdesk-core/tarball/develop#egg=Superdesk-Core'
+    ],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Console',
