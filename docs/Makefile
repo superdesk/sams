@@ -233,7 +233,7 @@ livehtml:
 .PHONY: apidoc
 apidoc:
 	# generate docs for SAMS
-	$(SPHINXAPIDOC) -f -e -o $(CURDIR) $(CURDIR)/../server/sams/
+	$(SPHINXAPIDOC) -f -e -o $(CURDIR) $(CURDIR)/../src/server/sams/
 	for file in sams*.rst; do $(CURDIR)/clean_autodoc.sh $$file; done
 	@echo
 	@echo "apidoc build finished."

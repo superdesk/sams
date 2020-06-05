@@ -36,9 +36,9 @@ class SamsApp(Eve):
 
     Usage::
 
-        from newsroom.web import NewsroomWebApp
+        from sams.factory import get_app
 
-        app = SamsApp(__name__)
+        app = get_app(__name__, config={...})
         app.run()
     """
 
