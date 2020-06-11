@@ -23,13 +23,13 @@ URL_PREFIX = env('URL_PREFIX', server_url.path.lstrip('/')) or ''
 MONGO_DBNAME = env('MONGO_DBNAME', 'sams')
 
 #: full mongodb connection uri, overrides ``MONGO_DBNAME`` if set
-MONGO_URI = env('MONGO_URI', 'mongodb://localhost/%s' % MONGO_DBNAME)
+MONGO_URI = env('MONGO_URI', 'mongodb://sams/%s' % MONGO_DBNAME)
 
 #: allow all mongo queries
 MONGO_QUERY_BLACKLIST = []
 
 #: elastic url
-ELASTICSEARCH_URL = env('ELASTICSEARCH_URL', 'http://localhost:9200')
+ELASTICSEARCH_URL = env('ELASTICSEARCH_URL', 'http://sams:9200')
 
 #: elastic index name
 ELASTICSEARCH_INDEX = env('ELASTICSEARCH_INDEX', 'sams')
@@ -68,9 +68,11 @@ X_HEADERS = ['Content-Type', 'Authorization', 'If-Match']
 
 #: Specify what modules should be enabled
 CORE_APPS = [
+    'sams.sets'
+]
+INSTALLED_APPS = [
     'sams.factory.sentry'
 ]
-INSTALLED_APPS = []
 
 # Specify the type of authentication
 SAMS_AUTH_TYPE = 'sams.auth.public'
@@ -86,3 +88,6 @@ SENTRY_INCLUDE_PATHS = ['sams']
 FLASK_ENV = env('FLASK_ENV', 'development')
 DEBUG = strtobool(env('SAMS_DEBUG', 'true'))
 SAMS_TESTING = strtobool(env('SAMS_TESTING', 'true'))
+
+# Fix bug in Superdesk-Core/notification not using .get
+CELERY_BROKER_URL = None

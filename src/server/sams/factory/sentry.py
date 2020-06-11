@@ -14,5 +14,4 @@ from sams.logging import logger
 
 
 def init_app(app):
-    logger.warning('SENTRY TESTING 1 2 3')
     app.sentry = SuperdeskSentry(app)

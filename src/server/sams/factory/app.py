@@ -19,6 +19,8 @@ from eve.io.mongo import MongoJSONEncoder
 
 from superdesk.datalayer import SuperdeskDataLayer
 from superdesk.errors import SuperdeskApiError
+from superdesk.notification import ClosedSocket
+from superdesk.validator import SuperdeskValidator
 
 from sams.logging import configure_logging
 
@@ -51,6 +53,7 @@ class SamsApp(Eve):
             import_name,
             data=SuperdeskDataLayer,
             json_encoder=MongoJSONEncoder,
+            validator=SuperdeskValidator,
             **kwargs
         )
         self.json_encoder = MongoJSONEncoder
@@ -62,7 +65,7 @@ class SamsApp(Eve):
                 self.config.from_object(config)
 
         self.setup_logging()
-        self.config["RENDERERS"] = ["eve.render.JSONRenderer"]
+        self.config['RENDERERS'] = ['eve.render.JSONRenderer']
         self.setup_auth()
         self.setup_error_handlers()
 
@@ -71,6 +74,10 @@ class SamsApp(Eve):
 
         if self.config.get('INSTALLED_APPS'):
             self.setup_apps(self.config.get('INSTALLED_APPS', []))
+
+        # Mock sending websocket notifications
+        # As parts of superdesk-core depends on this (i.e. resource:updated)
+        self.notification_client = ClosedSocket()
 
     def load_app_config(self):
         self.config.from_object('sams.default_settings')
