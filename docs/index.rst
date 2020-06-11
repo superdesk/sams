@@ -24,7 +24,9 @@ works and can be developed further.
 .. toctree::
     :maxdepth: 2
 
+    server/factory
     server/settings
+    server/sets
 
 Indices and tables
 ==================
