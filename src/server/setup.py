@@ -14,7 +14,7 @@ from setuptools import setup, find_packages
 with open('README.md', 'r') as f:
     long_description = f.read()
 
-LONG_DESCRIPTION = "Super Asset Management Service"
+LONG_DESCRIPTION = 'Super Asset Management Service'
 
 install_requires = [
     'eve==1.1.1',
