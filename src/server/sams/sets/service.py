@@ -21,13 +21,14 @@ class SetsService(SamsService):
         """Validates the Set on update
 
         The following additional validation is performed on Sets being updated:
-            * Once a set has changed from 'draft' state, it can never return to 'draft'
-            * Once a set has changed from 'draft' state, 'destination_name' cannot be changed
+            * Once a set has changed from ``draft`` state, it can never return to ``draft``
+            * Once a set has changed from ``draft`` state, ``destination_name`` cannot be changed
 
         :param original: The original document from the database
         :param updates: A dictionary with the desired attributes to update
         :raises: Superdesk.validation.ValidationError: if there are validation errors
         """
+
         super().validate_patch(original, updates)
 
         merged = deepcopy(original)

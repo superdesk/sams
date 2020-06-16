@@ -9,12 +9,25 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from superdesk import get_backend, get_resource_service
+from superdesk import get_backend
 from .resource import SetsResource
 from .service import SetsService
 
 
 service: SetsService
+"""
+The Set service instance can be found under :data:`sams.sets.service` and used all::
+
+    from sams.sets import service as sets_service
+
+    def test_sets():
+        sets_service.post([{....}])
+        sets_service.patch(set_id, {...})
+        sets_service.delete_action({...})
+        sets_service.find({...})
+
+This service instance can only be used after the application has bootstrapped.
+"""
 
 
 def init_app(app):
