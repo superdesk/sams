@@ -75,13 +75,13 @@ def test_update_state(init_app):
     }]
 
 
-def test_update_destination(init_app):
+def test_update_destination_name(init_app):
     item_id = sets_service.post(test_sets)[0]
 
-    # can update the destination while in Draft state
+    # can update the destination name while in Draft state
     sets_service.patch(item_id, {'destination_name': 'during_draft'})
 
-    # Change the state to 'usable' then test changing destination
+    # Change the state to 'usable' then test changing destination name
     sets_service.patch(item_id, {'state': SET_STATES.USABLE})
     with pytest.raises(ValidationError) as error:
         sets_service.patch(item_id, {'destination_name': 'after_draft'})
@@ -94,9 +94,28 @@ def test_update_destination(init_app):
     sets_service.patch(item_id, {'destination_name': 'during_draft'})
 
 
+def test_update_destination_config(init_app):
+    item_id = sets_service.post(test_sets)[0]
+
+    # can update the destination config while in Draft state
+    sets_service.patch(item_id, {'destination_config': {'foo': '456'}})
+
+    # change the state to 'usable' then test changing destination config
+    sets_service.patch(item_id, {'state': SET_STATES.USABLE})
+    with pytest.raises(ValidationError) as error:
+        sets_service.patch(item_id, {'destination_config': {'bar': '001'}})
+
+    assert list(error.value.args) == [{
+        'destination_config': 'Destination config can only be changed in draft state'
+    }]
+
+    # test updating with destination config unchanged
+    sets_service.patch(item_id, {'destination_config': {'foo': '456'}})
+
+
 def test_delete(init_app):
     assert sets_service.find({}).count() == 0
-    sets_service.post(test_sets)[0]
+    sets_service.post(test_sets)
     sets_service.delete_action({})
     assert sets_service.find({}).count() == 0
 

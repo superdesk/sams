@@ -22,7 +22,8 @@ class SetsService(SamsService):
 
         The following additional validation is performed on Sets being updated:
             * Once a set has changed from ``draft`` state, it can never return to ``draft``
-            * Once a set has changed from ``draft`` state, ``destination_name`` cannot be changed
+            * Once a set has changed from ``draft`` state, ``destination_name`` and \
+            ``destination_config`` cannot be changed
 
         :param original: The original document from the database
         :param updates: A dictionary with the desired attributes to update
@@ -46,6 +47,10 @@ class SetsService(SamsService):
             if merged.get('destination_name') != original.get('destination_name'):
                 raise ValidationError({
                     'destination_name': 'Destination can only be changed in draft state'
+                })
+            elif merged.get('destination_config') != original.get('destination_config'):
+                raise ValidationError({
+                    'destination_config': 'Destination config can only be changed in draft state'
                 })
 
     def on_delete(self, doc):
