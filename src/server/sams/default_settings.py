@@ -68,9 +68,11 @@ X_HEADERS = ['Content-Type', 'Authorization', 'If-Match']
 
 #: Specify what modules should be enabled
 CORE_APPS = [
+    'sams.sets'
+]
+INSTALLED_APPS = [
     'sams.factory.sentry'
 ]
-INSTALLED_APPS = []
 
 # Specify the type of authentication
 SAMS_AUTH_TYPE = 'sams.auth.public'
@@ -86,3 +88,6 @@ SENTRY_INCLUDE_PATHS = ['sams']
 FLASK_ENV = env('FLASK_ENV', 'development')
 DEBUG = strtobool(env('SAMS_DEBUG', 'true'))
 SAMS_TESTING = strtobool(env('SAMS_TESTING', 'true'))
+
+# Fix bug in Superdesk-Core/notification not using .get
+CELERY_BROKER_URL = None

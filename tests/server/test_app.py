@@ -8,8 +8,3 @@ def test_bootstrap_app(init_app, client):
 
     assert '_links' in data
     assert 'child' in data['_links']
-
-    # {'_links': {'child': []}}
-    # from pprint import pprint
-    # pprint(data)
-    # assert 1 == 2
