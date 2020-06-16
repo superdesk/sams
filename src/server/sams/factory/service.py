@@ -24,16 +24,13 @@ class SamsService(Service):
     This version differs from Superdesk.services.Service to provide validation on internal usage
     """
 
-    def get_by_id(self, document_id, field=None):
+    def get_by_id(self, document_id, field=config.ID_FIELD):
         """Helper function to retrieve a document by id
 
         :param document_id: bson.ObjectId for the document
         :param field: field to use when searching for the document (defaults to '_id')
         :return: document found in the system
         """
-
-        if field is None:
-            field = config.ID_FIELD
 
         kwargs = {field: document_id}
         return self.find_one(req=None, **kwargs)
