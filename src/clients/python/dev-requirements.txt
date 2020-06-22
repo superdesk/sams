@@ -1,0 +1,11 @@
+flake8
+flake8-docstrings
+flake8-quotes
+pep8
+pyflakes
+pydocstyle
+
+pytest==3.10.0
+pytest-cov
+pytest-mock
+responses>=0.10.6,<0.11
