@@ -20,11 +20,13 @@ before_install:
     - |
       if [ "$SKIP_SERVER_INSTALL" != "true" ]; then
         docker-compose -f .travis-docker-compose.yml up -d
-        sleep 15
         cd src/server
         pip install -r requirements.txt
         cd ../..
       fi
+
+before_script:
+    - bash scripts/wait-elastic-online.sh
 
 jobs:
     include:
