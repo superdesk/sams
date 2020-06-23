@@ -1,10 +1,10 @@
 .. _client:
 
-Client
+SamsClient
 ======
-Client is the wrapper for the GET, POST, PATCH and DELETE methods.
+SamsClient is a class that implements core client functionality for SAMS
 
 Usage
 -----
-.. autoclass:: sams_client.client.Client
+.. autoclass:: sams_client.client.SamsClient
     :members: request, _default_resp_callback,

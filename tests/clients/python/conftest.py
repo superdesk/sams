@@ -1,11 +1,11 @@
 from pytest import fixture
-from sams_client import Client
+from sams_client import SamsClient
 
 
 @fixture
 def client():
     configs = {
         'HOST': 'localhost',
-        'PORT': 5700
+        'PORT': 5000
     }
-    return Client(configs)
+    return SamsClient(configs)
