@@ -21,7 +21,7 @@ import os
 import sys
 import datetime
 
-sys.path.insert(0, os.path.abspath('../'))
+# sys.path.insert(0, os.path.abspath('../src/server'))
 
 # -- General configuration ------------------------------------------------
 
@@ -36,6 +36,7 @@ extensions = [
     'sphinx.ext.autodoc',
     #'sphinx.ext.viewcode',
     'sphinxcontrib.plantuml',
+    'sphinx.ext.intersphinx'
 ]
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -358,4 +359,8 @@ texinfo_documents = [
 #
 # texinfo_no_detailmenu = False
 
-
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3/', None),
+    'superdesk': ('https://superdesk.readthedocs.io/en/latest/', None),
+    'pymongo': ('https://pymongo.readthedocs.io/en/stable/', None)
+}
