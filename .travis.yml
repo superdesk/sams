@@ -15,7 +15,10 @@ before_install:
         cd src/server
         pip install -r dev-requirements.txt
         pip install -e .
-        cd ../..
+        cd ../clients/python
+        pip install -r dev-requirements.txt
+        pip install -e .
+        cd ../../..
       fi
     - |
       if [ "$SKIP_SERVER_INSTALL" != "true" ]; then
@@ -25,11 +28,20 @@ before_install:
         cd ../..
         bash scripts/wait-elastic-online.sh
       fi
+    - |
+      if [ "$TEST_CLIENT" == "true" ]; then
+        cd src/clients/python
+        pip install -r requirements.txt
+        cd ../../server
+        (nohup honcho start &)
+        cd ../../
+      fi
+      
 
 jobs:
     include:
       - name: "lint"
-        script: cd src/server && flake8 && cd ../../tests/server && flake8
+        script: cd src/server && flake8 && cd ../clients/python && flake8 && cd ../../../tests/server && flake8 && cd ../clients/python && flake8
         env:
           - SERVER=true
           - SKIP_SERVER_INSTALL=true
@@ -37,3 +49,8 @@ jobs:
         script: pytest tests/server --disable-pytest-warnings
         env:
           - SERVER=true
+      - name: "clients-unit"
+        script: pytest tests/clients --disable-pytest-warnings
+        env:
+          - SERVER=true
+          - TEST_CLIENT=true
