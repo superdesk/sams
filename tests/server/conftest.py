@@ -4,6 +4,10 @@ from pathlib import Path
 from pytest import fixture
 
 from sams.factory import get_app
+from sams.storage.providers import providers
+from sams.storage.destinations import destinations
+
+from tests.fixtures import STORAGE_DESTINATIONS
 
 root = (Path(__file__).parent / '..').resolve()
 path.insert(0, str(root))
@@ -20,7 +24,9 @@ def get_test_config():
         'ELASTICSEARCH_INDEX': 'tests_sams',
         'SERVER_NAME': 'localhost:5700',
         'DEBUG': True,
-        'TESTING': True
+        'TESTING': True,
+        'STORAGE_DESTINATION_1': STORAGE_DESTINATIONS[0],
+        'STORAGE_DESTINATION_2': STORAGE_DESTINATIONS[1]
     }
 
 
@@ -31,6 +37,11 @@ def clean_databases(app):
     es.indices.delete(indices, ignore=[404])
     with app.app_context():
         app.data.init_elastic(app)
+
+
+def clean_storage_destinations():
+    for destination in destinations.all().values():
+        destination.provider_instance().drop()
 
 
 @fixture
@@ -51,4 +62,10 @@ def init_app(app):
     with app.app_context():
         app.data.init_elastic(app)
         clean_databases(app)
+        clean_storage_destinations()
         yield
+
+
+@fixture(autouse=True)
+def clean_storage_registrations():
+    providers.clear()

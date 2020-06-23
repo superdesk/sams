@@ -1,20 +1,19 @@
 import pytest
+from copy import deepcopy
+from bson import ObjectId
 
 from superdesk import get_resource_service
 from superdesk.validation import ValidationError
 
-from sams.sets import service as sets_service
+from sams.errors import SuperdeskApiError
+
+from sams.sets import get_service
 from sams.sets.resource import SET_STATES
+from sams.storage.destinations import Destination
+from sams.storage.providers.mongo import MongoGridFSProvider
 
 from .utils import dict_contains
-
-test_sets = [{
-    'name': 'Test_Set',
-    'state': 'draft',
-    'description': 'Set used for testing purposes',
-    'destination_name': 'internal',
-    'destination_config': {'test': '123'}
-}]
+from tests.fixtures import test_sets, STORAGE_DESTINATIONS
 
 
 def test_set_is_internal(init_app, client):
@@ -28,6 +27,8 @@ def test_set_is_internal(init_app, client):
 
 
 def test_create(init_app):
+    sets_service = get_service()
+
     assert sets_service.find({}).count() == 0
 
     # Test required validation rules
@@ -54,6 +55,8 @@ def test_create(init_app):
 
 
 def test_update_state(init_app):
+    sets_service = get_service()
+
     item_id = sets_service.post(test_sets)[0]
 
     sets_service.patch(item_id, {'state': SET_STATES.DRAFT})
@@ -76,6 +79,8 @@ def test_update_state(init_app):
 
 
 def test_update_destination_name(init_app):
+    sets_service = get_service()
+
     item_id = sets_service.post(test_sets)[0]
 
     # can update the destination name while in Draft state
@@ -94,7 +99,37 @@ def test_update_destination_name(init_app):
     sets_service.patch(item_id, {'destination_name': 'during_draft'})
 
 
+def test_validate_destination_name(init_app):
+    sets_service = get_service()
+
+    def _test_post():
+        item = deepcopy(test_sets[0])
+        item['destination_name'] = 'unknown'
+
+        with pytest.raises(ValidationError) as error:
+            sets_service.post([item])
+
+        assert list(error.value.args) == [{
+            'destination_name': 'Destination "unknown" isnt configured'
+        }]
+
+    def _test_patch():
+        item_id = sets_service.post(test_sets)[0]
+
+        with pytest.raises(ValidationError) as error:
+            sets_service.patch(item_id, {'destination_name': 'unknown'})
+
+        assert list(error.value.args) == [{
+            'destination_name': 'Destination "unknown" isnt configured'
+        }]
+
+    _test_post()
+    _test_patch()
+
+
 def test_update_destination_config(init_app):
+    sets_service = get_service()
+
     item_id = sets_service.post(test_sets)[0]
 
     # can update the destination config while in Draft state
@@ -114,6 +149,8 @@ def test_update_destination_config(init_app):
 
 
 def test_delete(init_app):
+    sets_service = get_service()
+
     assert sets_service.find({}).count() == 0
     sets_service.post(test_sets)
     sets_service.delete_action({})
@@ -128,3 +165,27 @@ def test_delete(init_app):
     assert list(error.value.args) == [{
         'delete': 'Can only delete Sets that are in draft state'
     }]
+
+
+def test_get_destination(init_app):
+    sets_service = get_service()
+
+    test_id = ObjectId()
+    with pytest.raises(SuperdeskApiError) as error:
+        sets_service.get_destination(test_id)
+
+    assert str(error.value) == '404: Set with id {} not found'.format(str(test_id))
+
+    item_id = sets_service.post(test_sets)[0]
+    received = sets_service.get_destination(item_id)
+    expected = Destination(STORAGE_DESTINATIONS[0])
+
+    assert received.__dict__ == expected.__dict__
+
+
+def test_get_provider_instance(init_app):
+    sets_service = get_service()
+    item_id = sets_service.post(test_sets)[0]
+    provider = sets_service.get_provider_instance(item_id)
+
+    assert isinstance(provider, MongoGridFSProvider)
