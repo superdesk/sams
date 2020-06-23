@@ -14,21 +14,17 @@ from setuptools import setup, find_packages
 with open('README.md', 'r') as f:
     long_description = f.read()
 
-LONG_DESCRIPTION = 'Super Asset Management Service'
+LONG_DESCRIPTION = 'Super Asset Management Service Client'
 
 install_requires = [
-    'eve==1.1.1',
-    'eve-elastic>=7.0.0,<8.0.0',
-    'flask>=1.1,<1.2',
-    'flask-script>=2.0.5,<3.0',
-    'gunicorn>=19.7.1',
-    'honcho>=1.0.1',
+    'setuptools==36.6.0',
+    'requests==2.21.0'
 ]
 
 setup(
     name='sams-client',
     version='0.0.1.dev2',
-    description='Super Asset Management Service',
+    description='Super Asset Management Service Client',
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='Tanuj Soni',
@@ -38,13 +34,9 @@ setup(
     platforms=['any'],
     packages=find_packages(exclude=['tests']),
     install_requires=install_requires,
-    dependency_links=[
-        'http://github.com/superdesk/superdesk-core/tarball/develop#egg=Superdesk-Core'
-    ],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Console',
-        'Framework :: Flask',
         'Intended Audience :: Developers',
         'Intended Audience :: Information Technology',
         'Intended Audience :: System Administrators',
