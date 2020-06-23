@@ -32,7 +32,7 @@ before_install:
         cd src/clients/python
         pip install -r requirements.txt
         cd ../../server
-        honcho start
+        (nohup honcho start &)
         cd ../../
       fi
       
