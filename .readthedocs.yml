@@ -12,3 +12,5 @@ python:
     - requirements: docs/requirements.txt
     - method: pip
       path: src/server
+    - method: pip
+      path: src/clients/python
