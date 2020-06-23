@@ -70,3 +70,15 @@ Monitoring settings
 ^^^^^^^^^^^^^^
 
 Default: ``None``
+
+Storage Provider/Destination settings
+-------------------------------------
+``STORAGE_PROVIDERS``
+^^^^^^^^^^^^^^^^^^^^^
+
+Default: ``['sams.storage.providers.mongo.MongoGridFSProvider']``
+
+``STORAGE_DESTINATION_<x>``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Default: ``None``

@@ -124,7 +124,7 @@ class SamsApp(Eve):
             })
 
         def base_exception_error(err):
-            if err.error == 'search_phase_execution_exception':
+            if getattr(err, 'error', None) == 'search_phase_execution_exception':
                 return json_error({
                     'error': 1,
                     'message': 'Invalid search query',
@@ -164,16 +164,3 @@ class SamsApp(Eve):
     def setup_logging(self):
         if self.config.get('LOG_CONFIG_FILE'):
             configure_logging(self.config['LOG_CONFIG_FILE'])
-
-
-app = SamsApp(__name__)
-
-if __name__ == '__main__':
-    environ['FLASK_ENV'] = 'development'
-    app = SamsApp(__name__)
-    app.run(
-        host=app.config.get('HOST') or 'localhost',
-        port=int(app.config.get('PORT') or '5700'),
-        debug=False,
-        use_reloader=False
-    )

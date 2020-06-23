@@ -1,7 +1,5 @@
-.. _factory:
-
-Factory
-=======
+:mod:`sams.factory` -- System Application Factory
+=================================================
 
 Service
 -------

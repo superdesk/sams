@@ -68,11 +68,19 @@ X_HEADERS = ['Content-Type', 'Authorization', 'If-Match']
 
 #: Specify what modules should be enabled
 CORE_APPS = [
-    'sams.sets'
+    'sams.sets',
+    'sams.storage'
 ]
 INSTALLED_APPS = [
     'sams.factory.sentry'
 ]
+
+STORAGE_PROVIDERS = [
+    'sams.storage.providers.mongo.MongoGridFSProvider'
+]
+
+# Uncomment this next line and modify the config to add MongoGridFS storage destination
+# STORAGE_DESTINATION_1 = 'MongoGridFS,Default,mongodb://localhost/sams'
 
 # Specify the type of authentication
 SAMS_AUTH_TYPE = 'sams.auth.public'

@@ -26,7 +26,9 @@ works and can be developed further.
 
     server/factory
     server/settings
+    server/auth
     server/sets
+    server/storage/index
 
 Indices and tables
 ==================
