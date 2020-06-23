@@ -20,10 +20,10 @@ SERVER_DOMAIN = server_url.netloc or 'localhost'
 URL_PREFIX = env('URL_PREFIX', server_url.path.lstrip('/')) or ''
 
 #: mongo db name, only used when mongo_uri is not set
-MONGO_DBNAME = env('MONGO_DBNAME', 'sams')
+MONGO_DBNAME = env('MONGO_DBNAME', 'localhost')
 
 #: full mongodb connection uri, overrides ``MONGO_DBNAME`` if set
-MONGO_URI = env('MONGO_URI', 'mongodb://sams/%s' % MONGO_DBNAME)
+MONGO_URI = env('MONGO_URI', 'mongodb://localhost/%s' % MONGO_DBNAME)
 
 #: allow all mongo queries
 MONGO_QUERY_BLACKLIST = []

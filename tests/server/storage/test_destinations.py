@@ -12,10 +12,10 @@ def test_destination_class():
     destination = Destination(STORAGE_DESTINATIONS[0])
 
     assert destination.config_string == STORAGE_DESTINATIONS[0]
-    assert destination.entries == ['MongoGridFS', 'internal', 'mongodb://sams/tests_sams']
+    assert destination.entries == ['MongoGridFS', 'internal', 'mongodb://localhost/tests_sams']
     assert destination.name == 'internal'
     assert destination.provider_name == 'MongoGridFS'
-    assert destination.config == 'mongodb://sams/tests_sams'
+    assert destination.config == 'mongodb://localhost/tests_sams'
     assert destination.provider.__dict__ == Provider(MONGO_STORAGE_PROVIDER).__dict__
 
 
@@ -30,7 +30,7 @@ def test_register_destination(init_app):
     assert destinations._destinations['internal'].__dict__ == Destination(STORAGE_DESTINATIONS[0]).__dict__
 
     with pytest.raises(SuperdeskApiError) as error:
-        destinations.register('MockProvider,mock,mongodb://sams/tests_sams')
+        destinations.register('MockProvider,mock,mongodb://localhost/tests_sams')
 
     assert str(error.value) == '404: Provider "MockProvider" not registered with the system'
 

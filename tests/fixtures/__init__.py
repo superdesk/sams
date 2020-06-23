@@ -8,8 +8,8 @@ test_sets = [{
 }]
 
 STORAGE_DESTINATIONS = [
-    'MongoGridFS,internal,mongodb://sams/tests_sams',
-    'MongoGridFS,during_draft,mongodb://sams/tests_sams'
+    'MongoGridFS,internal,mongodb://localhost/tests_sams',
+    'MongoGridFS,during_draft,mongodb://localhost/tests_sams'
 ]
 
 MONGO_STORAGE_PROVIDER = 'sams.storage.providers.mongo.MongoGridFSProvider'
