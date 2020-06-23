@@ -15,11 +15,11 @@ from .utils import get_base_url
 
 class SamsClient(object):
     """Class for Superdesk Asset Managements Service Client
-    
+
     Usage::
 
         from sams_client import Client
-        
+
         configs = {
             'HOST': 'localhost',
             'PORT': '5700'
