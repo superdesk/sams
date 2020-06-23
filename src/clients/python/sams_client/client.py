@@ -3,11 +3,18 @@ from .utils import get_base_url
 
 
 class Client(object):
+    """
+    Wrapper for the GET, POST, PATCH, DELETE methods.
+    """
+
     def __init__(self, configs={}):
         self.base_url = get_base_url(configs)
 
     def request(self, api='/', method='get',
                 headers=None, data=None, callback=None):
+        """
+        Handles request methods.
+        """
         if callback is None:
             callback = self._default_resp_callback
         request = getattr(requests, method.lower())
@@ -18,3 +25,4 @@ class Client(object):
 
     def _default_resp_callback(self, response):
         return response
+
