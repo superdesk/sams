@@ -23,13 +23,13 @@ URL_PREFIX = env('URL_PREFIX', server_url.path.lstrip('/')) or ''
 MONGO_DBNAME = env('MONGO_DBNAME', 'sams')
 
 #: full mongodb connection uri, overrides ``MONGO_DBNAME`` if set
-MONGO_URI = env('MONGO_URI', 'mongodb://localhost/%s' % MONGO_DBNAME)
+MONGO_URI = env('MONGO_URI', 'mongodb://sams/%s' % MONGO_DBNAME)
 
 #: allow all mongo queries
 MONGO_QUERY_BLACKLIST = []
 
 #: elastic url
-ELASTICSEARCH_URL = env('ELASTICSEARCH_URL', 'http://localhost:9200')
+ELASTICSEARCH_URL = env('ELASTICSEARCH_URL', 'http://sams:9200')
 
 #: elastic index name
 ELASTICSEARCH_INDEX = env('ELASTICSEARCH_INDEX', 'sams')
