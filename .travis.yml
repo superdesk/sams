@@ -23,10 +23,8 @@ before_install:
         cd src/server
         pip install -r requirements.txt
         cd ../..
+        bash scripts/wait-elastic-online.sh
       fi
-
-before_script:
-    - bash scripts/wait-elastic-online.sh
 
 jobs:
     include:
