@@ -30,6 +30,16 @@ works and can be developed further.
     server/sets
     server/storage/index
 
+Client Reference
+----------------
+
+The following is a technical reference for the SAMS Client library.
+
+.. toctree::
+    :maxdepth: 2
+
+    client/python
+
 Indices and tables
 ==================
 
