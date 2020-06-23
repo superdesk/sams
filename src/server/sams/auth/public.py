@@ -17,8 +17,17 @@ def get_auth_instance():
 
 
 class PublicAuth(BasicAuth):
+    """Allow all access to public - No authentication required
+
+    To use this method, set ``SAMS_AUTH_TYPE`` to ``'sams.auth.public'`` in your settings.py
+    """
+
     def check_auth(self, username, password, allowed_roles, resource, method):
+        """"""
+
         return True
 
     def authorized(self, allowed_roles, resource, method):
+        """"""
+
         return True

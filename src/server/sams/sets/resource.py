@@ -67,13 +67,13 @@ class SetsResource(Resource):
         ``_id`` *bson.ObjectId*
             Globally unique id, generated automatically by the system.
         ``state`` *string*
-            The state of the Set. One of ``draft``, ``usable``, or ``disbled``.
+            The state of the Set. One of ``draft``, ``usable``, or ``disabled``.
         ``name`` *string*
             Unique name for the Set
         ``description`` *string*
             A short description on what this set is designated for
         ``destination_name`` *string*
-            The name of a system configured destination (to be developed)
+            The name of a registered StorageDestination (:mod:`sams.storage.destinations`)
         ``destination_config`` *dict*
             A dictionary containing the configuration options for the specific destination used
     """

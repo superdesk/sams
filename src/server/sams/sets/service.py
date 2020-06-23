@@ -10,13 +10,31 @@
 # at https://www.sourcefabric.org/superdesk/license
 
 from copy import deepcopy
+from bson import ObjectId
+
 from superdesk.validation import ValidationError
 
 from sams.factory.service import SamsService
+from sams.storage.destinations import Destination, destinations
+from sams.storage.providers.base import SamsBaseStorageProvider
+from sams.errors import SuperdeskApiError
 from .resource import SET_STATES
 
 
 class SetsService(SamsService):
+    def validate_post(self, doc):
+        """Validates the Set on creation
+
+        The following additional validation is performed on Sets being created:
+            * The ``destination_name`` must exist in a ``STORAGE_DESTINATION_`` config attribute
+
+        :param doc: The provided document to validate
+        :raises Superdesk.validation.ValidationError: If there are validation errors
+        """
+
+        super().validate_post(doc)
+        self._validate_destination_name(doc)
+
     def validate_patch(self, original, updates):
         """Validates the Set on update
 
@@ -24,6 +42,7 @@ class SetsService(SamsService):
             * Once a set has changed from ``draft`` state, it can never return to ``draft``
             * Once a set has changed from ``draft`` state, ``destination_name`` and \
             ``destination_config`` cannot be changed
+            * The ``destination_name`` must exist in a ``STORAGE_DESTINATION_`` config attribute
 
         :param original: The original document from the database
         :param updates: A dictionary with the desired attributes to update
@@ -53,6 +72,20 @@ class SetsService(SamsService):
                     'destination_config': 'Destination config can only be changed in draft state'
                 })
 
+        self._validate_destination_name(merged)
+
+    def _validate_destination_name(self, doc):
+        """Validates that the desired destination is configured in the system
+
+        :param doc: The provided document to validate
+        :raises Superdesk.validation.ValidationError: If there are validation errors
+        """
+
+        if not destinations.exists(doc.get('destination_name')):
+            raise ValidationError({
+                'destination_name': 'Destination "{}" isnt configured'.format(doc.get('destination_name'))
+            })
+
     def on_delete(self, doc):
         """Validate state on delete
 
@@ -66,3 +99,16 @@ class SetsService(SamsService):
             raise ValidationError({
                 'delete': 'Can only delete Sets that are in draft state'
             })
+
+    def get_destination(self, set_id: ObjectId) -> Destination:
+        item = self.get_by_id(set_id)
+
+        if not item:
+            raise SuperdeskApiError.notFoundError(
+                'Set with id {} not found'.format(str(set_id))
+            )
+
+        return destinations.get(item.get('destination_name'))
+
+    def get_provider_instance(self, set_id: ObjectId) -> SamsBaseStorageProvider:
+        return self.get_destination(set_id).provider_instance()
