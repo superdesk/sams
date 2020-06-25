@@ -25,7 +25,7 @@ class StorageDestinationsResource(Resource):
 
 class StorageDestinationsService(SamsService):
     """Service for storage destinations
-    
+
     Returns one or all registered storage destinations
     """
 
