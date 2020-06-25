@@ -53,6 +53,16 @@ class Destination:
 
         return self.provider.instance(self.config_string)
 
+    def to_dict(self):
+        """Return a dictionary containing name and provider
+        
+        :return: A dictionary containing name and provider_name of destination
+        :rtype: dict
+        """
+        return {
+            'name': self.name,
+            'provider': self.provider_name
+        }
 
 class Destinations:
     """A mechanism to register storage destinations with the system
