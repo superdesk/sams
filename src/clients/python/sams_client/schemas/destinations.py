@@ -1,4 +1,8 @@
 destinationSchema = {
-    'name': 'string',
-    'provider': 'string'
+    'name': {
+        'type': 'string'
+    },
+    'provider': {
+        'type': 'string'
+    }
 }
