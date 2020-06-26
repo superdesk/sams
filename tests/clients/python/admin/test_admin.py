@@ -6,6 +6,7 @@ def test_request_destinations(admin_client):
     assert response.status_code == 200
     assert response.json()['_items'] == []
 
+
 def test_request_destination(admin_client):
     destination_name = 'FakeDestination'
     response = admin_client.request_destination(id=destination_name)

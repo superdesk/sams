@@ -4,6 +4,7 @@ from superdesk.resource import Resource
 from sams_client.schemas import destinationSchema
 from superdesk.utils import ListCursor
 
+
 class StorageDestinationsResource(Resource):
     """Resource instance for Storage Destinations
     """
