@@ -114,7 +114,7 @@ class SamsApp(Eve):
             logger.exception(err)
             return json_error({
                 'error': err.message or '',
-                'message': err.payload,
+                'message': getattr(err, 'payload', err.message),
                 'code': err.status_code or 500,
             })
 
