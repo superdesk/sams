@@ -1,6 +1,7 @@
 destinationSchema = {
     'name': {
-        'type': 'string'
+        'type': 'string',
+        'unique': True
     },
     'provider': {
         'type': 'string'
