@@ -1,5 +1,13 @@
+"""
+    **schema** =
+    ``_id`` *string*
+        Destination name
+    ``provider` *string*
+        Destination's Provider name
+"""
+
 destinationSchema = {
-    'name': {
+    '_id': {
         'type': 'string',
         'unique': True
     },

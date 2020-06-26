@@ -60,7 +60,7 @@ class Destination:
         :rtype: dict
         """
         return {
-            'name': self.name,
+            '_id': self.name,
             'provider': self.provider_name
         }
 

@@ -2,15 +2,10 @@ from sams.factory.service import SamsService
 from sams.storage.destinations import destinations
 from superdesk.resource import Resource
 from sams_client.schemas import destinationSchema
-
+from superdesk.utils import ListCursor
 
 class StorageDestinationsResource(Resource):
-    """
-    **schema** =
-        ``name`` *string*
-            Destination name
-        ``provider` *string*
-            Destination's Provider name
+    """Resource instance for Storage Destinations
     """
 
     endpoint_name = 'destinations'
@@ -29,11 +24,11 @@ class StorageDestinationsService(SamsService):
     Returns one or all registered storage destinations
     """
 
-    def find(self, req, **lookup):
-        return list(map(
+    def get(self, req, **lookup):
+        return ListCursor(list(map(
             lambda destination: destination.to_dict(),
             destinations.all().values()
-        ))
+        )))
 
     def find_one(self, req, **lookup):
         name = lookup['_id']
