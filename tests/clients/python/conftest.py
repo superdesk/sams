@@ -1,6 +1,6 @@
 from pytest import fixture
 from sams_client import SamsClient
-from sams_client.admin_client import SamsClientAdmin
+from sams_client.admin import SamsClientAdmin
 
 
 configs = {

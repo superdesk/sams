@@ -1,1 +1,1 @@
-from .admin_client import SamsClientAdmin
+from .admin import SamsClientAdmin
