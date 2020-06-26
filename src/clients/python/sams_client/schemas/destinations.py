@@ -1,9 +1,9 @@
 """
-    **schema** =
-    ``_id`` *string*
-        Destination name
-    ``provider` *string*
-        Destination's Provider name
+**schema** =
+``_id`` *string*
+    Destination name
+``provider` *string*
+    Destination's Provider name
 """
 
 destinationSchema = {

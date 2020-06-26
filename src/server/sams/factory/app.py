@@ -119,7 +119,7 @@ class SamsApp(Eve):
             })
 
         def assertion_error(err):
-            logger.exception(err)            
+            logger.exception(err)
             return json_error({
                 'error': err.args[0] if err.args else 1,
                 'message': str(err),
@@ -127,7 +127,7 @@ class SamsApp(Eve):
             })
 
         def base_exception_error(err):
-            logger.exception(err)            
+            logger.exception(err)
             if getattr(err, 'error', None) == 'search_phase_execution_exception':
                 return json_error({
                     'error': 1,
