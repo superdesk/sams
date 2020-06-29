@@ -1,10 +1,3 @@
-"""
-**schema** =
-``_id`` *string*
-    Destination name
-``provider` *string*
-    Destination's Provider name
-"""
 
 destinationSchema = {
     '_id': {
@@ -15,3 +8,11 @@ destinationSchema = {
         'type': 'string'
     }
 }
+
+"""
+**schema** =
+``_id`` *string*
+    Destination name
+``provider` *string*
+    Destination's Provider name
+"""
