@@ -86,6 +86,9 @@ STORAGE_PROVIDERS = [
 # Specify the type of authentication
 SAMS_AUTH_TYPE = 'sams.auth.public'
 
+# Specify api keys for basic auth
+CLIENT_API_KEYS = env('CLIENT_API_KEYS', '')
+
 # Specify the location of the log config file
 LOG_CONFIG_FILE = 'logging_config.yml'
 

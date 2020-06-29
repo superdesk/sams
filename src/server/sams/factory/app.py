@@ -163,7 +163,8 @@ class SamsApp(Eve):
         if not hasattr(mod, 'get_auth_instance') or not callable(mod.get_auth_instance):
             raise RuntimeError('Configured Auth type must have a `get_auth_instance` method')
 
-        self.auth = mod.get_auth_instance()
+        api_keys = self.config.get('CLIENT_API_KEYS').split(',')
+        self.auth = mod.get_auth_instance(api_keys)
 
     def setup_logging(self):
         if self.config.get('LOG_CONFIG_FILE'):
