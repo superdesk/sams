@@ -13,6 +13,7 @@ from .utils import get_base_url
 from importlib import import_module
 import requests
 
+
 class SamsClient(object):
     """Class for Superdesk Asset Managements Service Client
 
@@ -63,5 +64,5 @@ class SamsClient(object):
             raise RuntimeError('Configured Auth type must have a `get_auth_instance` method')
 
         self.auth = mod.get_auth_instance(
-            api_key = self.config.get('SAMS_AUTH_KEY')
+            api_key=self.config.get('SAMS_AUTH_KEY')
         )
