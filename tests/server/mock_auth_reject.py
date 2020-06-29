@@ -12,7 +12,7 @@
 from eve.auth import BasicAuth
 
 
-def get_auth_instance():
+def get_auth_instance(**kwargs):
     return MockAuthReject()
 
 
