@@ -14,7 +14,8 @@ from sams.logging import logger
 from flask import abort, request
 
 
-def get_auth_instance(api_keys):
+def get_auth_instance(**kwargs):
+    api_keys = kwargs['api_keys']
     return SamsBasicAuth(api_keys)
 
 

@@ -164,7 +164,7 @@ class SamsApp(Eve):
             raise RuntimeError('Configured Auth type must have a `get_auth_instance` method')
 
         api_keys = self.config.get('CLIENT_API_KEYS').split(',')
-        self.auth = mod.get_auth_instance(api_keys)
+        self.auth = mod.get_auth_instance(api_keys=api_keys)
 
     def setup_logging(self):
         if self.config.get('LOG_CONFIG_FILE'):
