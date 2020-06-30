@@ -35,7 +35,10 @@ _service: StorageDestinationsService
 def get_service() -> StorageDestinationsService:
     return _service
 
+
 def init_app(app):
+    global _service
+
     _service = StorageDestinationsService(StorageDestinationsResource.endpoint_name, backend=get_backend())
     StorageDestinationsResource(
         endpoint_name=StorageDestinationsResource.endpoint_name,
