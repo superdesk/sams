@@ -26,12 +26,19 @@ class StorageDestinationsService(SamsService):
     """
 
     def get(self, req, **lookup):
+        """
+        Returns a list of all the registered storage destinations
+        """
         return ListCursor(list(map(
             lambda destination: destination.to_dict(),
             destinations.all().values()
         )))
 
     def find_one(self, req, **lookup):
+        """
+        Uses _id in the lookup and returns the destination
+        name and provider name of the respective storage destination
+        """
         name = lookup['_id']
         destination = destinations.get(name)
         response = destination.to_dict()
