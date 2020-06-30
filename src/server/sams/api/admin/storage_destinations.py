@@ -18,6 +18,12 @@ from superdesk.utils import ListCursor
 
 class StorageDestinationsResource(Resource):
     """Resource instance for Storage Destinations
+
+    **schema** =
+        ``_id`` *string*
+            Destination name
+        ``provider`` *string*
+            Destination's Provider name
     """
 
     endpoint_name = 'destinations'
@@ -47,7 +53,7 @@ class StorageDestinationsService(SamsService):
 
     def find_one(self, req, **lookup):
         """
-        Uses _id in the lookup and returns the destination
+        Uses ``_id`` in the lookup and returns the destination
         name and provider name of the respective storage destination
         """
         name = lookup['_id']
