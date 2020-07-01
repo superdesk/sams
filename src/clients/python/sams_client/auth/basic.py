@@ -24,7 +24,7 @@ class SamsBasicAuth(object):
 
     def apply_headers(self, headers):
         """Applies Basic Authentication to the request header
-        
+
         :param headers: Dictionary containing request headers
         """
         headers['Authorization'] = f'Basic {self.api_key}'
