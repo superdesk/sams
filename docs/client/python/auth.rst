@@ -1,14 +1,14 @@
-:mod:`sams.auth` -- Client Authentication Methods
+:mod:`sams_client.auth` -- Client Authentication Methods
 =================================================
 
 Public
 ------
-.. automodule:: sams.auth.public
+.. automodule:: sams_client.auth.public
     :members:
     :member-order: bysource
 
 Basic
 ------
-.. automodule:: sams.auth.basic
+.. automodule:: sams_client.auth.basic
     :members:
     :member-order: bysource

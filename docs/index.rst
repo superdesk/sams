@@ -39,7 +39,8 @@ The following is a technical reference for the SAMS Client library.
 .. toctree::
     :maxdepth: 2
 
-    client/python
+    client/python/client
+    client/python/auth
 
 Indices and tables
 ==================
