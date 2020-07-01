@@ -8,9 +8,10 @@ from superdesk.validation import ValidationError
 from sams.errors import SuperdeskApiError
 
 from sams.sets import get_service
-from sams.sets.resource import SET_STATES
 from sams.storage.destinations import Destination
 from sams.storage.providers.mongo import MongoGridFSProvider
+
+from sams_client.schemas.sets import SET_STATES
 
 from .utils import dict_contains
 from tests.fixtures import test_sets, STORAGE_DESTINATIONS

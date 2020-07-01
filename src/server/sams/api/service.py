@@ -99,14 +99,14 @@ class SamsApiService(SamsService):
 
         return self.service.post(docs, **kwargs)
 
-    def update(self, document_id: ObjectId, updates: Dict[str, Any], original: Dict[str, Any]) -> Dict[str, Any]:
+    def update(self, id: ObjectId, updates: Dict[str, Any], original: Dict[str, Any]) -> Dict[str, Any]:
         """Proxy method to update an existing document
 
         Removes system attributes using :meth:`_remove_system_attributes`.
         Then passes the request to the :meth:`sams.factory.service.SamsService.patch`
         method of the underlying service
 
-        :param bson.objectid.ObjectId document_id: ID for the document
+        :param bson.objectid.ObjectId id: ID for the document
         :param dict updates: Dictionary containing the desired attributes to update
         :param dict original: Dictionary containing the original document
         :rtype: dict
@@ -115,9 +115,9 @@ class SamsApiService(SamsService):
 
         self._remove_system_attributes(updates)
 
-        return self.service.patch(document_id, updates)
+        return self.service.patch(id, updates)
 
-    def system_update(self, document_id: ObjectId, updates: Dict[str, Any], original: Dict[str, any]):
+    def system_update(self, id: ObjectId, updates: Dict[str, Any], original: Dict[str, any]):
         """Not to be used with API Service
 
         :raises superdesk.errors.SuperdeskApiError:
@@ -125,12 +125,12 @@ class SamsApiService(SamsService):
 
         raise SuperdeskApiError.badRequestError('"system_update" not allowed in api endpoints')
 
-    def replace(self, document_id: ObjectId, document: Dict[str, Any], original: Dict[str, Any]) -> Dict[str, Any]:
+    def replace(self, id: ObjectId, document: Dict[str, Any], original: Dict[str, Any]) -> Dict[str, Any]:
         """Replaces an existing document with a new one
 
         Passes the request to the :meth:`sams.factory.service.SamsService.replace` method.
 
-        :param bson.objectid.ObjectId document_id: ID of the document to replace
+        :param bson.objectid.ObjectId id: ID of the document to replace
         :param dict document: Dictionary containing the original document
         :param dict original: Dictionary containing the new document
         :rtype: dict

@@ -22,15 +22,15 @@ class SamsService(Service):
     This version differs from Superdesk.services.Service to provide validation on internal usage
     """
 
-    def get_by_id(self, document_id, field=config.ID_FIELD):
+    def get_by_id(self, id, field=config.ID_FIELD):
         """Helper function to retrieve a document by id
 
-        :param bson.objectid.ObjectId document_id: ID for the document
+        :param bson.objectid.ObjectId id: ID for the document
         :param field: field to use when searching for the document (defaults to '_id')
         :return: document found in the system
         """
 
-        kwargs = {field: document_id}
+        kwargs = {field: id}
         return self.find_one(req=None, **kwargs)
 
     def post(self, docs, **kwargs):
@@ -47,10 +47,10 @@ class SamsService(Service):
             self.validate_post(doc)
         return super().post(docs, **kwargs)
 
-    def patch(self, document_id, updates):
+    def patch(self, id, updates):
         """Update an existing document for the specific resource
 
-        :param bson.ObjectId document_id: ID for the document
+        :param bson.ObjectId id: ID for the document
         :param updates: Dictionary containing the desired attributes to update
         :return: dictionary containing the updated attributes of the document
         """
@@ -58,9 +58,9 @@ class SamsService(Service):
         # Copy the updates so we don't modify the provided values directly
         # updates = deepcopy(updates)
 
-        original = self.get_by_id(document_id)
+        original = self.get_by_id(id)
         self.validate_patch(original, updates)
-        return super().patch(document_id, updates)
+        return super().patch(id, updates)
 
     def validate_post(self, doc):
         """Validates the document upon creation
