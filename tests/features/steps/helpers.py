@@ -192,7 +192,7 @@ def test_json(context, json_fields=None):
     return response_data
 
 
-def store_last_item(context):
+def store_last_item(context, model_name: str):
     if not context.response.status_code in (200, 201):
         return
 
@@ -202,7 +202,7 @@ def store_last_item(context):
         assert False, context.response.text
     if item.get('_status') == 'OK' and item.get('_id'):
         try:
-            setattr(context, 'LAST_ITEM', item)
+            setattr(context, model_name.upper(), item)
         except (IndexError, KeyError):
             pass
 

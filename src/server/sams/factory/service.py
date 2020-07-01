@@ -9,8 +9,6 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from copy import deepcopy
-
 from eve.utils import config
 
 from superdesk.services import Service
@@ -43,8 +41,6 @@ class SamsService(Service):
         :return: list of generated IDs for the new documents
         """
 
-        # Copy the docs so we don't modify the provided values directly
-        docs = deepcopy(docs)
         for doc in docs:
             self.validate_post(doc)
         return super().post(docs, **kwargs)
@@ -56,9 +52,6 @@ class SamsService(Service):
         :param updates: Dictionary containing the desired attributes to update
         :return: dictionary containing the updated attributes of the document
         """
-
-        # Copy the updates so we don't modify the provided values directly
-        # updates = deepcopy(updates)
 
         original = self.get_by_id(id)
         self.validate_patch(original, updates)

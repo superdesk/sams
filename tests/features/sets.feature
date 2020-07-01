@@ -17,14 +17,14 @@ Feature: Sets
             "_links": {
                 "self": {
                     "title": "Set",
-                    "href": "consume/sets/#LAST_ITEM._id#"
+                    "href": "consume/sets/#SETS._id#"
                 }
             }
         }
         """
         When we send client.sets.get_by_id
         """
-        {"item_id": "#LAST_ITEM._id#"}
+        {"item_id": "#SETS._id#"}
         """
         Then we get existing resource
         """
@@ -34,7 +34,7 @@ Feature: Sets
             "_links": {
                 "self": {
                     "title": "Set",
-                    "href": "consume/sets/#LAST_ITEM._id#"
+                    "href": "consume/sets/#SETS._id#"
                 }
             }
         }
@@ -42,8 +42,8 @@ Feature: Sets
         When we send client.sets.update
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"},
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
             "updates": {"description": "testing"}
         }
         """
@@ -57,7 +57,7 @@ Feature: Sets
         """
         When we send client.sets.get_by_id
         """
-        {"item_id": "#LAST_ITEM._id#"}
+        {"item_id": "#SETS._id#"}
         """
         Then we get existing resource
         """
@@ -70,14 +70,14 @@ Feature: Sets
         When we send client.sets.delete
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"}
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"}
         }
         """
         Then we get OK response
         When we send client.sets.get_by_id
         """
-        {"item_id": "#LAST_ITEM._id#"}
+        {"item_id": "#SETS._id#"}
         """
         Then we get error 404
 
@@ -173,8 +173,8 @@ Feature: Sets
         When we send client.sets.update
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"},
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
             "updates": {"destination_name": "unknown"}
         }
         """
@@ -190,8 +190,8 @@ Feature: Sets
         When we send client.sets.update
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"},
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
             "updates": {"destination_name": "internal"}
         }
         """
@@ -217,8 +217,8 @@ Feature: Sets
         When we send client.sets.update
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"},
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
             "updates": {
                 "destination_name": "internal",
                 "destination_config": {"test": 2},
@@ -230,8 +230,8 @@ Feature: Sets
         When we send client.sets.update
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"},
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
             "updates": {"destination_name": "bar"}
         }
         """
@@ -247,8 +247,8 @@ Feature: Sets
         When we send client.sets.update
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"},
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
             "updates": {"destination_config": {"test": 3}}
         }
         """
@@ -264,8 +264,8 @@ Feature: Sets
         When we send client.sets.update
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"},
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
             "updates": {"state": "disabled"}
         }
         """
@@ -273,8 +273,8 @@ Feature: Sets
         When we send client.sets.update
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"},
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
             "updates": {"destination_name": "bar"}
         }
         """
@@ -290,8 +290,8 @@ Feature: Sets
         When we send client.sets.update
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"},
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
             "updates": {"destination_config": {"test": 3}}
         }
         """
@@ -317,8 +317,8 @@ Feature: Sets
         When we send client.sets.update
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"},
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
             "updates": {"state": "usable"}
         }
         """
@@ -326,8 +326,8 @@ Feature: Sets
         When we send client.sets.update
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"},
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
             "updates": {"state": "draft"}
         }
         """
@@ -343,8 +343,8 @@ Feature: Sets
         When we send client.sets.update
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"},
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
             "updates": {"state": "disabled"}
         }
         """
@@ -352,8 +352,8 @@ Feature: Sets
         When we send client.sets.update
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"},
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
             "updates": {"state": "draft"}
         }
         """
@@ -369,8 +369,8 @@ Feature: Sets
         When we send client.sets.update
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"},
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
             "updates": {"state": "usable"}
         }
         """
@@ -388,8 +388,8 @@ Feature: Sets
         When we send client.sets.delete
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"}
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"}
         }
         """
         Then we get OK response
@@ -404,8 +404,8 @@ Feature: Sets
         When we send client.sets.update
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"},
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
             "updates": {"state": "usable"}
         }
         """
@@ -413,8 +413,8 @@ Feature: Sets
         When we send client.sets.delete
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"}
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"}
         }
         """
         Then we get error 400
@@ -428,8 +428,8 @@ Feature: Sets
         When we send client.sets.update
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"},
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
             "updates": {"state": "disabled"}
         }
         """
@@ -437,8 +437,8 @@ Feature: Sets
         When we send client.sets.delete
         """
         {
-            "item_id": "#LAST_ITEM._id#",
-            "headers": {"If-Match": "#LAST_ITEM._etag#"}
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"}
         }
         """
         Then we get error 400

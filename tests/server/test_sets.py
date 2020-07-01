@@ -41,7 +41,7 @@ def test_create(init_app):
         'destination_name': {'required': 1}
     }]
 
-    item_id = sets_service.post(test_sets)[0]
+    item_id = sets_service.post(deepcopy(test_sets))[0]
 
     items = sets_service.find({})
     assert items.count() == 1
@@ -58,7 +58,7 @@ def test_create(init_app):
 def test_update_state(init_app):
     sets_service = get_service()
 
-    item_id = sets_service.post(test_sets)[0]
+    item_id = sets_service.post(deepcopy(test_sets))[0]
 
     sets_service.patch(item_id, {'state': SET_STATES.DRAFT})
     sets_service.patch(item_id, {'state': SET_STATES.USABLE})
@@ -80,7 +80,7 @@ def test_update_state(init_app):
 def test_update_destination_name(init_app):
     sets_service = get_service()
 
-    item_id = sets_service.post(test_sets)[0]
+    item_id = sets_service.post(deepcopy(test_sets))[0]
 
     # can update the destination name while in Draft state
     sets_service.patch(item_id, {'destination_name': 'during_draft'})
@@ -111,7 +111,7 @@ def test_validate_destination_name(init_app):
         assert error.value.status_code == 400
 
     def _test_patch():
-        item_id = sets_service.post(test_sets)[0]
+        item_id = sets_service.post(deepcopy(test_sets))[0]
 
         with pytest.raises(SuperdeskApiError) as error:
             sets_service.patch(item_id, {'destination_name': 'unknown'})
@@ -126,7 +126,7 @@ def test_validate_destination_name(init_app):
 def test_update_destination_config(init_app):
     sets_service = get_service()
 
-    item_id = sets_service.post(test_sets)[0]
+    item_id = sets_service.post(deepcopy(test_sets))[0]
 
     # can update the destination config while in Draft state
     sets_service.patch(item_id, {'destination_config': {'foo': '456'}})
@@ -147,11 +147,11 @@ def test_delete(init_app):
     sets_service = get_service()
 
     assert sets_service.find({}).count() == 0
-    sets_service.post(test_sets)
+    sets_service.post(deepcopy(test_sets))
     sets_service.delete_action({})
     assert sets_service.find({}).count() == 0
 
-    item_id = sets_service.post(test_sets)[0]
+    item_id = sets_service.post(deepcopy(test_sets))[0]
     sets_service.patch(item_id, {'state': SET_STATES.USABLE})
 
     with pytest.raises(SuperdeskApiError) as error:
@@ -170,7 +170,7 @@ def test_get_destination(init_app):
 
     assert str(error.value) == '404: Set with id {} not found'.format(str(test_id))
 
-    item_id = sets_service.post(test_sets)[0]
+    item_id = sets_service.post(deepcopy(test_sets))[0]
     received = sets_service.get_destination(item_id)
     expected = Destination(STORAGE_DESTINATIONS[0])
 
@@ -179,7 +179,7 @@ def test_get_destination(init_app):
 
 def test_get_provider_instance(init_app):
     sets_service = get_service()
-    item_id = sets_service.post(test_sets)[0]
+    item_id = sets_service.post(deepcopy(test_sets))[0]
     provider = sets_service.get_provider_instance(item_id)
 
     assert isinstance(provider, MongoGridFSProvider)

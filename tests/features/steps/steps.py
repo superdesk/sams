@@ -32,7 +32,7 @@ def step_impl_send_client(context, model_name, method_name):
 
     kwargs = {} if not context.text else json.loads(apply_placeholders(context, context.text))
     context.response = method(**kwargs)
-    store_last_item(context)
+    store_last_item(context, model_name)
 
 
 @when('we get "{url}"')
