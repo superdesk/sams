@@ -54,6 +54,7 @@ jobs:
         script: pytest tests/server --disable-pytest-warnings
         env:
           - SERVER=true
+          - CLIENT=true
           - SERVICES=true
       - name: "clients-unit"
         script: pytest tests/clients --disable-pytest-warnings
