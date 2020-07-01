@@ -9,7 +9,7 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from os import path, getcwd, environ
+from os import path, getcwd
 from importlib import import_module
 
 from flask import Config, jsonify
@@ -22,7 +22,7 @@ from superdesk.errors import SuperdeskApiError
 from superdesk.notification import ClosedSocket
 from superdesk.validator import SuperdeskValidator
 
-from sams.logging import configure_logging
+from sams.logging import configure_logging, logger
 
 SAMS_DIR = path.abspath(path.join(path.dirname(__file__), '..'))
 
@@ -112,11 +112,13 @@ class SamsApp(Eve):
         def superdesk_api_error(err):
             return json_error({
                 'error': err.message or '',
-                'message': err.payload,
-                'code': err.status_code or 500,
+                'message': getattr(err, 'payload', err.message),
+                'code': getattr(err, 'status_code', 500),
             })
 
         def assertion_error(err):
+            logger.exception(err)
+
             return json_error({
                 'error': err.args[0] if err.args else 1,
                 'message': str(err),
@@ -124,6 +126,8 @@ class SamsApp(Eve):
             })
 
         def base_exception_error(err):
+            logger.exception(err)
+
             if getattr(err, 'error', None) == 'search_phase_execution_exception':
                 return json_error({
                     'error': 1,

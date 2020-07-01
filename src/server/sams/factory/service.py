@@ -9,8 +9,6 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from copy import deepcopy
-
 from eve.utils import config
 
 from superdesk.services import Service
@@ -27,7 +25,7 @@ class SamsService(Service):
     def get_by_id(self, document_id, field=config.ID_FIELD):
         """Helper function to retrieve a document by id
 
-        :param document_id: bson.ObjectId for the document
+        :param bson.objectid.ObjectId document_id: ID for the document
         :param field: field to use when searching for the document (defaults to '_id')
         :return: document found in the system
         """
@@ -44,7 +42,7 @@ class SamsService(Service):
         """
 
         # Copy the docs so we don't modify the provided values directly
-        docs = deepcopy(docs)
+        # docs = deepcopy(docs)
         for doc in docs:
             self.validate_post(doc)
         return super().post(docs, **kwargs)
@@ -52,13 +50,13 @@ class SamsService(Service):
     def patch(self, document_id, updates):
         """Update an existing document for the specific resource
 
-        :param document_id: bson.ObjectId for the document
+        :param bson.ObjectId document_id: ID for the document
         :param updates: Dictionary containing the desired attributes to update
         :return: dictionary containing the updated attributes of the document
         """
 
         # Copy the updates so we don't modify the provided values directly
-        updates = deepcopy(updates)
+        # updates = deepcopy(updates)
 
         original = self.get_by_id(document_id)
         self.validate_patch(original, updates)

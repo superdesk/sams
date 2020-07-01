@@ -23,13 +23,13 @@ URL_PREFIX = env('URL_PREFIX', server_url.path.lstrip('/')) or ''
 MONGO_DBNAME = env('MONGO_DBNAME', 'sams')
 
 #: full mongodb connection uri, overrides ``MONGO_DBNAME`` if set
-MONGO_URI = env('MONGO_URI', 'mongodb://localhost/%s' % MONGO_DBNAME)
+MONGO_URI = env('MONGO_URI', 'mongodb://sams/%s' % MONGO_DBNAME)
 
 #: allow all mongo queries
 MONGO_QUERY_BLACKLIST = []
 
 #: elastic url
-ELASTICSEARCH_URL = env('ELASTICSEARCH_URL', 'http://localhost:9200')
+ELASTICSEARCH_URL = env('ELASTICSEARCH_URL', 'http://sams:9200')
 
 #: elastic index name
 ELASTICSEARCH_INDEX = env('ELASTICSEARCH_INDEX', 'sams')
@@ -72,7 +72,9 @@ CORE_APPS = [
     'sams.storage'
 ]
 INSTALLED_APPS = [
-    'sams.factory.sentry'
+    'sams.factory.sentry',
+    'sams.api.admin',
+    'sams.api.consume'
 ]
 
 STORAGE_PROVIDERS = [
@@ -80,7 +82,7 @@ STORAGE_PROVIDERS = [
 ]
 
 # Uncomment this next line and modify the config to add MongoGridFS storage destination
-# STORAGE_DESTINATION_1 = 'MongoGridFS,Default,mongodb://localhost/sams'
+STORAGE_DESTINATION_1 = 'MongoGridFS,Default,mongodb://sams/sams'
 
 # Specify the type of authentication
 SAMS_AUTH_TYPE = 'sams.auth.public'

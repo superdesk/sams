@@ -17,6 +17,9 @@ from .destinations import destinations
 
 
 def init_app(app: SamsApp):
+    providers.clear()
+    destinations.clear()
+
     for provider in app.config.get('STORAGE_PROVIDERS') or []:
         providers.register(provider)
 
