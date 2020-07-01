@@ -65,18 +65,16 @@ def test_update_state(init_app):
     sets_service.patch(item_id, {'state': SET_STATES.DISABLED})
     sets_service.patch(item_id, {'state': SET_STATES.USABLE})
 
-    with pytest.raises(ValidationError) as error:
+    with pytest.raises(SuperdeskApiError) as error:
         sets_service.patch(item_id, {'state': SET_STATES.DRAFT})
-    assert list(error.value.args) == [{
-        'state': 'Cannot change state from "{}" to draft'.format(SET_STATES.USABLE)
-    }]
+    assert error.value.message == 'Cannot change state from "{}" to draft'.format(SET_STATES.USABLE)
+    assert error.value.status_code == 400
 
     sets_service.patch(item_id, {'state': SET_STATES.DISABLED})
-    with pytest.raises(ValidationError) as error:
+    with pytest.raises(SuperdeskApiError) as error:
         sets_service.patch(item_id, {'state': SET_STATES.DRAFT})
-    assert list(error.value.args) == [{
-        'state': 'Cannot change state from "{}" to draft'.format(SET_STATES.DISABLED)
-    }]
+    assert error.value.message == 'Cannot change state from "{}" to draft'.format(SET_STATES.DISABLED)
+    assert error.value.status_code == 400
 
 
 def test_update_destination_name(init_app):
@@ -89,12 +87,11 @@ def test_update_destination_name(init_app):
 
     # Change the state to 'usable' then test changing destination name
     sets_service.patch(item_id, {'state': SET_STATES.USABLE})
-    with pytest.raises(ValidationError) as error:
+    with pytest.raises(SuperdeskApiError) as error:
         sets_service.patch(item_id, {'destination_name': 'after_draft'})
 
-    assert list(error.value.args) == [{
-        'destination_name': 'Destination can only be changed in draft state'
-    }]
+    assert error.value.message == 'Destination can only be changed in draft state'
+    assert error.value.status_code == 400
 
     # Test updating with destination name unchanged
     sets_service.patch(item_id, {'destination_name': 'during_draft'})
@@ -107,22 +104,20 @@ def test_validate_destination_name(init_app):
         item = deepcopy(test_sets[0])
         item['destination_name'] = 'unknown'
 
-        with pytest.raises(ValidationError) as error:
+        with pytest.raises(SuperdeskApiError) as error:
             sets_service.post([item])
 
-        assert list(error.value.args) == [{
-            'destination_name': 'Destination "unknown" isnt configured'
-        }]
+        assert error.value.message == 'Destination "unknown" isnt configured'
+        assert error.value.status_code == 400
 
     def _test_patch():
         item_id = sets_service.post(test_sets)[0]
 
-        with pytest.raises(ValidationError) as error:
+        with pytest.raises(SuperdeskApiError) as error:
             sets_service.patch(item_id, {'destination_name': 'unknown'})
 
-        assert list(error.value.args) == [{
-            'destination_name': 'Destination "unknown" isnt configured'
-        }]
+        assert error.value.message == 'Destination "unknown" isnt configured'
+        assert error.value.status_code == 400
 
     _test_post()
     _test_patch()
@@ -138,12 +133,11 @@ def test_update_destination_config(init_app):
 
     # change the state to 'usable' then test changing destination config
     sets_service.patch(item_id, {'state': SET_STATES.USABLE})
-    with pytest.raises(ValidationError) as error:
+    with pytest.raises(SuperdeskApiError) as error:
         sets_service.patch(item_id, {'destination_config': {'bar': '001'}})
 
-    assert list(error.value.args) == [{
-        'destination_config': 'Destination config can only be changed in draft state'
-    }]
+    assert error.value.message == 'Destination config can only be changed in draft state'
+    assert error.value.status_code == 400
 
     # test updating with destination config unchanged
     sets_service.patch(item_id, {'destination_config': {'foo': '456'}})
@@ -160,12 +154,11 @@ def test_delete(init_app):
     item_id = sets_service.post(test_sets)[0]
     sets_service.patch(item_id, {'state': SET_STATES.USABLE})
 
-    with pytest.raises(ValidationError) as error:
+    with pytest.raises(SuperdeskApiError) as error:
         sets_service.delete_action({})
 
-    assert list(error.value.args) == [{
-        'delete': 'Can only delete Sets that are in draft state'
-    }]
+    assert error.value.message == 'Can only delete Sets that are in draft state'
+    assert error.value.status_code == 400
 
 
 def test_get_destination(init_app):

@@ -9,6 +9,8 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
+from copy import deepcopy
+
 from eve.utils import config
 
 from superdesk.services import Service
@@ -42,7 +44,7 @@ class SamsService(Service):
         """
 
         # Copy the docs so we don't modify the provided values directly
-        # docs = deepcopy(docs)
+        docs = deepcopy(docs)
         for doc in docs:
             self.validate_post(doc)
         return super().post(docs, **kwargs)
