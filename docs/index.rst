@@ -30,6 +30,22 @@ works and can be developed further.
     server/sets
     server/storage/index
 
+API Implementation
+------------------
+
+Check out this technical reference to understand in detail how the SAMS server
+works and can be developed further.
+
+.. automodule:: sams.api
+    :members:
+
+.. toctree::
+    :maxdepth: 3
+
+    server/api/service
+    server/api/admin
+    server/api/consume
+
 Client Reference
 ----------------
 
@@ -38,7 +54,8 @@ The following is a technical reference for the SAMS Client library.
 .. toctree::
     :maxdepth: 2
 
-    client/python
+    client/python/client/index
+    client/python/schemas/index
 
 Indices and tables
 ==================

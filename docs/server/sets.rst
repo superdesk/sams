@@ -10,11 +10,6 @@ Resource Schema
     :members: url,endpoint_name,internal_resource
     :undoc-members:
 
-States
-------
-.. automodule:: sams.sets.resource
-    :members: SET_STATES
-
 Service
 -------
 .. autoclass:: sams.sets.service.SetsService

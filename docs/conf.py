@@ -362,5 +362,6 @@ texinfo_documents = [
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),
     'superdesk': ('https://superdesk.readthedocs.io/en/latest/', None),
-    'pymongo': ('https://pymongo.readthedocs.io/en/stable/', None)
+    'pymongo': ('https://pymongo.readthedocs.io/en/stable/', None),
+    'requests': ('https://requests.readthedocs.io/en/master/', None)
 }

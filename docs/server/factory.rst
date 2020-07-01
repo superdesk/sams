@@ -6,3 +6,5 @@ Service
 
 .. autoclass:: sams.factory.service.SamsService
     :members:
+    :undoc-members:
+    :inherited-members:
