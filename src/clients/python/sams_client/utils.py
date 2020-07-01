@@ -10,7 +10,7 @@
 # at https://www.sourcefabric.org/superdesk/license
 
 from .constants import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_PROTOCOL
-from typing import Dict, any, Tuple
+from typing import Dict, Tuple
 
 
 def load_configs(configs: Dict):
