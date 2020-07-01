@@ -8,6 +8,6 @@ def test_request_destinations(admin_client):
 
 
 def test_request_destination(admin_client):
-    destination_name = 'FakeDestination'
+    destination_name = 'mock'
     response = admin_client.request_destination(id=destination_name)
     assert response.status_code == 404

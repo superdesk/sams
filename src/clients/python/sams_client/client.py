@@ -9,7 +9,7 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from .utils import get_base_url
+from .utils import load_config
 from importlib import import_module
 import requests
 
@@ -34,8 +34,7 @@ class SamsClient(object):
     def __init__(self, config={}):
         """Constructor for SamsClient class
         """
-        self.config = config
-        self.config['base_url'] = get_base_url(config)
+        self.config = load_config(config)
         self.setup_auth()
 
     def request(self, api='/', method='get',
@@ -56,13 +55,13 @@ class SamsClient(object):
         return response
 
     def setup_auth(self):
-        if not self.config.get('SAMS_AUTH_TYPE'):
-            raise RuntimeError('Auth type not specified')
+        if not self.config['auth_type']:
+            raise RuntimeError('Authentication type not specified')
 
-        mod = import_module(self.config['SAMS_AUTH_TYPE'])
+        mod = import_module(self.config['auth_type'])
         if not hasattr(mod, 'get_auth_instance') or not callable(mod.get_auth_instance):
-            raise RuntimeError('Configured Auth type must have a `get_auth_instance` method')
+            raise RuntimeError('Configured Authentication type must have a `get_auth_instance` method')
 
         self.auth = mod.get_auth_instance(
-            api_key=self.config.get('SAMS_AUTH_KEY')
+            api_key=self.config['auth_key']
         )
