@@ -22,7 +22,7 @@ from superdesk.errors import SuperdeskApiError
 from superdesk.notification import ClosedSocket
 from superdesk.validator import SuperdeskValidator
 
-from sams.logging import configure_logging
+from sams.logging import configure_logging, logger
 
 SAMS_DIR = path.abspath(path.join(path.dirname(__file__), '..'))
 
@@ -103,6 +103,7 @@ class SamsApp(Eve):
             return jsonify(err), err['code']
 
         def handle_werkzeug_errors(err):
+            logger.exception(err)
             return json_error({
                 'error': str(err),
                 'message': getattr(err, 'description') or None,
@@ -110,13 +111,15 @@ class SamsApp(Eve):
             })
 
         def superdesk_api_error(err):
+            logger.exception(err)
             return json_error({
                 'error': err.message or '',
-                'message': err.payload,
+                'message': getattr(err, 'payload', err.message),
                 'code': err.status_code or 500,
             })
 
         def assertion_error(err):
+            logger.exception(err)
             return json_error({
                 'error': err.args[0] if err.args else 1,
                 'message': str(err),
@@ -124,6 +127,7 @@ class SamsApp(Eve):
             })
 
         def base_exception_error(err):
+            logger.exception(err)
             if getattr(err, 'error', None) == 'search_phase_execution_exception':
                 return json_error({
                     'error': 1,

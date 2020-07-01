@@ -9,8 +9,4 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-"""Constants for client module
-"""
-DEFAULT_HOST = 'localhost'
-DEFAULT_PORT = '5700'
-DEFAULT_PROTOCOL = 'http'
+from .destinations import destinationSchema

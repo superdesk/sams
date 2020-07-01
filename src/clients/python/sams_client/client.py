@@ -43,7 +43,6 @@ class SamsClient(object):
         request = getattr(requests, method.lower())
         url = f'{self.base_url}{api}'
         response = request(url, headers=headers, data=data)
-        response.raise_for_status()
         return callback(response)
 
     def _default_resp_callback(self, response):
