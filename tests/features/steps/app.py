@@ -109,7 +109,7 @@ class TestApp:
 
 
 def get_test_config():
-    env_uri = environ.get('MONGO_URI', 'mongodb://sams/test')
+    env_uri = environ.get('MONGO_URI', 'mongodb://localhost/test')
     env_host = env_uri.rsplit('/', 1)[0]
     mongo_uri = '/'.join([env_host, 'tests_sams'])
 
