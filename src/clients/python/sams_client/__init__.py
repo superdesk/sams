@@ -10,6 +10,5 @@
 # at https://www.sourcefabric.org/superdesk/license
 
 from .client import SamsClient
-from .schemas import *
 
-__all__ = ('SamsClient', 'schemas')
+__all__ = ('SamsClient')

@@ -62,8 +62,8 @@ class SamsApiService(SamsService):
     Base service for external API endpoints that proxy requests to internal services.
 
     :var BaseService service: The service to proxy requests to
-
     """
+
     def __init__(self, service: BaseService):
         self.service: BaseService = service
         super().__init__()
@@ -213,7 +213,12 @@ class SamsApiService(SamsService):
             req = ParsedRequest()
         return self.service.get(req=req, lookup=lookup)
 
-    def get_from_mongo(self, req: ParsedRequest, lookup: Dict[str, Any], projection: Dict[str, Any] = None) -> MongoCursor:
+    def get_from_mongo(
+        self,
+        req: ParsedRequest,
+        lookup: Dict[str, Any],
+        projection: Dict[str, Any] = None
+    ) -> MongoCursor:
         """Find documents using MongoDB.
 
         Passes the request to the :meth:`sams.factory.service.SamsService.get_from_mongo` method.
