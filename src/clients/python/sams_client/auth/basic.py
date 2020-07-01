@@ -9,6 +9,8 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
+from typing import Dict, Any
+
 
 def get_auth_instance(**kwargs):
     api_key = kwargs['api_key']
@@ -22,10 +24,12 @@ class SamsBasicAuth(object):
     def __init__(self, api_key):
         self.api_key = api_key
 
-    def apply_headers(self, headers):
+    def apply_headers(self, headers: Dict[str, Any]):
         """Applies Basic Authentication to the request header
 
-        :param headers: Dictionary containing request headers
+        :param dict headers: Dictionary containing request headers
+        :rtype: dict
+        :return: The headers with Authorization key applied
         """
         headers['Authorization'] = f'Basic {self.api_key}'
         return headers
