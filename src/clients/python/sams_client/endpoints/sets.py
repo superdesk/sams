@@ -9,7 +9,16 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from .client import SamsClient
-from .schemas import *
+from .endpoint import Endpoint
 
-__all__ = ('SamsClient', 'schemas')
+
+class SamsSetEndpoint(Endpoint):
+    """Helper class for the Sets resource
+
+    This class automatically sets ``_read_url`` to ``/consume/sets`` \
+    and the ``_write_url`` to ``/admin/sets``
+
+    """
+
+    _read_url = '/consume/sets'
+    _write_url = '/admin/sets'

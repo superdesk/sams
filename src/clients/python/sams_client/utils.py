@@ -1,3 +1,7 @@
+from typing import Dict, Any
+
+from json import dumps
+
 from .constants import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_PROTOCOL
 
 
@@ -15,3 +19,18 @@ def get_base_url(configs):
     """
     host, port = load_configs(configs)
     return f'{DEFAULT_PROTOCOL}://{host}:{port}'
+
+
+def urlencode(url: str, args: Dict[str, Any] = None) -> str:
+    if not args:
+        return url
+
+    query_string = '?' + '&'.join([
+        '{}={}'.format(
+            key,
+            dumps(val)
+        )
+        for key, val in args.items()
+    ])
+
+    return url + query_string
