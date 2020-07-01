@@ -16,12 +16,16 @@ def get_auth_instance(**kwargs):
 
 
 class SamsBasicAuth(object):
-    """Basic Auth instance
+    """Basic Authentication instance
     """
 
     def __init__(self, api_key):
         self.api_key = api_key
 
     def apply_headers(self, headers):
+        """Applies Basic Authentication to the request header
+        
+        :param headers: Dictionary containing request headers
+        """
         headers['Authorization'] = f'Basic {self.api_key}'
         return headers

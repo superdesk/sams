@@ -38,9 +38,17 @@ class SamsBasicAuth(BasicAuth):
         return auth_token and self.check_auth(auth_token, allowed_roles, resource, method)
 
     def authenticate(self):
-        """Returns a standard a 401
+        """Returns a standard 401
         """
         abort(401, description='Please provide proper credentials')
 
     def check_auth(self, auth_token, allowed_roles, resource, method):
+        """This function is called to check if the API key in request header
+        exists in the api_keys in app config
+
+        :param auth_token: API key in request header
+        :param allowed_roles: allowed user roles
+        :param resource: resource being requested
+        :param method: HTTP method being executed (POST, GET, etc.)
+        """
         return auth_token.lstrip('Basic ') in self.api_keys

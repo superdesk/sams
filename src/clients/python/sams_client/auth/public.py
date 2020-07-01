@@ -15,11 +15,15 @@ def get_auth_instance(**kwargs):
 
 
 class SamsPublicAuth(object):
-    """Public Auth instance
+    """Public Authentication instance
     """
 
     def __init__(self):
         pass
 
     def apply_headers(self, headers):
+        """Returns the request header
+
+        :param headers: Dictionary containing request headers
+        """
         return headers
