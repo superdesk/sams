@@ -16,7 +16,13 @@ class SamsClientAdmin(SamsClient):
     DESTINATIONS_API = '/admin/destinations/'
 
     def request_destination(self, id):
+        """Sends a GET request to /admin/destinations/<id>
+
+        :param id: Name of the destination
+        """
         return self.request(api=self.DESTINATIONS_API + id)
 
     def request_destinations(self):
+        """Sends a GET request to /admin/destinations
+        """
         return self.request(api=self.DESTINATIONS_API)
