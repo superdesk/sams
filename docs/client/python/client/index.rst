@@ -6,4 +6,5 @@
 
     base
     endpoint
+    storage_destinations
     sets

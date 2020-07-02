@@ -10,5 +10,6 @@
 # at https://www.sourcefabric.org/superdesk/license
 
 from .sets import SamsSetEndpoint
+from .storage_destinations import SamsStorageDestinationsEndpoint
 
-__all__ = ('SamsSetEndpoint',)
+__all__ = ('SamsSetEndpoint', 'SamsStorageDestinationsEndpoint',)

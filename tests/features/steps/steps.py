@@ -94,10 +94,20 @@ def step_impl_then_get_existing(context):
     test_json(context)
 
 
-@given('app config')
-def step_impl_app_config(context):
+@given('server config')
+def step_impl_server_config(context):
     app = get_app(context)
     config = json.loads(apply_placeholders(context, context.text))
     app.init(config)
     app.start()
     context.app = app
+    context._reset_after_scenario = True
+
+
+@given('client config')
+def step_impl_client_config(context):
+    app = get_app(context)
+    config_overrides = json.loads(
+        apply_placeholders(context, context.text)
+    )
+    app.client = app.create_client_instance(config_overrides)

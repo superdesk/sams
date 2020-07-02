@@ -12,12 +12,12 @@
 from .endpoint import Endpoint
 
 
-class SamsSetEndpoint(Endpoint):
-    """Helper class for the Sets resource
+class SamsStorageDestinationsEndpoint(Endpoint):
+    """Helper class for the StorageDestinatino resource
 
-    This class automatically sets ``_read_url`` to ``/consume/sets`` \
-    and the ``_write_url`` to ``/admin/sets``
+    This class automatically sets ``_read_url`` to ``/admin/destinations`` \
+    and leaves the ``_write_url`` as ``None``
     """
 
-    _read_url = '/consume/sets'
-    _write_url = '/admin/sets'
+    _read_url = '/admin/destinations'
+    _write_url = None

@@ -1,6 +1,5 @@
 from pytest import fixture
 from sams_client import SamsClient
-from sams_client.admin import SamsClientAdmin
 
 
 configs = {
@@ -12,8 +11,3 @@ configs = {
 @fixture
 def client():
     return SamsClient(configs)
-
-
-@fixture
-def admin_client():
-    return SamsClientAdmin(configs)

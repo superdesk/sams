@@ -155,7 +155,7 @@ Feature: Sets
             "code": 400
         }
         """
-        Given app config
+        Given server config
         """
         {
             "STORAGE_DESTINATION_1": "MongoGridFS,internal,mongodb://localhost/tests_sams",
@@ -198,7 +198,7 @@ Feature: Sets
         Then we get OK response
 
     Scenario: Cannot change destination when Set is not draft
-        Given app config
+        Given server config
         """
         {
             "STORAGE_DESTINATION_1": "MongoGridFS,internal,mongodb://localhost/tests_sams",
@@ -310,7 +310,7 @@ Feature: Sets
         """
         {"docs": [{
             "name": "foo",
-            "destination_name": "bar"
+            "destination_name": "during_draft"
         }]}
         """
         Then we get OK response
@@ -381,7 +381,7 @@ Feature: Sets
         """
         {"docs": [{
             "name": "test1",
-            "destination_name": "bar"
+            "destination_name": "during_draft"
         }]}
         """
         Then we get OK response
@@ -397,7 +397,7 @@ Feature: Sets
         """
         {"docs": [{
             "name": "test2",
-            "destination_name": "bar"
+            "destination_name": "during_draft"
         }]}
         """
         Then we get OK response

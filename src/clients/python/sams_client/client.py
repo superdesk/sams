@@ -15,7 +15,7 @@ from json import dumps
 from typing import Dict, Any, Callable
 
 from .utils import load_config, urlencode
-from .endpoints import SamsSetEndpoint
+from .endpoints import SamsSetEndpoint, SamsStorageDestinationsEndpoint
 
 
 class SamsClient(object):
@@ -50,6 +50,7 @@ class SamsClient(object):
         self.config = load_config(config)
         self.setup_auth()
         self.sets: SamsSetEndpoint = SamsSetEndpoint(self)
+        self.destinations: SamsStorageDestinationsEndpoint = SamsStorageDestinationsEndpoint(self)
 
     def request(
         self,
@@ -69,6 +70,9 @@ class SamsClient(object):
         :rtype: requests.Response
         :return: The API response
         """
+
+        if headers is None:
+            headers = {}
 
         if callback is None:
             # set default callback

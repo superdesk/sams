@@ -49,6 +49,17 @@ class Endpoint:
 
         self._client: SamsClient = client
 
+    def _return_405(self) -> requests.Response:
+        """Helper method to construct a 405 response
+
+        :rtype: requests.Response
+        :return: Response with status_code=405
+        """
+
+        response = requests.Response()
+        response.status_code = 405
+        return response
+
     def search(
         self,
         args: Dict[str, Any] = None,
@@ -63,6 +74,9 @@ class Endpoint:
         :rtype: requests.Response
         :return: The search response
         """
+
+        if not self._read_url:
+            return self._return_405()
 
         return self._client.search(
             url=self._read_url,
@@ -85,6 +99,9 @@ class Endpoint:
         :rtype: requests.Response
         :return: The document, if found
         """
+
+        if not self._read_url:
+            return self._return_405()
 
         return self._client.get(
             url='{}/{}'.format(
@@ -110,6 +127,9 @@ class Endpoint:
         :return: The newly created document
         """
 
+        if not self._write_url:
+            return self._return_405()
+
         return self._client.post(
             url=self._write_url,
             headers=headers,
@@ -133,6 +153,9 @@ class Endpoint:
         :rtype: requests.Response
         :return: The updated document
         """
+
+        if not self._write_url:
+            return self._return_405()
 
         return self._client.patch(
             url='{}/{}'.format(
@@ -158,6 +181,9 @@ class Endpoint:
         :rtype: requests.Response
         :return: The delete response
         """
+
+        if not self._write_url:
+            return self._return_405()
 
         return self._client.delete(
             url='{}/{}'.format(

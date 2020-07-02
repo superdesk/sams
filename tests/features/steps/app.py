@@ -9,7 +9,8 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from os import environ, path
+from os import environ, path, devnull
+import sys
 from threading import Thread
 from time import sleep
 from copy import deepcopy
@@ -28,6 +29,7 @@ class TestApp:
     def __init__(self):
         self.app: SamsApp = None
         self.client: SamsClient = None
+        self._sys_client: SamsClient = None
         self.thread: Thread = None
 
     def init(self, config_overrides=None):
@@ -39,12 +41,28 @@ class TestApp:
         config = deepcopy(get_test_config())
         config.update(config_overrides)
         self.app = SamsApp('sams', config=config)
+        self.client = self.create_client_instance()
+        self._sys_client = self.create_client_instance(override_auth=True)
 
+    def create_client_instance(self, config_overrides=None, override_auth=False):
         host, port = self.get_host_port()
-        self.client = SamsClient({
+        config = {
             'HOST': host,
             'PORT': port
-        })
+        }
+
+        if override_auth and\
+                self.app.config.get('SAMS_AUTH_TYPE') == 'sams.auth.basic' and\
+                self.app.config.get('CLIENT_API_KEYS'):
+            config.update({
+                'SAMS_AUTH_TYPE': 'sams_client.auth.basic',
+                'SAMS_AUTH_KEY': self.app.config['CLIENT_API_KEYS'].split(',')[0]
+            })
+
+        if config_overrides:
+            config.update(config_overrides)
+
+        return SamsClient(config)
 
     def get_host_port(self):
         host_port = self.app.config['SERVER_NAME'].split(':')
@@ -54,8 +72,16 @@ class TestApp:
         self.stop()
 
         self.thread = Thread(target=self.run)
+
+        # Temporarily redirect stdout to /dev/null
+        # So Flask doesn't dump startup log
+        stdout = sys.stdout
+        sys.stdout = open(devnull, 'w')
         self.thread.start()
         self.wait_startup()
+
+        # Restore original stdout functionality
+        sys.stdout = stdout
 
     def run(self):
         host, port = self.get_host_port()
@@ -72,7 +98,7 @@ class TestApp:
             self.wait_shutdown()
 
     def prepopulate(self, data):
-        self.client.post(
+        self._sys_client.post(
             url='/tests/prepopulate',
             data=data
         )
@@ -84,7 +110,7 @@ class TestApp:
                 if attempts >= 5:
                     print('Too many attempt while waiting for SAMS to shutdown')
                     assert False, 'Failed to shutdown the SAMS application'
-                self.client.request()
+                self._sys_client.request()
                 sleep(0.5)
                 attempts += 1
             except ConnectionError:
@@ -92,6 +118,7 @@ class TestApp:
 
         self.app = None
         self.client = None
+        self._sys_client = None
         self.thread = None
 
     def wait_startup(self):
@@ -101,7 +128,7 @@ class TestApp:
                 if attempts >= 5:
                     print('Too many attempts while waiting for SAMS to start')
                     assert False, 'Failed to start the SAMS application'
-                elif self.client.request().status_code == 200:
+                elif self._sys_client.request().status_code == 200:
                     break
             except ConnectionError:
                 attempts += 1

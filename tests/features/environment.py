@@ -20,5 +20,17 @@ def before_scenario(context, scenario):
     get_app(context).prepopulate([{'method': 'reset'}])
 
 
+def after_scenario(context, scenario):
+    try:
+        if context._reset_after_scenario:
+            app = get_app(context)
+            app.init()
+            app.start()
+            context.app = app
+            context._reset_after_scenario = False
+    except KeyError:
+        pass
+
+
 def after_all(context):
     get_app(context).stop()
