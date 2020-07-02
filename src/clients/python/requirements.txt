@@ -1,2 +1,4 @@
 setuptools==36.6.0
+typing==3.7.4
 requests==2.21.0
+git+git://github.com/superdesk/superdesk-core.git@develop#egg=superdesk-core

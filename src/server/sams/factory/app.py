@@ -118,7 +118,6 @@ class SamsApp(Eve):
 
         def assertion_error(err):
             logger.exception(err)
-
             return json_error({
                 'error': err.args[0] if err.args else 1,
                 'message': str(err),
@@ -127,7 +126,6 @@ class SamsApp(Eve):
 
         def base_exception_error(err):
             logger.exception(err)
-
             if getattr(err, 'error', None) == 'search_phase_execution_exception':
                 return json_error({
                     'error': 1,
@@ -163,7 +161,8 @@ class SamsApp(Eve):
         if not hasattr(mod, 'get_auth_instance') or not callable(mod.get_auth_instance):
             raise RuntimeError('Configured Auth type must have a `get_auth_instance` method')
 
-        self.auth = mod.get_auth_instance()
+        api_keys = self.config.get('CLIENT_API_KEYS').split(',')
+        self.auth = mod.get_auth_instance(api_keys=api_keys)
 
     def setup_logging(self):
         if self.config.get('LOG_CONFIG_FILE'):

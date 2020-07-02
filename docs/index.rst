@@ -56,6 +56,7 @@ The following is a technical reference for the SAMS Client library.
 
     client/python/client/index
     client/python/schemas/index
+    client/python/auth
 
 Indices and tables
 ==================

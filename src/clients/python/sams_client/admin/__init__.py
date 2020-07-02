@@ -9,16 +9,4 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from eve.auth import BasicAuth
-
-
-def get_auth_instance(**kwargs):
-    return MockAuthReject()
-
-
-class MockAuthReject(BasicAuth):
-    def check_auth(self, username, password, allowed_roles, resource, method):
-        return False
-
-    def authorized(self, allowed_roles, resource, method):
-        return False
+from .admin import SamsClientAdmin
