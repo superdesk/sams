@@ -9,6 +9,21 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
+"""The Destinations Admin API allows to retrieve the list of ``StorageDestinations``.
+
+This service and resource is intended to be used by external clients.
+To access ``StorageDestinations`` inside the SAMS application,
+use the :mod:`sams.storage.destinations` module instead.
+
+=====================   =================================================================
+**endpoint name**        'admin_destinations'
+**resource title**       'Destinations'
+**resource url**         [GET] '/admin/destinations'
+**item url**             [GET] '/admin/destinations/<:class:`str`>'
+**schema**               :attr:`sams_client.schemas.destinations.destinationSchema`
+=====================   =================================================================
+"""
+
 from sams.factory.service import SamsService
 from sams.storage.destinations import destinations
 from superdesk.resource import Resource

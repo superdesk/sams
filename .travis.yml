@@ -15,13 +15,10 @@ before_install:
         cd src/server
         pip install -r dev-requirements.txt
         pip install -e .
-        cd ../clients/python
-        pip install -r dev-requirements.txt
-        pip install -e .
-        cd ../../..
+        cd ../..
       fi
     - |
-      if [ "$SKIP_SERVER_INSTALL" != "true" ]; then
+      if [ "$SERVICES" == "true" ]; then
         docker-compose -f .travis-docker-compose.yml up -d
         cd src/server
         pip install -r requirements.txt
@@ -29,14 +26,22 @@ before_install:
         bash scripts/wait-elastic-online.sh
       fi
     - |
-      if [ "$TEST_CLIENT" == "true" ]; then
+      if [ "$CLIENT" == "true" ]; then
         cd src/clients/python
-        pip install -r requirements.txt
-        cd ../../server
+        pip install -r dev-requirements.txt
+        pip install -e .
+        cd ../../../
+      fi
+    - |
+      if [ "$START_SAMS" == "true" ]; then
+        cd src/server
         (nohup honcho start &)
         cd ../../
       fi
-      
+    - |
+      if [ "$BEHAVE" == "true" ]; then
+        pip install -r tests/features/requirements.txt
+      fi
 
 jobs:
     include:
@@ -44,13 +49,24 @@ jobs:
         script: cd src/server && flake8 && cd ../clients/python && flake8 && cd ../../../tests/server && flake8 && cd ../clients/python && flake8
         env:
           - SERVER=true
-          - SKIP_SERVER_INSTALL=true
+          - CLIENT=true
       - name: "server-unit"
         script: pytest tests/server --disable-pytest-warnings
         env:
           - SERVER=true
+          - CLIENT=true
+          - SERVICES=true
       - name: "clients-unit"
         script: pytest tests/clients --disable-pytest-warnings
         env:
           - SERVER=true
-          - TEST_CLIENT=true
+          - CLIENT=true
+          - SERVICES=true
+          - START_SAMS=true
+      - name: "behave"
+        script: behave tests/features --format progress2
+        env:
+          - SERVER=true
+          - CLIENT=true
+          - SERVICES=true
+          - BEHAVE=true

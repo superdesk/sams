@@ -1,18 +1,13 @@
-
-:mod:`sams.api.admin` -- External Service for Storage Destinations
-=============================================
-
+:mod:`sams.api.admin` -- Administration API
+===========================================
 .. automodule:: sams.api.admin
+    :members:
+
+:mod:`sams.api.admin.storage_destinations` -- StorageDestinations
+-----------------------------------------------------------------
+.. automodule:: sams.api.admin.storage_destinations
 
 
-Resource Schema
----------------
-.. autoclass:: sams.api.admin.StorageDestinationsResource
-    :members: url,endpoint_name
-    :undoc-members:
-
-
-Service
--------
-.. autoclass:: sams.api.admin.StorageDestinationsService
-    :members: get,find_one
+:mod:`sams.api.admin.sets` -- Sets
+----------------------------------
+.. automodule:: sams.api.admin.sets

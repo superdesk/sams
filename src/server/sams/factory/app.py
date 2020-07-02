@@ -9,7 +9,7 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from os import path, getcwd, environ
+from os import path, getcwd
 from importlib import import_module
 
 from flask import Config, jsonify
@@ -103,7 +103,6 @@ class SamsApp(Eve):
             return jsonify(err), err['code']
 
         def handle_werkzeug_errors(err):
-            logger.exception(err)
             return json_error({
                 'error': str(err),
                 'message': getattr(err, 'description') or None,
@@ -111,11 +110,10 @@ class SamsApp(Eve):
             })
 
         def superdesk_api_error(err):
-            logger.exception(err)
             return json_error({
                 'error': err.message or '',
                 'message': getattr(err, 'payload', err.message),
-                'code': err.status_code or 500,
+                'code': getattr(err, 'status_code', 500),
             })
 
         def assertion_error(err):

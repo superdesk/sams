@@ -11,4 +11,4 @@
 
 from .client import SamsClient
 
-__all__ = ('SamsClient',)
+__all__ = ('SamsClient')

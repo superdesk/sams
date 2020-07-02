@@ -73,7 +73,8 @@ CORE_APPS = [
 ]
 INSTALLED_APPS = [
     'sams.factory.sentry',
-    'sams.api.admin'
+    'sams.api.admin',
+    'sams.api.consume'
 ]
 
 STORAGE_PROVIDERS = [
@@ -81,7 +82,7 @@ STORAGE_PROVIDERS = [
 ]
 
 # Uncomment this next line and modify the config to add MongoGridFS storage destination
-# STORAGE_DESTINATION_1 = 'MongoGridFS,Default,mongodb://localhost/sams'
+# STORAGE_DESTINATION_1 = 'MongoGridFS,Default,mongodb://sams/sams'
 
 # Specify the type of authentication
 SAMS_AUTH_TYPE = 'sams.auth.public'

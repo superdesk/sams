@@ -9,5 +9,14 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from .destinations import destinationSchema
-from .sets import SET_SCHEMA, SET_STATES, set_states
+from sams.factory.app import SamsApp
+from sams.sets import get_service
+from .sets import ConsumeSetResource, ConsumeSetService
+
+
+def init_app(app: SamsApp):
+    ConsumeSetResource(
+        endpoint_name=ConsumeSetResource.endpoint_name,
+        app=app,
+        service=ConsumeSetService(get_service())
+    )

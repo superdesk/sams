@@ -9,14 +9,6 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-"""
-**schema** =
-    ``_id`` *string*
-        Destination name
-    ``provider`` *string*
-        Destination's Provider name
-"""
-
 destinationSchema = {
     '_id': {
         'type': 'string',
@@ -26,3 +18,10 @@ destinationSchema = {
         'type': 'string'
     }
 }
+"""
+**schema** =
+    ``_id`` *string*
+        Destination name
+    ``provider`` *string*
+        Destination's Provider name
+"""
