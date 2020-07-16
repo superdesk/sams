@@ -17,27 +17,27 @@ PORT = int(env('SAMS_PORT', '5700'))
 SERVER_URL = env('SAMS_URL', 'http://localhost:5700')
 server_url = urlparse(SERVER_URL)
 SERVER_DOMAIN = server_url.netloc or 'localhost'
-URL_PREFIX = env('URL_PREFIX', server_url.path.lstrip('/')) or ''
+URL_PREFIX = env('SAMS_URL_PREFIX', server_url.path.lstrip('/')) or ''
 
 #: mongo db name, only used when mongo_uri is not set
-MONGO_DBNAME = env('MONGO_DBNAME', 'sams')
+MONGO_DBNAME = env('SAMS_MONGO_DBNAME', 'sams')
 
 #: full mongodb connection uri, overrides ``MONGO_DBNAME`` if set
-MONGO_URI = env('MONGO_URI', 'mongodb://localhost/%s' % MONGO_DBNAME)
+MONGO_URI = env('SAMS_MONGO_URI', 'mongodb://localhost/%s' % MONGO_DBNAME)
 
 #: allow all mongo queries
 MONGO_QUERY_BLACKLIST = []
 
 #: elastic url
-ELASTICSEARCH_URL = env('ELASTICSEARCH_URL', 'http://localhost:9200')
+ELASTICSEARCH_URL = env('SAMS_ELASTICSEARCH_URL', 'http://localhost:9200')
 
 #: elastic index name
-ELASTICSEARCH_INDEX = env('ELASTICSEARCH_INDEX', 'sams')
+ELASTICSEARCH_INDEX = env('SAMS_ELASTICSEARCH_INDEX', 'sams')
 
-if env('ELASTIC_PORT'):
-    ELASTICSEARCH_URL = env('ELASTIC_PORT').replace('tcp:', 'http:')
+if env('SAMS_ELASTIC_PORT'):
+    ELASTICSEARCH_URL = env('SAMS_ELASTIC_PORT').replace('tcp:', 'http:')
 
-ELASTICSEARCH_BACKUPS_PATH = env('ELASTICSEARCH_BACKUPS_PATH', '')
+ELASTICSEARCH_BACKUPS_PATH = env('SAMS_ELASTICSEARCH_BACKUPS_PATH', '')
 
 # Eve config attributes
 IF_MATCH = True
@@ -54,7 +54,7 @@ RETURN_MEDIA_AS_BASE64_STRING = False
 VERSION = '_current_version'
 
 #: uses for generation of media url ``(<media_prefix>/<media_id>)``::
-MEDIA_PREFIX = env('MEDIA_PREFIX', '%s/upload-raw' % SERVER_URL.rstrip('/'))
+MEDIA_PREFIX = env('SAMS_MEDIA_PREFIX', '%s/upload-raw' % SERVER_URL.rstrip('/'))
 MEDIA_PREFIXES_TO_FIX = None
 JSON_SORT_KEYS = False
 VALIDATION_ERROR_STATUS = 400
@@ -85,20 +85,20 @@ STORAGE_PROVIDERS = [
 # STORAGE_DESTINATION_1 = 'MongoGridFS,Default,mongodb://sams/sams'
 
 # Specify the type of authentication
-SAMS_AUTH_TYPE = 'sams.auth.public'
+SAMS_AUTH_TYPE = env('SAMS_AUTH_TYPE', 'sams.auth.public')
 
 # Specify api keys for basic auth
-CLIENT_API_KEYS = env('CLIENT_API_KEYS', '')
+CLIENT_API_KEYS = env('SAMS_CLIENT_API_KEYS', '')
 
 # Specify the location of the log config file
 LOG_CONFIG_FILE = 'logging_config.yml'
 
 #: Sentry DSN - will report exceptions there
-SENTRY_DSN = env('SENTRY_DSN')
+SENTRY_DSN = env('SAMS_SENTRY_DSN')
 SENTRY_INCLUDE_PATHS = ['sams']
 
 # Flask/Application variables
-FLASK_ENV = env('FLASK_ENV', 'development')
+FLASK_ENV = env('SAMS_FLASK_ENV', 'development')
 DEBUG = strtobool(env('SAMS_DEBUG', 'true'))
 SAMS_TESTING = strtobool(env('SAMS_TESTING', 'true'))
 

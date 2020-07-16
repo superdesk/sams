@@ -9,6 +9,7 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
+from sams.default_settings import env
 from sams.factory.app import SamsApp
 
 
@@ -26,6 +27,14 @@ def init_app(app: SamsApp):
     config_entry_template = 'STORAGE_DESTINATION_{}'
     config_id = 1
 
-    while config_entry_template.format(config_id) in app.config:
-        destinations.register(app.config[config_entry_template.format(config_id)])
+    # Load the storage destinations from either app.config or env variables
+    while True:
+        destination_id = config_entry_template.format(config_id)
+        if destination_id not in app.config:
+            env_val = env(destination_id)
+            if not env_val:
+                break
+
+            app.config[destination_id] = env_val
+        destinations.register(app.config[destination_id])
         config_id += 1
