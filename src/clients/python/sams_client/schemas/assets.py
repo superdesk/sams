@@ -9,17 +9,20 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from sams_client.utils import schema_relation
+from sams_client.utils import schema_relation, not_analyzed
 
 ASSET_SCHEMA = {
     '_media_id': {
-        'type': 'string'
+        'type': 'string',
+        'mapping': not_analyzed
     },
     '_created_by': {
-        'type': 'string'
+        'type': 'string',
+        'mapping': not_analyzed
     },
     '_updated_by': {
-        'type': 'string'
+        'type': 'string',
+        'mapping': not_analyzed
     },
     '_version': {
         'type': 'number'
@@ -34,13 +37,15 @@ ASSET_SCHEMA = {
     },
     'filename': {
         'type': 'string',
-        'required': True
+        'required': True,
+        'mapping': not_analyzed
     },
     'length': {
-        'type': 'number'
+        'type': 'integer'
     },
     'mimetype': {
-        'type': 'string'
+        'type': 'string',
+        'mapping': not_analyzed
     },
     'name': {
         'type': 'string'
@@ -50,19 +55,14 @@ ASSET_SCHEMA = {
     },
     'tags': {
         'type': 'list',
-        'schema': {
-            'type': 'dict',
-            'allow_unknown': True,
-            'schema': {
-                'code': {
-                    'type': 'string',
-                    'required': True
-                },
-                'name': {
-                    'type': 'string'
-                }
+        'nullable': True,
+        'mapping': {
+            'type': 'object',
+            'properties': {
+                'code': not_analyzed,
+                'name': not_analyzed
             }
-        }
+        },
     },
     'extra': {
         'type': 'dict',

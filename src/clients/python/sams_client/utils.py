@@ -17,6 +17,8 @@ from superdesk.default_settings import env
 import sams_client.default_settings as default_config
 from .constants import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_PROTOCOL
 
+not_analyzed = {'type': 'string', 'index': 'not_analyzed'}
+
 
 def load_config(config: Dict):
     """Load host, port from config

@@ -1,8 +1,8 @@
 import pytest
 from copy import deepcopy
-from bson import ObjectId
 
-from superdesk import get_resource_service
+from superdesk import get_resource_service, json
+from eve.utils import ParsedRequest
 
 from sams.assets import get_service as get_asset_service
 from sams.sets import get_service as get_set_service
@@ -162,25 +162,26 @@ def test_upload_using_stream(init_app):
 
 def test_search_elastic(init_app):
     asset_service = get_asset_service()
-    set_id, provider = add_set(deepcopy(test_sets[0]))
+    set_1, _ = add_set(deepcopy(test_sets[0]))
+    set_2, _ = add_set(deepcopy(test_sets[1]))
 
     with open('tests/fixtures/file_example-jpg.jpg', 'rb') as f:
-        asset_ids = asset_service.post([{
-            'set_id': set_id,
+        asset_service.post([{
+            'set_id': set_1,
             'filename': 'file_example-1',
             'name': 'Jpeg Example 1',
             'description': 'Jpeg file asset example 1',
             'tags': [{'code': 'abg123', 'name': 'Alpha Beta Gamma 123'}],
             'binary': f,
         }, {
-            'set_id': set_id,
+            'set_id': set_1,
             'filename': 'file_example-2',
             'name': 'Jpeg Example 2',
             'description': 'Jpeg file asset example 2',
             'tags': [{'code': 'dez456', 'name': 'Delta Epsilon Zeta 456'}],
             'binary': f,
         }, {
-            'set_id': set_id,
+            'set_id': set_2,
             'filename': 'file_example-3',
             'name': 'Jpeg Example 3',
             'description': 'Jpeg file asset example 3',
@@ -190,7 +191,7 @@ def test_search_elastic(init_app):
             ],
             'binary': f,
         }, {
-            'set_id': set_id,
+            'set_id': set_2,
             'filename': 'file_example-4',
             'name': 'Jpeg Example 4',
             'description': 'Jpeg file asset example 4',
@@ -198,24 +199,57 @@ def test_search_elastic(init_app):
             'binary': f,
         }])
 
-    filenames = [asset['filename'] for asset in asset_service.search({
-        'query': {
-            'bool': {
-                'must': [{'term': {'tags.code': 'abg123'}}]
-            }
+    def _search(query):
+        req = ParsedRequest()
+        req.args = {'source': json.dumps({'query': {'bool': query}})}
+        return asset_service.get(req=req, lookup=None)
+
+    def _search_tags():
+        query = {'must': {'term': {'tags.code': 'abg123'}}}
+        filenames = [asset['filename'] for asset in _search(query)]
+        assert len(filenames) == 2
+        assert 'file_example-1' in filenames
+        assert 'file_example-3' in filenames
+
+        query = {'must_not': {'term': {'tags.code': 'abg123'}}}
+        filenames = [asset['filename'] for asset in _search(query)]
+        assert len(filenames) == 2
+        assert 'file_example-2' in filenames
+        assert 'file_example-4' in filenames
+
+    def _search_filename():
+        """Filenames are not analyzed, so full name is required"""
+        query = {'must': {'term': {'filename': 'example'}}}
+        assert _search(query).count() == 0
+
+        query = {'must': {'term': {'filename': 'file_example-1'}}}
+        assert _search(query).count() == 1
+
+    def _search_name():
+        """Names are analyzed/tokenized, so partial names work"""
+        query = {'must': {'term': {'name': 'example'}}}
+        assert _search(query).count() == 4
+
+    def _search_set_id():
+        query = {'must': {'term': {'set_id': str(set_1)}}}
+        filenames = [asset['filename'] for asset in _search(query)]
+        assert len(filenames) == 2
+        assert 'file_example-1' in filenames
+        assert 'file_example-2' in filenames
+
+    def _search_combined():
+        query = {
+            'must': [
+                {'term': {'set_id': str(set_1)}},
+                {'term': {'tags.code': 'dez456'}},
+                {'term': {'name': '2'}}
+            ]
         }
-    })]
+        filenames = [asset['filename'] for asset in _search(query)]
+        assert filenames == ['file_example-2']
 
-    assert 'file_example-1' in filenames
-    assert 'file_example-3' in filenames
-
-    filenames = [asset['filename'] for asset in asset_service.search({
-        'query': {
-            'bool': {
-                'must_not': [{'term': {'tags.code': 'abg123'}}]
-            }
-        }
-    })]
-
-    assert 'file_example-2' in filenames
-    assert 'file_example-4' in filenames
+    _search_tags()
+    _search_filename()
+    _search_name()
+    _search_set_id()
+    _search_combined()
