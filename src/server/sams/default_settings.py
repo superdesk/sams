@@ -69,7 +69,8 @@ X_HEADERS = ['Content-Type', 'Authorization', 'If-Match']
 #: Specify what modules should be enabled
 CORE_APPS = [
     'sams.sets',
-    'sams.storage'
+    'sams.storage',
+    'sams.assets'
 ]
 INSTALLED_APPS = [
     'sams.factory.sentry',

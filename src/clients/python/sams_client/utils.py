@@ -64,3 +64,31 @@ def urlencode(url: str, args: Dict[str, Any] = None) -> str:
     ])
 
     return url + query_string
+
+
+def schema_relation(
+    resource: str,
+    embeddable: bool = True,
+    required: bool = False,
+    data_type: str = 'objectid',
+    nullable: bool = False,
+    readonly: bool = False
+):
+    """Creates an Eve/Cerberus relation attribute
+
+    This is copied from superdesk.resource.rel so that we don't have to
+    import Superdesk-Core for the sams_client library
+    """
+
+    return {
+        'type': data_type,
+        'required': required,
+        'nullable': nullable,
+        'readonly': readonly,
+        'data_relation': {
+            'resource': resource,
+            'field': '_id',
+            'embeddable': embeddable
+        },
+        'mapping': {'type': 'keyword'},
+    }
