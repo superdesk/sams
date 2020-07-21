@@ -29,6 +29,7 @@ works and can be developed further.
     server/auth
     server/sets
     server/storage/index
+    server/assets
 
 API Implementation
 ------------------
