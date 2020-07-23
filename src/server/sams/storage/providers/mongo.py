@@ -50,7 +50,7 @@ class MongoGridFSProvider(SamsBaseStorageProvider):
         self._client: MongoClient = None
         self._fs: GridFS = None
 
-    def fs(self):
+    def fs(self) -> GridFS:
         """Returns the underlying GridFS client handle
 
         :return: A GridFS client to the configured database/collection
@@ -63,7 +63,7 @@ class MongoGridFSProvider(SamsBaseStorageProvider):
 
         return self._fs
 
-    def exists(self, asset_id: ObjectId) -> bool:
+    def exists(self, asset_id: ObjectId or str) -> bool:
         """Checks if a file exists in the storage destination
 
         :param bson.objectid.ObjectId asset_id: The ID of the asset
@@ -71,9 +71,12 @@ class MongoGridFSProvider(SamsBaseStorageProvider):
         :rtype: bool
         """
 
+        if isinstance(asset_id, str):
+            asset_id = ObjectId(asset_id)
+
         return self.fs().exists(asset_id)
 
-    def put(self, content: BinaryIO or bytes, filename: str) -> ObjectId:
+    def put(self, content: BinaryIO or bytes, filename: str) -> str:
         """Upload a file to the storage destination
 
         `content` must be an instance of :class:`bytes` or a file-like object
@@ -85,12 +88,13 @@ class MongoGridFSProvider(SamsBaseStorageProvider):
         :rtype: bson.objectid.ObjectId
         """
 
-        return self.fs().put(
+        media_id = self.fs().put(
             content,
             filename=filename
         )
+        return str(media_id)
 
-    def get(self, asset_id: ObjectId):
+    def get(self, asset_id: ObjectId or str) -> BinaryIO:
         """Get an asset from the storage
 
         :param bson.objectid.ObjectId asset_id: The ID of the asset
@@ -98,16 +102,22 @@ class MongoGridFSProvider(SamsBaseStorageProvider):
         :rtype: io.BytesIO
         """
 
+        if isinstance(asset_id, str):
+            asset_id = ObjectId(asset_id)
+
         try:
             return self.fs().get(asset_id)
         except NoFile:
             raise SuperdeskApiError.notFoundError('Asset with id {} not found'.format(asset_id))
 
-    def delete(self, asset_id: ObjectId):
+    def delete(self, asset_id: ObjectId or str):
         """Delete as asset from the storage
 
         :param bson.objectid.ObjectId asset_id: The ID of the asset
         """
+
+        if isinstance(asset_id, str):
+            asset_id = ObjectId(asset_id)
 
         self.fs().delete(asset_id)
 

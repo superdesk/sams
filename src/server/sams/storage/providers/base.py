@@ -15,6 +15,8 @@ The :mod:`sams.storage.providers.base` package provides storage io implementatio
 
 """
 
+from typing import BinaryIO
+
 
 class SamsBaseStorageProvider(object):
     """An instance of SamsBaseStorageProvider
@@ -60,7 +62,7 @@ class SamsBaseStorageProvider(object):
         self.name = config_parts[1]
         self.config_string = config_parts[2]
 
-    def exists(self, asset_id):
+    def exists(self, asset_id) -> bool:
         """Checks if a file exists in the storage destination
 
         This method *must* be defined in the derived class
@@ -72,7 +74,7 @@ class SamsBaseStorageProvider(object):
 
         raise NotImplementedError()
 
-    def put(self, content, filename: str):
+    def put(self, content, filename: str) -> str:
         """Upload a file to the storage destination
 
         `content` must be an instance of :class:`bytes` or a file-like object
@@ -88,7 +90,7 @@ class SamsBaseStorageProvider(object):
 
         raise NotImplementedError()
 
-    def get(self, asset_id):
+    def get(self, asset_id) -> BinaryIO:
         """Get an asset from the storage
 
         This method *must* be defined in the derived class

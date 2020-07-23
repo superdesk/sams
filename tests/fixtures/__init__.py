@@ -5,6 +5,12 @@ test_sets = [{
     'description': 'Set used for testing purposes',
     'destination_name': 'internal',
     'destination_config': {'test': '123'}
+}, {
+    'name': 'Test_Set_2',
+    'state': 'draft',
+    'description': 'Set used for testing 2 purposes',
+    'destination_name': 'internal',
+    'destination_config': {'test': '123'}
 }]
 
 STORAGE_DESTINATIONS = [

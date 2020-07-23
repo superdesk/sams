@@ -6,3 +6,4 @@
 
     destinations
     sets
+    assets

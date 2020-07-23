@@ -17,6 +17,8 @@ from superdesk.default_settings import env
 import sams_client.default_settings as default_config
 from .constants import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_PROTOCOL
 
+not_analyzed = {'type': 'string', 'index': 'not_analyzed'}
+
 
 def load_config(config: Dict):
     """Load host, port from config
@@ -64,3 +66,31 @@ def urlencode(url: str, args: Dict[str, Any] = None) -> str:
     ])
 
     return url + query_string
+
+
+def schema_relation(
+    resource: str,
+    embeddable: bool = True,
+    required: bool = False,
+    data_type: str = 'objectid',
+    nullable: bool = False,
+    readonly: bool = False
+):
+    """Creates an Eve/Cerberus relation attribute
+
+    This is copied from superdesk.resource.rel so that we don't have to
+    import Superdesk-Core for the sams_client library
+    """
+
+    return {
+        'type': data_type,
+        'required': required,
+        'nullable': nullable,
+        'readonly': readonly,
+        'data_relation': {
+            'resource': resource,
+            'field': '_id',
+            'embeddable': embeddable
+        },
+        'mapping': {'type': 'keyword'},
+    }

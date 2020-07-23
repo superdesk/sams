@@ -41,7 +41,7 @@ def test_create(init_app):
         'destination_name': {'required': 1}
     }]
 
-    item_id = sets_service.post(deepcopy(test_sets))[0]
+    item_id = sets_service.post(deepcopy([test_sets[0]]))[0]
 
     items = sets_service.find({})
     assert items.count() == 1
