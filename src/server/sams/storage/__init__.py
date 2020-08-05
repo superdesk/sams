@@ -9,15 +9,13 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from sams.default_settings import env
-from sams.factory.app import SamsApp
-
-
-from .providers import providers
 from .destinations import destinations
+from .providers import providers
+from sams.default_settings import env
+from .sams_media_storage import SamsMediaStorage  # noqa
 
 
-def init_app(app: SamsApp):
+def init_app(app):
     providers.clear()
     destinations.clear()
 

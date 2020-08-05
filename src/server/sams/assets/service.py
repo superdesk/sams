@@ -20,6 +20,7 @@ from superdesk.storage.mimetype_mixin import MimetypeMixin
 from sams.factory.service import SamsService
 from sams.sets import get_service
 from sams.errors import SuperdeskApiError
+from sams.logging import logger
 
 
 class AssetsService(SamsService, MimetypeMixin):
@@ -116,6 +117,7 @@ class AssetsService(SamsService, MimetypeMixin):
             provider.delete(asset['_media_id'])
 
         return {
+            'binary': media_id,
             '_media_id': media_id,
             'length': asset_binary.length,
             'mimetype': self._get_mimetype(asset_binary, filename, mimetype)

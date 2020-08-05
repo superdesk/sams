@@ -22,6 +22,7 @@ from superdesk.errors import SuperdeskApiError
 from superdesk.notification import ClosedSocket
 from superdesk.validator import SuperdeskValidator
 
+from sams.storage.sams_media_storage import SamsMediaStorage
 from sams.logging import configure_logging, logger
 
 SAMS_DIR = path.abspath(path.join(path.dirname(__file__), '..'))
@@ -52,6 +53,7 @@ class SamsApp(Eve):
         super(SamsApp, self).__init__(
             import_name,
             data=SuperdeskDataLayer,
+            media=SamsMediaStorage,
             json_encoder=MongoJSONEncoder,
             validator=SuperdeskValidator,
             **kwargs
