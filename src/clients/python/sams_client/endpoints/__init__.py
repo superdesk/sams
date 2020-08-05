@@ -9,7 +9,8 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
+from .assets import SamsAssetEndpoint
 from .sets import SamsSetEndpoint
 from .storage_destinations import SamsStorageDestinationsEndpoint
 
-__all__ = ('SamsSetEndpoint', 'SamsStorageDestinationsEndpoint',)
+__all__ = ('SamsSetEndpoint', 'SamsStorageDestinationsEndpoint', 'SamsAssetEndpoint')

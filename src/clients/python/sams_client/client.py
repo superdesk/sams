@@ -15,7 +15,7 @@ from json import dumps
 from typing import Dict, Any, Callable
 
 from .utils import load_config, urlencode
-from .endpoints import SamsSetEndpoint, SamsStorageDestinationsEndpoint
+from .endpoints import SamsSetEndpoint, SamsStorageDestinationsEndpoint, SamsAssetEndpoint
 
 
 class SamsClient(object):
@@ -51,6 +51,7 @@ class SamsClient(object):
         self.setup_auth()
         self.sets: SamsSetEndpoint = SamsSetEndpoint(self)
         self.destinations: SamsStorageDestinationsEndpoint = SamsStorageDestinationsEndpoint(self)
+        self.assets: SamsAssetEndpoint = SamsAssetEndpoint(self)
 
     def request(
         self,
