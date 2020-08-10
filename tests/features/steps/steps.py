@@ -14,6 +14,7 @@ from flask import json
 
 from tests.features.steps.helpers import assert_200, apply_placeholders, test_json, store_last_item, expect_status
 from tests.features.steps.app import get_app, get_client
+from tests.server.utils import load_file
 
 
 @when('we send client.{model_name}.{method_name}')
@@ -34,6 +35,48 @@ def step_impl_send_client(context, model_name, method_name):
     context.response = method(**kwargs)
     store_last_item(context, model_name)
 
+@when('we upload a binary file with metadata.{model_name}.{method_name}')
+def step_impl_when_upload_with_metadata(context, model_name, method_name):
+    client = get_client(context)
+
+    try:
+        model = getattr(client, model_name)
+    except AttributeError:
+        assert False, 'client.{} is not registered with the client'.format(model_name)
+
+    try:
+        method = getattr(model, method_name)
+    except AttributeError:
+        assert False, 'client.{}.{} is not registered with the client'.format(model_name, method_name)
+
+    kwargs = {} if not context.text else json.loads(apply_placeholders(context, context.text))
+    files = {}
+    if method_name == 'create':
+        files['binary'] = open('tests/fixtures/file_example-jpg.jpg', 'rb')
+    elif method_name == 'update':
+        files['binary'] = open('tests/fixtures/file_example2-jpg.jpg', 'rb')
+
+    context.response = method(files=files, **kwargs)
+    store_last_item(context, model_name)
+
+
+@when('we download a binary file lenth is right.{model_name}.{method_name}')
+def step_impl_when_download_a_binary_file_length_is_right(context, model_name, method_name):
+    client = get_client(context)
+
+    try:
+        model = getattr(client, model_name)
+    except AttributeError:
+        assert False, 'client.{} is not registered with the client'.format(model_name)
+
+    try:
+        method = getattr(model, method_name)
+    except AttributeError:
+        assert False, 'client.{}.{} is not registered with the client'.format(model_name, method_name)
+
+    kwargs = {} if not context.text else json.loads(apply_placeholders(context, context.text))
+    length = kwargs.pop('length')
+    assert len(method(**kwargs).content) == length
 
 @when('we get "{url}"')
 def step_impl_get(context, url: str):
