@@ -16,7 +16,7 @@ To access Assets inside the SAMS application, use the :mod:`sams.assets` module 
 
 =====================   =========================================================
 **endpoint name**        'consume_assets'
-**resource title**       'assets'
+**resource title**       'Asset'
 **resource url**         [GET] '/consume/assets'
 **item url**             [GET] '/consume/assets/<:class:`~bson.objectid.ObjectId`>'
 **schema**               :attr:`sams_client.schemas.assets.ASSET_SCHEMA`
@@ -28,7 +28,7 @@ from sams.api.service import SamsApiService
 from sams.assets import get_service as get_asset_service
 from sams_client.schemas import ASSET_SCHEMA
 from sams.logging import logger
-from superdesk.resource import Resource
+from superdesk.resource import Resource, build_custom_hateoas
 from werkzeug.wsgi import wrap_file
 
 
@@ -54,7 +54,7 @@ def download_binary(asset_id):
 
 class ConsumeAssetResource(Resource):
     endpoint_name = 'consume_assets'
-    resource_title = 'assets'
+    resource_title = 'Asset'
     url = 'consume/assets'
     item_methods = ['GET']
     resource_methods = ['GET']
@@ -62,4 +62,21 @@ class ConsumeAssetResource(Resource):
 
 
 class ConsumeAssetService(SamsApiService):
-    pass
+    def on_fetched_item(self, doc):
+        self.enhance_items([doc])
+
+    def on_fetched(self, doc):
+        self.enhance_items(doc['_items'])
+
+    def enhance_items(self, docs):
+        for doc in docs:
+            build_custom_hateoas(
+                {
+                    'self': {
+                        'title': ConsumeAssetResource.resource_title,
+                        'href': ConsumeAssetResource.url + '/{_id}'
+                    }
+                },
+                doc,
+                _id=str(doc.get('_id'))
+            )
