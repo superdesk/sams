@@ -116,6 +116,7 @@ class Endpoint:
         self,
         docs: List[Dict[str, Any]],
         headers: Dict[str, Any] = None,
+        files=None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method to create a new document(s)
@@ -134,6 +135,7 @@ class Endpoint:
             url=self._write_url,
             headers=headers,
             data=docs,
+            files=files,
             callback=callback
         )
 
@@ -142,6 +144,7 @@ class Endpoint:
         item_id: ObjectId,
         updates: Dict[str, Any],
         headers: Dict[str, Any] = None,
+        files=None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method to update an existing document
@@ -164,6 +167,7 @@ class Endpoint:
             ),
             headers=headers,
             data=updates,
+            files=files,
             callback=callback
         )
 
