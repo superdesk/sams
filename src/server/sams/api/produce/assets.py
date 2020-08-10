@@ -16,7 +16,7 @@ To access Assets inside the SAMS application, use the :mod:`sams.assets` module 
 
 =====================   =================================================================
 **endpoint name**        'produce/assets'
-**resource title**       'assets'
+**resource title**       'Asset'
 **resource url**         [POST] '/produce/assets'
 **item url**             [PATCH, DELETE] '/produce/assets/<:class:`~bson.objectid.ObjectId`>'
 **schema**               :attr:`sams_client.schemas.assets.ASSET_SCHEMA`
@@ -32,7 +32,7 @@ from superdesk.resource import Resource, build_custom_hateoas
 
 class ProduceAssetResource(Resource):
     endpoint_name = 'produce_assets'
-    resource_title = 'assets'
+    resource_title = 'Asset'
     url = 'produce/assets'
     item_methods = ['PATCH', 'DELETE']
     resource_methods = ['POST']
