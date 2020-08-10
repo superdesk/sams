@@ -15,6 +15,7 @@ from .assets import ConsumeAssetResource, ConsumeAssetService, assets_bp
 from sams.factory.app import SamsApp
 from sams.sets import get_service as get_set_service
 from sams.assets import get_service as get_asset_service
+from sams.auth.decorator import blueprint_auth
 
 
 def init_app(app: SamsApp):
@@ -29,5 +30,13 @@ def init_app(app: SamsApp):
         app=app,
         service=ConsumeAssetService(get_asset_service())
     )
+
+    @assets_bp.before_request
+    @blueprint_auth()
+    def before_request():
+        """
+        Add authentication before request to all blueprint
+        """
+        pass
 
     superdesk.blueprint(assets_bp, app)
