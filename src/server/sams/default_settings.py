@@ -76,7 +76,8 @@ CORE_APPS = [
 INSTALLED_APPS = [
     'sams.factory.sentry',
     'sams.api.admin',
-    'sams.api.consume'
+    'sams.api.consume',
+    'sams.api.produce'
 ]
 
 STORAGE_PROVIDERS = [

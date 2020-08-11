@@ -15,7 +15,7 @@ from json import dumps
 from typing import Dict, Any, Callable
 
 from .utils import load_config, urlencode
-from .endpoints import SamsSetEndpoint, SamsStorageDestinationsEndpoint
+from .endpoints import SamsSetEndpoint, SamsStorageDestinationsEndpoint, SamsAssetEndpoint
 
 
 class SamsClient(object):
@@ -51,6 +51,7 @@ class SamsClient(object):
         self.setup_auth()
         self.sets: SamsSetEndpoint = SamsSetEndpoint(self)
         self.destinations: SamsStorageDestinationsEndpoint = SamsStorageDestinationsEndpoint(self)
+        self.assets: SamsAssetEndpoint = SamsAssetEndpoint(self)
 
     def request(
         self,
@@ -58,6 +59,7 @@ class SamsClient(object):
         method: str = 'get',
         headers: Dict[str, Any] = None,
         data: str = None,
+        files=None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Handle request methods
@@ -81,7 +83,7 @@ class SamsClient(object):
         base_url = self.config.get('base_url')
         url = f'{base_url}{api}'
         headers = self.auth.apply_headers(headers)
-        response = request(url, headers=headers, data=data)
+        response = request(url, headers=headers, data=data, files=files)
         return callback(response)
 
     def get(
@@ -136,6 +138,7 @@ class SamsClient(object):
         url: str,
         headers: Dict[str, Any] = None,
         data: str or Dict[str, Any] = None,
+        files=None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method for POST requests
@@ -153,10 +156,12 @@ class SamsClient(object):
         if headers is None:
             headers = {}
 
-        if 'Content-Type' not in headers:
+        # In case of multipart form data don't send Content-Type
+        if 'Content-Type' not in headers and files is None:
             headers['Content-Type'] = 'application/json'
 
-        if not isinstance(data, str):
+        # In case of multipart form data don't dump
+        if not isinstance(data, str) and files is None:
             data = dumps(data)
 
         return self.request(
@@ -164,6 +169,7 @@ class SamsClient(object):
             method='post',
             headers=headers,
             data=data,
+            files=files,
             callback=callback
         )
 
@@ -172,6 +178,7 @@ class SamsClient(object):
         url: str,
         headers: Dict[str, Any] = None,
         data: str or Dict[str, Any] = None,
+        files=None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method for PATCH requests
@@ -189,14 +196,20 @@ class SamsClient(object):
         if headers is None:
             headers = {}
 
-        if 'Content-Type' not in headers:
+        # In case of multipart form data don't send Content-Type
+        if 'Content-Type' not in headers and files is None:
             headers['Content-Type'] = 'application/json'
+
+        # In case of multipart form data don't dump
+        if not isinstance(data, str) and files is None:
+            data = dumps(data)
 
         return self.request(
             api=url,
             method='patch',
             headers=headers,
-            data=dumps(data) if not isinstance(data, str) else data,
+            data=data,
+            files=files,
             callback=callback
         )
 

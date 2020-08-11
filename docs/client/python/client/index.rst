@@ -4,6 +4,7 @@
 .. toctree::
     :maxdepth: 2
 
+    assets
     base
     endpoint
     storage_destinations

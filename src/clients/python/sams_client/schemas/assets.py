@@ -68,6 +68,9 @@ ASSET_SCHEMA = {
         'type': 'dict',
         'schema': {},
         'allow_unknown': True
+    },
+    'binary': {
+        'type': 'media'
     }
 }
 """

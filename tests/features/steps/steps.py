@@ -14,6 +14,7 @@ from flask import json
 
 from tests.features.steps.helpers import assert_200, apply_placeholders, test_json, store_last_item, expect_status
 from tests.features.steps.app import get_app, get_client
+from tests.server.utils import load_file
 
 
 @when('we send client.{model_name}.{method_name}')
@@ -34,6 +35,45 @@ def step_impl_send_client(context, model_name, method_name):
     context.response = method(**kwargs)
     store_last_item(context, model_name)
 
+@when('we upload a binary file with client.{model_name}.{method_name}')
+def step_impl_upload_binary_client(context, model_name, method_name):
+    client = get_client(context)
+
+    try:
+        model = getattr(client, model_name)
+    except AttributeError:
+        assert False, 'client.{} is not registered with the client'.format(model_name)
+
+    try:
+        method = getattr(model, method_name)
+    except AttributeError:
+        assert False, 'client.{}.{} is not registered with the client'.format(model_name, method_name)
+
+    kwargs = {} if not context.text else json.loads(apply_placeholders(context, context.text))
+    filepath = 'tests/fixtures/{}'.format(kwargs.pop('filename'))
+    files = {'binary': open(filepath, 'rb')}
+
+    context.response = method(files=files, **kwargs)
+    store_last_item(context, model_name)
+
+
+@when('we download a binary file with client.{model_name}.{method_name}')
+def step_impl_download_binary_client(context, model_name, method_name):
+    client = get_client(context)
+
+    try:
+        model = getattr(client, model_name)
+    except AttributeError:
+        assert False, 'client.{} is not registered with the client'.format(model_name)
+
+    try:
+        method = getattr(model, method_name)
+    except AttributeError:
+        assert False, 'client.{}.{} is not registered with the client'.format(model_name, method_name)
+
+    kwargs = {} if not context.text else json.loads(apply_placeholders(context, context.text))
+    length = kwargs.pop('length')
+    assert len(method(**kwargs).content) == length
 
 @when('we get "{url}"')
 def step_impl_get(context, url: str):
