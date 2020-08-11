@@ -17,6 +17,7 @@ PORT = int(env('SAMS_PORT', '5700'))
 SERVER_URL = env('SAMS_URL', 'http://localhost:5700')
 server_url = urlparse(SERVER_URL)
 SERVER_DOMAIN = server_url.netloc or 'localhost'
+API_VERSION = ''
 URL_PREFIX = env('SAMS_URL_PREFIX', server_url.path.lstrip('/')) or ''
 
 #: mongo db name, only used when mongo_uri is not set
