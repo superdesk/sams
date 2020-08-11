@@ -9,7 +9,7 @@ Feature: Assets
             }]
         }
         """
-        When we upload a binary file with metadata.assets.create
+        When we upload a binary file with client.assets.create
         """
         {
             "docs": {
@@ -17,7 +17,8 @@ Feature: Assets
                 "filename": "file_example-jpg.jpg",
                 "name": "Jpeg Example",
                 "description": "Jpeg file asset example"
-            }
+            },
+            "filename": "file_example-jpg.jpg"
         }
         """
         Then we get existing resource
@@ -81,12 +82,13 @@ Feature: Assets
             "description": "Updated Jpeg file asset example"
         }
         """
-        When we upload a binary file with metadata.assets.update
+        When we upload a binary file with client.assets.update
         """
         {
             "item_id": "#ASSETS._id#",
             "headers": {"If-Match": "#ASSETS._etag#"},
-            "updates": {"name": "Updated Jpeg Example"}
+            "updates": {"name": "Updated Jpeg Example"},
+            "filename": "file_example2-jpg.jpg"
         }
         """
         Then we get existing resource
@@ -121,7 +123,7 @@ Feature: Assets
             }]
         }
         """
-        When we upload a binary file with metadata.assets.create
+        When we upload a binary file with client.assets.create
         """
         {
             "docs": {
@@ -129,7 +131,8 @@ Feature: Assets
                 "filename": "file_example-jpg.jpg",
                 "name": "Jpeg Example",
                 "description": "Jpeg file asset example"
-            }
+            },
+            "filename": "file_example-jpg.jpg"
         }
         """
         Then we get existing resource
@@ -152,7 +155,7 @@ Feature: Assets
             }
         }
         """
-        When we download a binary file lenth is right.assets.get_binary_by_id
+        When we download a binary file with client.assets.get_binary_by_id
         """
         {
             "item_id": "#ASSETS._id#",

@@ -35,8 +35,8 @@ def step_impl_send_client(context, model_name, method_name):
     context.response = method(**kwargs)
     store_last_item(context, model_name)
 
-@when('we upload a binary file with metadata.{model_name}.{method_name}')
-def step_impl_when_upload_with_metadata(context, model_name, method_name):
+@when('we upload a binary file with client.{model_name}.{method_name}')
+def step_impl_upload_binary_client(context, model_name, method_name):
     client = get_client(context)
 
     try:
@@ -50,18 +50,15 @@ def step_impl_when_upload_with_metadata(context, model_name, method_name):
         assert False, 'client.{}.{} is not registered with the client'.format(model_name, method_name)
 
     kwargs = {} if not context.text else json.loads(apply_placeholders(context, context.text))
-    files = {}
-    if method_name == 'create':
-        files['binary'] = open('tests/fixtures/file_example-jpg.jpg', 'rb')
-    elif method_name == 'update':
-        files['binary'] = open('tests/fixtures/file_example2-jpg.jpg', 'rb')
+    filepath = 'tests/fixtures/{}'.format(kwargs.pop('filename'))
+    files = {'binary': open(filepath, 'rb')}
 
     context.response = method(files=files, **kwargs)
     store_last_item(context, model_name)
 
 
-@when('we download a binary file lenth is right.{model_name}.{method_name}')
-def step_impl_when_download_a_binary_file_length_is_right(context, model_name, method_name):
+@when('we download a binary file with client.{model_name}.{method_name}')
+def step_impl_download_binary_client(context, model_name, method_name):
     client = get_client(context)
 
     try:

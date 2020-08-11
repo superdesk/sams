@@ -42,7 +42,6 @@ class ProduceAssetResource(Resource):
 class ProduceAssetService(SamsApiService):
     def on_created(self, docs):
         for doc in docs:
-            logger.info(doc)
             build_custom_hateoas(
                 {
                     'self': {
