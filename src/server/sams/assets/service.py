@@ -20,7 +20,6 @@ from superdesk.storage.mimetype_mixin import MimetypeMixin
 from sams.factory.service import SamsService
 from sams.sets import get_service
 from sams.errors import SuperdeskApiError
-from sams.logging import logger
 
 
 class AssetsService(SamsService, MimetypeMixin):

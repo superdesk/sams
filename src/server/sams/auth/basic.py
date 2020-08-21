@@ -10,7 +10,6 @@
 # at https://www.sourcefabric.org/superdesk/license
 
 from eve.auth import BasicAuth
-from sams.logging import logger
 from flask import abort, request
 
 

@@ -29,7 +29,6 @@ from sams.storage.destinations import destinations
 from superdesk.resource import Resource
 from sams_client.schemas import destinationSchema
 from superdesk.utils import ListCursor
-from sams.logging import logger
 
 
 class StorageDestinationsResource(Resource):
