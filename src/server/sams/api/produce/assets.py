@@ -25,7 +25,6 @@ To access Assets inside the SAMS application, use the :mod:`sams.assets` module 
 from sams.api.service import SamsApiService
 from sams.api.consume import ConsumeAssetResource
 from sams_client.schemas import ASSET_SCHEMA
-from sams.logging import logger
 from sams.storage.sams_media_storage import get_request_id
 from superdesk.resource import Resource, build_custom_hateoas
 

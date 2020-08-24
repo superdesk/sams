@@ -1,6 +1,5 @@
 from eve.io.media import MediaStorage
-from flask import g, request
-from sams.logging import logger
+from flask import g
 from uuid import uuid4
 
 

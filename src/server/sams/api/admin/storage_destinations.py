@@ -60,11 +60,14 @@ class StorageDestinationsService(SamsService):
     def get(self, req, **lookup):
         """
         Returns a list of all the registered storage destinations
+        sorted alphabetically by '_id'
         """
-        return ListCursor(list(map(
+        destinationsList = list(map(
             lambda destination: destination.to_dict(),
             destinations.all().values()
-        )))
+        ))
+        destinationsList.sort(key=lambda x: x['_id'])
+        return ListCursor(destinationsList)
 
     def find_one(self, req, **lookup):
         """

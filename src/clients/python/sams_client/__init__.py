@@ -9,6 +9,6 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from .client import SamsClient
+from .client import SamsClient # noqa
 
 __all__ = ('SamsClient')
