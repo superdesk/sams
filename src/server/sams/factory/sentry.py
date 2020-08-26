@@ -10,7 +10,6 @@
 # at https://www.sourcefabric.org/superdesk/license
 
 from superdesk.factory.sentry import SuperdeskSentry
-from sams.logging import logger
 
 
 def init_app(app):

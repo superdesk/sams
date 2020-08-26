@@ -12,8 +12,6 @@
 from copy import deepcopy
 from bson import ObjectId
 
-from superdesk.validation import ValidationError
-
 from sams_client.schemas import SET_STATES
 
 from sams.factory.service import SamsService
