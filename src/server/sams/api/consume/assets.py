@@ -26,8 +26,6 @@ import superdesk
 from flask import request, current_app as app
 from sams.api.service import SamsApiService
 from sams.assets import get_service as get_asset_service
-from sams_client.schemas import ASSET_SCHEMA
-from sams.logging import logger
 from superdesk.resource import Resource, build_custom_hateoas
 from werkzeug.wsgi import wrap_file
 
@@ -58,7 +56,7 @@ class ConsumeAssetResource(Resource):
     url = 'consume/assets'
     item_methods = ['GET']
     resource_methods = ['GET']
-    schema = ASSET_SCHEMA
+    allow_unknown = True
 
 
 class ConsumeAssetService(SamsApiService):

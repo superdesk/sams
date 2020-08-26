@@ -27,7 +27,6 @@ use the :mod:`sams.storage.destinations` module instead.
 from sams.factory.service import SamsService
 from sams.storage.destinations import destinations
 from superdesk.resource import Resource
-from sams_client.schemas import destinationSchema
 from superdesk.utils import ListCursor
 
 
@@ -44,11 +43,9 @@ class StorageDestinationsResource(Resource):
     endpoint_name = 'destinations'
     url = 'admin/destinations'
     item_url = r'regex("[a-zA-Z0-9]+")'
-
-    schema = destinationSchema
-
     item_methods = ['GET']
     resource_methods = ['GET']
+    allow_unknown = True
 
 
 class StorageDestinationsService(SamsService):

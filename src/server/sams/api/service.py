@@ -52,7 +52,7 @@ from eve_elastic.elastic import ElasticCursor
 
 from superdesk.services import BaseService
 
-from sams.errors import SuperdeskApiError
+from sams_client.errors import SamsSystemErrors
 from sams.factory.service import SamsService
 
 
@@ -123,7 +123,7 @@ class SamsApiService(SamsService):
         :raises superdesk.errors.SuperdeskApiError:
         """
 
-        raise SuperdeskApiError.badRequestError('"system_update" not allowed in api endpoints')
+        raise SamsSystemErrors.SystemUpdateNotAllowed()
 
     def replace(self, id: ObjectId, document: Dict[str, Any], original: Dict[str, Any]) -> Dict[str, Any]:
         """Replaces an existing document with a new one
