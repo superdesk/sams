@@ -19,7 +19,7 @@ from sams_client.schemas import SET_STATES
 from sams.factory.service import SamsService
 from sams.storage.destinations import Destination, destinations
 from sams.storage.providers.base import SamsBaseStorageProvider
-from sams.errors import SuperdeskApiError
+from sams_client.errors import SamsSetErrors
 
 
 class SetsService(SamsService):
@@ -58,20 +58,14 @@ class SetsService(SamsService):
         # Check that the state hasn't change from a usable/disabled state to draft
         if original.get('state') != SET_STATES.DRAFT:
             if merged.get('state') == SET_STATES.DRAFT:
-                raise SuperdeskApiError.badRequestError(
-                    message='Cannot change state from "{}" to draft'.format(original['state'])
-                )
+                raise SamsSetErrors.InvalidStateTransition(original['state'])
 
         # Check that the destination name hasn't changed for non-draft Sets
         if original.get('state') != SET_STATES.DRAFT:
             if merged.get('destination_name') != original.get('destination_name'):
-                raise SuperdeskApiError.badRequestError(
-                    message='Destination can only be changed in draft state'
-                )
+                raise SamsSetErrors.DestinationChangeNotAllowed()
             elif merged.get('destination_config') != original.get('destination_config'):
-                raise SuperdeskApiError.badRequestError(
-                    message='Destination config can only be changed in draft state'
-                )
+                raise SamsSetErrors.DestinationConfigChangeNotAllowed()
 
         self._validate_destination_name(merged)
 
@@ -83,10 +77,7 @@ class SetsService(SamsService):
         """
 
         if not destinations.exists(doc.get('destination_name')):
-            raise SuperdeskApiError.badRequestError(
-                payload={'destination_name': {'exists': 1}},
-                message='Destination "{}" isnt configured'.format(doc.get('destination_name'))
-            )
+            raise SamsSetErrors.DestinationNotFound(doc.get('destination_name'))
 
     def on_delete(self, doc):
         """Validate state on delete
@@ -98,17 +89,13 @@ class SetsService(SamsService):
         """
 
         if doc.get('state') != SET_STATES.DRAFT:
-            raise SuperdeskApiError.badRequestError(
-                'Can only delete Sets that are in draft state'
-            )
+            raise SamsSetErrors.CannotDeleteActiveSet()
 
     def get_destination(self, set_id: ObjectId) -> Destination:
         item = self.get_by_id(set_id)
 
         if not item:
-            raise SuperdeskApiError.notFoundError(
-                'Set with id {} not found'.format(str(set_id))
-            )
+            raise SamsSetErrors.SetNotFound(set_id)
 
         return destinations.get(item.get('destination_name'))
 

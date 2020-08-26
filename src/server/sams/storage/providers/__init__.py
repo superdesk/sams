@@ -12,7 +12,7 @@
 from importlib import import_module
 from typing import Dict, List, Type
 
-from sams.errors import SuperdeskApiError
+from sams_client.errors import SamsStorageProviderErrors
 
 from .base import SamsBaseStorageProvider
 
@@ -92,15 +92,13 @@ class Providers:
         :param str name: The name of the Provider
         :return: Returns the Provider instance
         :rtype: Provider
-        :raises SuperdeskApiError.notFoundError: if the provider is not found
+        :raises sams_client.errors.SamsStorageProviderErrors.NotFound: if the provider is not found
         """
 
         try:
             return self._providers[name]
         except KeyError:
-            raise SuperdeskApiError.notFoundError(
-                'Provider "{}" not registered with the system'.format(name)
-            )
+            raise SamsStorageProviderErrors.NotFound(name)
 
     def exists(self, type_name: str) -> bool:
         """Check if a provider for the ``type_name`` exists

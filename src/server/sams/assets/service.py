@@ -19,7 +19,7 @@ from superdesk.storage.mimetype_mixin import MimetypeMixin
 
 from sams.factory.service import SamsService
 from sams.sets import get_service
-from sams.errors import SuperdeskApiError
+from sams_client.errors import SamsAssetErrors
 from sams.logging import logger
 
 
@@ -37,9 +37,7 @@ class AssetsService(SamsService, MimetypeMixin):
             content = doc.pop('binary', None)
 
             if not content:
-                raise SuperdeskApiError.badRequestError(
-                    message='Asset must contain a binary to upload'
-                )
+                raise SamsAssetErrors.BinaryNotSupplied()
 
             self.validate_post(doc)
             file_meta = self.upload_binary(doc, content)
@@ -133,9 +131,7 @@ class AssetsService(SamsService, MimetypeMixin):
 
         asset = self.get_by_id(asset_id)
         if not asset:
-            raise SuperdeskApiError.notFoundError(
-                'Asset with id {} not found'.format(str(asset_id))
-            )
+            raise SamsAssetErrors.AssetNotFound(asset_id)
 
         set_service = get_service()
         provider = set_service.get_provider_instance(asset.get('set_id'))

@@ -12,18 +12,18 @@
 from os import path, getcwd
 from importlib import import_module
 
-from flask import Config, jsonify
-from werkzeug.exceptions import HTTPException
+from flask import Config
 from eve import Eve
 from eve.io.mongo import MongoJSONEncoder
 
 from superdesk.datalayer import SuperdeskDataLayer
-from superdesk.errors import SuperdeskApiError
 from superdesk.notification import ClosedSocket
 from superdesk.validator import SuperdeskValidator
 
 from sams.storage.sams_media_storage import SamsMediaStorage
-from sams.logging import configure_logging, logger
+from sams.logging import configure_logging
+from sams.errors import setup_error_handlers
+from sams_client.errors import SamsConfigErrors
 
 SAMS_DIR = path.abspath(path.join(path.dirname(__file__), '..'))
 
@@ -69,7 +69,7 @@ class SamsApp(Eve):
         self.setup_logging()
         self.config['RENDERERS'] = ['eve.render.JSONRenderer']
         self.setup_auth()
-        self.setup_error_handlers()
+        setup_error_handlers(self)
 
         if self.config.get('CORE_APPS'):
             self.setup_apps(self.config['CORE_APPS'])
@@ -100,54 +100,6 @@ class SamsApp(Eve):
         self.config.setdefault('SOURCES', {})
         self.load_app_config()
 
-    def setup_error_handlers(self):
-        def json_error(err):
-            return jsonify(err), err['code']
-
-        def handle_werkzeug_errors(err):
-            return json_error({
-                'error': str(err),
-                'message': getattr(err, 'description') or None,
-                'code': getattr(err, 'code') or 500
-            })
-
-        def superdesk_api_error(err):
-            return json_error({
-                'error': err.message or '',
-                'message': getattr(err, 'payload', err.message),
-                'code': getattr(err, 'status_code', 500),
-            })
-
-        def assertion_error(err):
-            logger.exception(err)
-            return json_error({
-                'error': err.args[0] if err.args else 1,
-                'message': str(err),
-                'code': 400
-            })
-
-        def base_exception_error(err):
-            logger.exception(err)
-            if getattr(err, 'error', None) == 'search_phase_execution_exception':
-                return json_error({
-                    'error': 1,
-                    'message': 'Invalid search query',
-                    'code': 400
-                })
-
-            return json_error({
-                'error': err.args[0] if err.args else 1,
-                'message': str(err),
-                'code': 500
-            })
-
-        for cls in HTTPException.__subclasses__():
-            self.register_error_handler(cls, handle_werkzeug_errors)
-
-        self.register_error_handler(SuperdeskApiError, superdesk_api_error)
-        self.register_error_handler(AssertionError, assertion_error)
-        self.register_error_handler(Exception, base_exception_error)
-
     def setup_apps(self, apps):
         """Setup configured apps."""
         for name in apps:
@@ -157,11 +109,11 @@ class SamsApp(Eve):
 
     def setup_auth(self):
         if not self.config.get('SAMS_AUTH_TYPE'):
-            raise RuntimeError('Auth type not specified')
+            raise SamsConfigErrors.AuthTypeNotSpecified()
 
         mod = import_module(self.config['SAMS_AUTH_TYPE'])
         if not hasattr(mod, 'get_auth_instance') or not callable(mod.get_auth_instance):
-            raise RuntimeError('Configured Auth type must have a `get_auth_instance` method')
+            raise SamsConfigErrors.AuthTypeHasNoGetAuthInstance()
 
         api_keys = self.config.get('CLIENT_API_KEYS').split(',')
         self.auth = mod.get_auth_instance(api_keys=api_keys)
