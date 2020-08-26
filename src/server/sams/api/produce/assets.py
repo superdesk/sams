@@ -22,7 +22,7 @@ To access Assets inside the SAMS application, use the :mod:`sams.assets` module 
 **schema**               :attr:`sams_client.schemas.assets.ASSET_SCHEMA`
 =====================   =================================================================
 """
-from flask import current_app as app, request
+from flask import current_app as app
 
 from sams.api.service import SamsApiService
 from sams.api.consume import ConsumeAssetResource
