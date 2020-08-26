@@ -17,8 +17,8 @@ Feature: Storage Destinations
         Then we get error 404
         """
         {
-            "message": "Destination \"unknown\" not registered with the system",
-            "code": 404
+            "error": "05001",
+            "description": "Destination \"unknown\" not registered with the system"
         }
         """
         When we send client.destinations.get_by_id

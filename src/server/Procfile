@@ -1,1 +1,1 @@
-api: gunicorn -c gunicorn_config.py api
+api: gunicorn -c gunicorn_config.py sams.wsgi

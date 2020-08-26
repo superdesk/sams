@@ -23,8 +23,8 @@ Feature: Authentication mechanisms
         Then we get error 401
         """
         {
-            "message": "Please provide proper credentials",
-            "code": 401
+            "error": "04003",
+            "description": "Please provide proper credentials"
         }
         """
         Given client config
@@ -37,8 +37,8 @@ Feature: Authentication mechanisms
         Then we get error 401
         """
         {
-            "message": "Please provide proper credentials",
-            "code": 401
+            "error": "04003",
+            "description": "Please provide proper credentials"
         }
         """
         Given client config
@@ -52,8 +52,8 @@ Feature: Authentication mechanisms
         Then we get error 401
         """
         {
-            "message": "Please provide proper credentials",
-            "code": 401
+            "error": "04003",
+            "description": "Please provide proper credentials"
         }
         """
         Given client config

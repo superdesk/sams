@@ -89,11 +89,10 @@ Feature: Sets
         Then we get error 400
         """
         {
-            "_status": "ERR",
-            "_issues": {"name": {"required": 1}},
-            "_error": {
-                "code": 400,
-                "message": "Insertion failure: 1 document(s) contain(s) error(s)"
+            "error": "04001",
+            "description": "Validation error",
+            "errors": {
+                "name": ["required"]
             }
         }
         """
@@ -106,14 +105,11 @@ Feature: Sets
         Then we get error 400
         """
         {
-            "_status": "ERR",
-            "_issues": {
-                "name": {"required": 1},
-                "destination_name": {"required": 1}
-            },
-            "_error": {
-                "code": 400,
-                "message": "Insertion failure: 1 document(s) contain(s) error(s)"
+            "error": "04001",
+            "description": "Validation error",
+            "errors": {
+                "name": ["required"],
+                "destination_name": ["required"]
             }
         }
         """
@@ -128,13 +124,10 @@ Feature: Sets
         Then we get error 400
         """
         {
-            "_status": "ERR",
-            "_issues": {
-                "state": "unallowed value test"
-            },
-            "_error": {
-                "code": 400,
-                "message": "Insertion failure: 1 document(s) contain(s) error(s)"
+            "error": "04001",
+            "description": "Validation error",
+            "errors": {
+                "state": ["unallowed value test"]
             }
         }
         """
@@ -150,16 +143,15 @@ Feature: Sets
         Then we get error 400
         """
         {
-            "error": "Destination \"bar\" isnt configured",
-            "message": {"destination_name": {"exists": 1}},
-            "code": 400
+            "error": "07004",
+            "description": "Destination \"bar\" isnt configured"
         }
         """
         Given server config
         """
         {
-            "STORAGE_DESTINATION_1": "MongoGridFS,internal,mongodb://localhost/tests_sams",
-            "STORAGE_DESTINATION_2": "MongoGridFS,bar,mongodb://localhost/tests_sams"
+            "STORAGE_DESTINATION_1": "MongoGridFS,internal,mongodb://#DB_HOST#/tests_sams",
+            "STORAGE_DESTINATION_2": "MongoGridFS,bar,mongodb://#DB_HOST#/tests_sams"
         }
         """
         When we send client.sets.create
@@ -178,13 +170,11 @@ Feature: Sets
             "updates": {"destination_name": "unknown"}
         }
         """
-        # TODO: Make error response consistent regardless of HTTP method used
-        #       This is due to the way Eve reports errors on POST and PATCH differently
         Then we get error 400
         """
         {
-            "_issues": {"validator exception": "400: Destination \"unknown\" isnt configured"},
-            "_status": "ERR"
+            "error": "07004",
+            "description": "Destination \"unknown\" isnt configured"
         }
         """
         When we send client.sets.update
@@ -201,8 +191,8 @@ Feature: Sets
         Given server config
         """
         {
-            "STORAGE_DESTINATION_1": "MongoGridFS,internal,mongodb://localhost/tests_sams",
-            "STORAGE_DESTINATION_2": "MongoGridFS,bar,mongodb://localhost/tests_sams"
+            "STORAGE_DESTINATION_1": "MongoGridFS,internal,mongodb://#DB_HOST#/tests_sams",
+            "STORAGE_DESTINATION_2": "MongoGridFS,bar,mongodb://#DB_HOST#/tests_sams"
         }
         """
         When we send client.sets.create
@@ -235,13 +225,11 @@ Feature: Sets
             "updates": {"destination_name": "bar"}
         }
         """
-        # TODO: Make error response consistent regardless of HTTP method used
-        #       This is due to the way Eve reports errors on POST and PATCH differently
         Then we get error 400
         """
         {
-            "_issues": {"validator exception": "400: Destination can only be changed in draft state"},
-            "_status": "ERR"
+            "error": "07002",
+            "description": "Destination can only be changed in draft state"
         }
         """
         When we send client.sets.update
@@ -252,13 +240,11 @@ Feature: Sets
             "updates": {"destination_config": {"test": 3}}
         }
         """
-        # TODO: Make error response consistent regardless of HTTP method used
-        #       This is due to the way Eve reports errors on POST and PATCH differently
         Then we get error 400
         """
         {
-            "_issues": {"validator exception": "400: Destination config can only be changed in draft state"},
-            "_status": "ERR"
+            "error": "07003",
+            "description": "Destination config can only be changed in draft state"
         }
         """
         When we send client.sets.update
@@ -278,13 +264,11 @@ Feature: Sets
             "updates": {"destination_name": "bar"}
         }
         """
-        # TODO: Make error response consistent regardless of HTTP method used
-        #       This is due to the way Eve reports errors on POST and PATCH differently
         Then we get error 400
         """
         {
-            "_issues": {"validator exception": "400: Destination can only be changed in draft state"},
-            "_status": "ERR"
+            "error": "07002",
+            "description": "Destination can only be changed in draft state"
         }
         """
         When we send client.sets.update
@@ -295,13 +279,11 @@ Feature: Sets
             "updates": {"destination_config": {"test": 3}}
         }
         """
-        # TODO: Make error response consistent regardless of HTTP method used
-        #       This is due to the way Eve reports errors on POST and PATCH differently
         Then we get error 400
         """
         {
-            "_issues": {"validator exception": "400: Destination config can only be changed in draft state"},
-            "_status": "ERR"
+            "error": "07003",
+            "description": "Destination config can only be changed in draft state"
         }
         """
 
@@ -331,13 +313,11 @@ Feature: Sets
             "updates": {"state": "draft"}
         }
         """
-        # TODO: Make error response consistent regardless of HTTP method used
-        #       This is due to the way Eve reports errors on POST and PATCH differently
         Then we get error 400
         """
         {
-            "_issues": {"validator exception": "400: Cannot change state from \"usable\" to draft"},
-            "_status": "ERR"
+            "error": "07001",
+            "description": "Cannot change state from \"usable\" to draft"
         }
         """
         When we send client.sets.update
@@ -357,13 +337,11 @@ Feature: Sets
             "updates": {"state": "draft"}
         }
         """
-        # TODO: Make error response consistent regardless of HTTP method used
-        #       This is due to the way Eve reports errors on POST and PATCH differently
         Then we get error 400
         """
         {
-            "_issues": {"validator exception": "400: Cannot change state from \"disabled\" to draft"},
-            "_status": "ERR"
+            "error": "07001",
+            "description": "Cannot change state from \"disabled\" to draft"
         }
         """
         When we send client.sets.update
@@ -420,9 +398,8 @@ Feature: Sets
         Then we get error 400
         """
         {
-            "error": "Can only delete Sets that are in draft state",
-            "message": "Can only delete Sets that are in draft state",
-            "code": 400
+            "error": "07005",
+            "description": "Can only delete Sets that are in draft state"
         }
         """
         When we send client.sets.update
@@ -444,9 +421,8 @@ Feature: Sets
         Then we get error 400
         """
         {
-            "error": "Can only delete Sets that are in draft state",
-            "message": "Can only delete Sets that are in draft state",
-            "code": 400
+            "error": "07005",
+            "description": "Can only delete Sets that are in draft state"
         }
         """
 

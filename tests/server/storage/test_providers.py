@@ -2,7 +2,7 @@ import pytest
 
 from sams.storage.providers import Provider, providers
 from sams.storage.providers.mongo import MongoGridFSProvider
-from sams.errors import SuperdeskApiError
+from sams_client.errors import SamsStorageProviderErrors
 
 from tests.fixtures import MONGO_STORAGE_PROVIDER
 
@@ -35,10 +35,9 @@ def test_register_provider(init_app):
 def test_get_provider(init_app):
     assert providers.get(MongoGridFSProvider.type_name).__dict__ == Provider(MONGO_STORAGE_PROVIDER).__dict__
 
-    with pytest.raises(SuperdeskApiError) as error:
+    with pytest.raises(SamsStorageProviderErrors.NotFound) as error:
         providers.get('mock')
-
-    assert str(error.value) == '404: Provider "mock" not registered with the system'
+    assert error.value.description == 'Provider "mock" not registered with the system'
 
 
 def test_exists(init_app):
