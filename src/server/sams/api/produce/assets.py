@@ -26,7 +26,8 @@ from sams.api.service import SamsApiService
 from sams.api.consume import ConsumeAssetResource
 from sams_client.schemas import ASSET_SCHEMA
 from sams_client.schemas import SET_STATES
-from sams.sets import get_service
+from sams.assets import get_service as get_assets_service
+from sams.sets import get_service as get_sets_service
 from sams.storage.sams_media_storage import get_request_id
 from superdesk.errors import SuperdeskApiError
 from superdesk.resource import Resource, build_custom_hateoas
@@ -59,13 +60,16 @@ class ProduceAssetService(SamsApiService):
         """
         Creates new asset
         """
-        sets_service = get_service()
+        # Get set state using internal sets service
+        sets_service = get_sets_service()
         state = sets_service.get_by_id(docs[0]['set_id']).get('state')
+
         # Raise error if set state is 'draft' or 'disabled'
         if state in [SET_STATES.DRAFT, SET_STATES.DISABLED]:
             raise SuperdeskApiError.badRequestError(
                 'Asset upload is not allowed, set is in {} state'.format(state)
             )
+
         request_id = get_request_id()
         # Get the binary from storage media cache
         binary = self.app.media.cache[request_id]
@@ -78,6 +82,20 @@ class ProduceAssetService(SamsApiService):
         """
         Uses 'id' and updates the corresponding asset
         """
+        # Get set_id for asset using internal assets service
+        assets_service = get_assets_service()
+        set_id = assets_service.get_by_id(id).get('set_id')
+
+        # Get set state using internal sets service
+        sets_service = get_sets_service()
+        state = sets_service.get_by_id(set_id).get('state')
+
+        # Raise error if set state is 'draft' or 'disabled'
+        if state in [SET_STATES.DRAFT, SET_STATES.DISABLED]:
+            raise SuperdeskApiError.badRequestError(
+                'Asset update is not allowed, set is in {} state'.format(state)
+            )
+
         request_id = get_request_id()
         # If binary is not to be updated pass
         try:
