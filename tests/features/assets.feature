@@ -1,10 +1,66 @@
 Feature: Assets
+    Scenario: Create with set state as draft or disabled, we get error
+        When we send client.sets.create
+        """
+        {
+            "docs": [{
+                "name": "foo",
+                "state": "draft",
+                "destination_name": "internal"
+            }]
+        }
+        """
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-jpg.jpg",
+                "name": "Jpeg Example",
+                "description": "Jpeg file asset example"
+            },
+            "filename": "file_example-jpg.jpg"
+        }
+        """
+        Then we get error 400
+
+        When we send client.sets.update
+        """
+        {
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
+            "updates": {"state": "disabled"}
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "name": "foo",
+            "destination_name": "internal",
+            "state": "disabled"
+        }
+        """
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-jpg.jpg",
+                "name": "Jpeg Example",
+                "description": "Jpeg file asset example"
+            },
+            "filename": "file_example-jpg.jpg"
+        }
+        """
+        Then we get error 400
+
     Scenario: Create, update and delete an Asset
         When we send client.sets.create
         """
         {
             "docs": [{
                 "name": "foo",
+                "state": "usable",
                 "destination_name": "internal"
             }]
         }
@@ -119,6 +175,7 @@ Feature: Assets
         {
             "docs": [{
                 "name": "foo",
+                "state": "usable",
                 "destination_name": "internal"
             }]
         }
