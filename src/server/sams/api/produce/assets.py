@@ -26,7 +26,6 @@ from sams.api.service import SamsApiService
 from sams.api.consume import ConsumeAssetResource
 from sams_client.schemas import ASSET_SCHEMA
 from sams_client.schemas import SET_STATES
-from sams.assets import get_service as get_assets_service
 from sams.sets import get_service as get_sets_service
 from sams.storage.sams_media_storage import get_request_id
 from superdesk.errors import SuperdeskApiError
@@ -82,13 +81,9 @@ class ProduceAssetService(SamsApiService):
         """
         Uses 'id' and updates the corresponding asset
         """
-        # Get set_id for asset using internal assets service
-        assets_service = get_assets_service()
-        set_id = assets_service.get_by_id(id).get('set_id')
-
         # Get set state using internal sets service
         sets_service = get_sets_service()
-        state = sets_service.get_by_id(set_id).get('state')
+        state = sets_service.get_by_id(original.get('set_id')).get('state')
 
         # Raise error if set state is 'draft' or 'disabled'
         if state in [SET_STATES.DRAFT, SET_STATES.DISABLED]:
