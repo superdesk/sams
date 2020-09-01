@@ -373,3 +373,10 @@ class SamsAssetErrors:
 
         def __init__(self, asset_id: ObjectId, exception: Exception = None):
             super().__init__({'asset_id': str(asset_id)}, exception)
+
+    class AssetUploadToInactiveSet(SamsException):
+        """Raised when attempting to create a new Asset into an inactive set"""
+
+        app_code = '08003'
+        http_code = 400
+        description = 'Asset upload is not allowed to an inactive Set'

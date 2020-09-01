@@ -1,17 +1,157 @@
 Feature: Assets
-    Background: Create Set
+    Scenario: Create with set state as draft or disabled, we get error
         When we send client.sets.create
         """
         {
             "docs": [{
                 "name": "foo",
+                "state": "draft",
+                "destination_name": "internal"
+            }]
+        }
+        """
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-jpg.jpg",
+                "name": "Jpeg Example",
+                "description": "Jpeg file asset example"
+            },
+            "filename": "file_example-jpg.jpg"
+        }
+        """
+        Then we get error 400
+        """
+        {
+            "error": "08003",
+            "description": "Asset upload is not allowed to an inactive Set"
+        }
+        """
+        When we send client.sets.update
+        """
+        {
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
+            "updates": {"state": "disabled"}
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "name": "foo",
+            "destination_name": "internal",
+            "state": "disabled"
+        }
+        """
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-jpg.jpg",
+                "name": "Jpeg Example",
+                "description": "Jpeg file asset example"
+            },
+            "filename": "file_example-jpg.jpg"
+        }
+        """
+        Then we get error 400
+        """
+        {
+            "error": "08003",
+            "description": "Asset upload is not allowed to an inactive Set"
+        }
+        """
+    
+    Scenario: Create asset, update set to disabled, update asset, get error
+        When we send client.sets.create
+        """
+        {
+            "docs": [{
+                "name": "foo",
+                "state": "usable",
+                "destination_name": "internal"
+            }]
+        }
+        """
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-jpg.jpg",
+                "name": "Jpeg Example",
+                "description": "Jpeg file asset example"
+            },
+            "filename": "file_example-jpg.jpg"
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "set_id": "#SETS._id#",
+            "filename": "file_example-jpg.jpg",
+            "name": "Jpeg Example",
+            "description": "Jpeg file asset example",
+            "state": "draft",
+            "binary": null,
+            "_media_id": "#ASSETS._media_id#",
+            "length": 12186,
+            "mimetype": "image/jpeg",
+            "_links": {
+                "self": {
+                    "title": "Asset",
+                    "href": "consume/assets/#ASSETS._id#"
+                }
+            }
+        }
+        """
+        When we send client.sets.update
+        """
+        {
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
+            "updates": {"state": "disabled"}
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "name": "foo",
+            "destination_name": "internal",
+            "state": "disabled"
+        }
+        """
+        When we send client.assets.update
+        """
+        {
+            "item_id": "#ASSETS._id#",
+            "headers": {"If-Match": "#ASSETS._etag#"},
+            "updates": {"description": "Updated Jpeg file asset example"}
+        }
+        """
+        Then we get error 400
+        """
+        {
+            "error": "08003",
+            "description": "Asset upload is not allowed to an inactive Set"
+        }
+        """
+
+    Scenario: Create, update and delete an Asset
+        When we send client.sets.create
+        """
+        {
+            "docs": [{
+                "name": "foo",
+                "state": "usable",
                 "destination_name": "internal"
             }]
         }
         """
         Then we get OK response
-
-    Scenario: Create, update and delete an Asset
         When we upload a binary file with client.assets.create
         """
         {
@@ -117,6 +257,16 @@ Feature: Assets
         Then we get error 404
 
     Scenario: Create, Download an Asset
+       When we send client.sets.create
+        """
+        {
+            "docs": [{
+                "name": "foo",
+                "state": "usable",
+                "destination_name": "internal"
+            }]
+        }
+        """
         When we upload a binary file with client.assets.create
         """
         {
@@ -158,6 +308,16 @@ Feature: Assets
         """
 
     Scenario: Validate binary asset supplied
+        When we send client.sets.create
+        """
+        {
+            "docs": [{
+                "name": "foo",
+                "state": "usable",
+                "destination_name": "internal"
+            }]
+        }
+        """
         When we upload a binary file with client.assets.create
         """
         {

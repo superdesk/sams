@@ -26,6 +26,8 @@ from flask import current_app as app
 
 from sams.api.service import SamsApiService
 from sams.api.consume import ConsumeAssetResource
+from sams_client.schemas import SET_STATES
+from sams.sets import get_service as get_sets_service
 from sams.storage.sams_media_storage import get_request_id
 from superdesk.resource import Resource, build_custom_hateoas
 from sams_client.errors import SamsAssetErrors
@@ -64,6 +66,14 @@ class ProduceAssetService(SamsApiService):
         """
         Creates new asset
         """
+        # Get set state using internal sets service
+        sets_service = get_sets_service()
+        state = sets_service.get_by_id(docs[0]['set_id']).get('state')
+
+        # Raise error if set state is 'draft' or 'disabled'
+        if state in [SET_STATES.DRAFT, SET_STATES.DISABLED]:
+            raise SamsAssetErrors.AssetUploadToInactiveSet()
+
         request_id = get_request_id()
         # Get the binary from storage media cache
         try:
@@ -80,6 +90,14 @@ class ProduceAssetService(SamsApiService):
         """
         Uses 'id' and updates the corresponding asset
         """
+        # Get set state using internal sets service
+        sets_service = get_sets_service()
+        state = sets_service.get_by_id(original.get('set_id')).get('state')
+
+        # Raise error if set state is 'draft' or 'disabled'
+        if state in [SET_STATES.DRAFT, SET_STATES.DISABLED]:
+            raise SamsAssetErrors.AssetUploadToInactiveSet()
+
         request_id = get_request_id()
         # If binary is not to be updated pass
         try:
