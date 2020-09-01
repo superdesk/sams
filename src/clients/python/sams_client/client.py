@@ -57,6 +57,7 @@ class SamsClient(object):
         self,
         api: str = '/',
         method: str = 'get',
+        params: Dict = None,
         headers: Dict[str, Any] = None,
         data: str = None,
         files=None,
@@ -83,12 +84,13 @@ class SamsClient(object):
         base_url = self.config.get('base_url')
         url = f'{base_url}{api}'
         headers = self.auth.apply_headers(headers)
-        response = request(url, headers=headers, data=data, files=files)
+        response = request(url, headers=headers, data=data, files=files, params=params)
         return callback(response)
 
     def get(
         self,
         url: str,
+        params: Dict = None,
         headers: Dict[str, Any] = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
@@ -104,6 +106,7 @@ class SamsClient(object):
         return self.request(
             api=url,
             method='get',
+            params=params,
             headers=headers,
             callback=callback
         )

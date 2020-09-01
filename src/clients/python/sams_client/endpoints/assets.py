@@ -9,6 +9,7 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
+import json
 import requests
 from .endpoint import Endpoint
 from bson import ObjectId
@@ -49,6 +50,37 @@ class SamsAssetEndpoint(Endpoint):
                 self._read_binary_url,
                 str(item_id)
             ),
+            headers=headers,
+            callback=callback
+        )
+
+    def get_assets_count(
+        self,
+        set_ids: [ObjectId] = None,
+        headers: Dict[str, Any] = None,
+        callback: Callable[[requests.Response], requests.Response] = None
+    ) -> requests.Response:
+        """Helper method to get asset count for given set ids
+        will get count of all assets if set_ids is None
+
+        :param array bson.objectid.ObjectId set_ids: Id of sets
+        :param dict headers: Dictionary of headers to apply
+        :param callback: A callback function to manipulate the response
+        :rtype: requests.Response
+        """
+
+        if not self._read_url:
+            return self._return_405()
+
+        # get total number of all assets if set_ids is None else get number of assets for given set_ids
+        query = {'size': 0} if set_ids is None else {'size': 0, 'query': {'terms': {'set_id': set_ids}}}
+
+        query = json.dumps(query)
+
+        params = {'source': query}
+        return self._client.get(
+            url=self._read_url,
+            params=params,
             headers=headers,
             callback=callback
         )
