@@ -16,6 +16,7 @@ The :mod:`sams.storage.providers.base` package provides storage io implementatio
 """
 
 from typing import BinaryIO
+from sams_client.errors import SamsConfigErrors
 
 
 class SamsBaseStorageProvider(object):
@@ -44,20 +45,15 @@ class SamsBaseStorageProvider(object):
         """
 
         if config_string is None:
-            raise ValueError('"config_string" must be provided')
+            raise SamsConfigErrors.StorageProviderConfigStringNotProvided()
 
         config_parts = config_string.split(',', 2)
 
         if len(config_parts) != 3:
-            raise ValueError('Incorrect number of arguments, expected 3 but received {}'.format(
-                len(config_parts)
-            ))
+            raise SamsConfigErrors.StorageProviderIncorrectConfigArguments(len(config_parts))
 
         if config_parts[0] != self.type_name:
-            raise ValueError('Incorrect config entry for provider {}, received entry for {}'.format(
-                self.type_name,
-                config_parts[0]
-            ))
+            raise SamsConfigErrors.StorageProviderInvalidConfig(self.type_name, config_parts[0])
 
         self.name = config_parts[1]
         self.config_string = config_parts[2]

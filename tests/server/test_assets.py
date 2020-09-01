@@ -6,7 +6,7 @@ from eve.utils import ParsedRequest
 
 from sams.assets import get_service as get_asset_service
 from sams.sets import get_service as get_set_service
-from sams.errors import SuperdeskApiError
+from sams_client.errors import SamsAssetErrors
 
 from tests.fixtures import test_sets
 from tests.server.utils import load_file
@@ -120,16 +120,13 @@ def test_binary_undefined(init_app):
     asset_service = get_asset_service()
     set_id, provider = add_set(deepcopy(test_sets[0]))
 
-    with pytest.raises(SuperdeskApiError) as error:
+    with pytest.raises(SamsAssetErrors.BinaryNotSupplied):
         asset_service.post([{
             'set_id': set_id,
             'filename': 'file_example-jpg.jpg',
             'name': 'Jpeg Example',
             'description': 'Jpeg file asset example',
         }])
-
-    assert error.value.message == 'Asset must contain a binary to upload'
-    assert error.value.status_code == 400
 
 
 def test_upload_using_stream(init_app):

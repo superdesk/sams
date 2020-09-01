@@ -12,7 +12,8 @@
 from eve.utils import config
 
 from superdesk.services import Service
-from superdesk.validation import ValidationError
+
+from sams_client.errors import SamsResourceErrors
 
 
 class SamsService(Service):
@@ -73,7 +74,7 @@ class SamsService(Service):
 
         validator.validate(doc)
         if validator.errors:
-            raise ValidationError(validator.errors)
+            raise SamsResourceErrors.ValidationError(validator.errors)
 
     def validate_patch(self, original, updates):
         """Validates the document upon update
@@ -92,4 +93,4 @@ class SamsService(Service):
 
         validator.validate_update(updates, original.get(config.ID_FIELD), original)
         if validator.errors:
-            raise ValidationError(validator.errors)
+            raise SamsResourceErrors.ValidationError(validator.errors)
