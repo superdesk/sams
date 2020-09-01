@@ -10,3 +10,8 @@
     :members:
     :member-order: bysource
     :undoc-members:
+
+.. autoclass:: sams_client.errors.SamsAssetErrors.AssetUploadToInactiveSet
+    :members:
+    :member-order: bysource
+    :undoc-members:
