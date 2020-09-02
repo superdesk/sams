@@ -10,9 +10,11 @@
 # at https://www.sourcefabric.org/superdesk/license
 
 from tests.features.steps.app import get_app
+from tests.server.utils import get_test_db_host
 
 
 def before_all(context):
+    setattr(context, 'DB_HOST', get_test_db_host())
     get_app(context).start()
 
 

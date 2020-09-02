@@ -23,7 +23,12 @@ Feature: Assets
         }
         """
         Then we get error 400
-
+        """
+        {
+            "error": "08003",
+            "description": "Asset upload is not allowed to an inactive Set"
+        }
+        """
         When we send client.sets.update
         """
         {
@@ -53,6 +58,12 @@ Feature: Assets
         }
         """
         Then we get error 400
+        """
+        {
+            "error": "08003",
+            "description": "Asset upload is not allowed to an inactive Set"
+        }
+        """
     
     Scenario: Create asset, update set to disabled, update asset, get error
         When we send client.sets.create
@@ -122,6 +133,12 @@ Feature: Assets
         }
         """
         Then we get error 400
+        """
+        {
+            "error": "08003",
+            "description": "Asset upload is not allowed to an inactive Set"
+        }
+        """
 
     Scenario: Create, update and delete an Asset
         When we send client.sets.create
@@ -134,6 +151,7 @@ Feature: Assets
             }]
         }
         """
+        Then we get OK response
         When we upload a binary file with client.assets.create
         """
         {
@@ -178,7 +196,7 @@ Feature: Assets
             "name": "Jpeg Example",
             "description": "Jpeg file asset example",
             "state": "draft",
-            "binary": null,
+            "binary": "#ASSETS._media_id#",
             "_media_id": "#ASSETS._media_id#",
             "length": 12186,
             "mimetype": "image/jpeg",
@@ -286,5 +304,50 @@ Feature: Assets
         {
             "item_id": "#ASSETS._id#",
             "length": 12186
+        }
+        """
+
+    Scenario: Validate binary asset supplied
+        When we send client.sets.create
+        """
+        {
+            "docs": [{
+                "name": "foo",
+                "state": "usable",
+                "destination_name": "internal"
+            }]
+        }
+        """
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-jpg.jpg",
+                "name": "Jpeg Example",
+                "description": "Jpeg file asset example"
+            }
+        }
+        """
+        Then we get error 400
+        """
+        {
+            "error": "08001",
+            "description": "Asset must contain a binary to upload"
+        }
+        """
+
+    Scenario: Downloading non existent asset binary
+        When we download a binary file with client.assets.get_binary_by_id
+        """
+        {
+            "item_id": "unknown"
+        }
+        """
+        Then we get error 404
+        """
+        {
+            "error": "08002",
+            "description": "Asset with id \"unknown\" not found"
         }
         """

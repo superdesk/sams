@@ -22,7 +22,7 @@ from sams.default_settings import INSTALLED_APPS
 
 from sams_client import SamsClient
 
-from tests.fixtures import STORAGE_DESTINATIONS
+from tests.server.conftest import get_test_config as get_test_config_base
 
 
 class TestApp:
@@ -136,29 +136,19 @@ class TestApp:
 
 
 def get_test_config():
-    env_uri = environ.get('MONGO_URI', 'mongodb://localhost/test')
-    env_host = env_uri.rsplit('/', 1)[0]
-    mongo_uri = '/'.join([env_host, 'tests_sams'])
-
-    INSTALLED_APPS.append(
-        'tests.fixtures.prepopulate'
-    )
-
-    return {
-        'MONGO_DBNAME': 'tests_sams',
-        'MONGO_URI': mongo_uri,
-        'ELASTICSEARCH_INDEX': 'tests_sams',
-        'SERVER_NAME': 'localhost:5700',
+    INSTALLED_APPS.append('tests.fixtures.prepopulate')
+    config = get_test_config_base()
+    config.update({
         'DEBUG': False,
         'TESTING': False,
-        'STORAGE_DESTINATION_1': STORAGE_DESTINATIONS[0],
-        'STORAGE_DESTINATION_2': STORAGE_DESTINATIONS[1],
         'LOG_CONFIG_FILE': path.join(
             path.dirname(path.abspath(__file__)),
             'logging_config.yml'
         ),
         'INSTALLED_APPS': INSTALLED_APPS
-    }
+    })
+
+    return config
 
 
 def get_app(context) -> TestApp:

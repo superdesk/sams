@@ -10,7 +10,9 @@
 # at https://www.sourcefabric.org/superdesk/license
 
 from eve.auth import BasicAuth
-from flask import abort, request
+from flask import request
+
+from sams_client.errors import SamsConfigErrors, SamsResourceErrors
 
 
 def get_auth_instance(**kwargs):
@@ -28,7 +30,7 @@ class SamsBasicAuth(BasicAuth):
         )
 
         if len(api_keys) == 0:
-            abort(501, 'No API Keys provided')
+            raise SamsConfigErrors.BasicAuthAPIKeysNotProvided()
 
         self.api_keys = api_keys
 
@@ -39,7 +41,7 @@ class SamsBasicAuth(BasicAuth):
     def authenticate(self):
         """Returns a standard 401
         """
-        abort(401, description='Please provide proper credentials')
+        raise SamsResourceErrors.AuthNotSupplied()
 
     def check_auth(self, auth_token, allowed_roles, resource, method):
         """This function is called to check if the API key in request header

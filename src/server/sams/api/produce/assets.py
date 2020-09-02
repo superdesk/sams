@@ -22,14 +22,15 @@ To access Assets inside the SAMS application, use the :mod:`sams.assets` module 
 **schema**               :attr:`sams_client.schemas.assets.ASSET_SCHEMA`
 =====================   =================================================================
 """
+from flask import current_app as app
+
 from sams.api.service import SamsApiService
 from sams.api.consume import ConsumeAssetResource
-from sams_client.schemas import ASSET_SCHEMA
 from sams_client.schemas import SET_STATES
 from sams.sets import get_service as get_sets_service
 from sams.storage.sams_media_storage import get_request_id
-from superdesk.errors import SuperdeskApiError
 from superdesk.resource import Resource, build_custom_hateoas
+from sams_client.errors import SamsAssetErrors
 
 
 class ProduceAssetResource(Resource):
@@ -38,7 +39,13 @@ class ProduceAssetResource(Resource):
     url = 'produce/assets'
     item_methods = ['PATCH', 'DELETE']
     resource_methods = ['POST']
-    schema = ASSET_SCHEMA
+    schema = {
+        'binary': {
+            'type': 'media',
+            'required': False
+        }
+    }
+    allow_unknown = True
 
 
 class ProduceAssetService(SamsApiService):
@@ -65,15 +72,17 @@ class ProduceAssetService(SamsApiService):
 
         # Raise error if set state is 'draft' or 'disabled'
         if state in [SET_STATES.DRAFT, SET_STATES.DISABLED]:
-            raise SuperdeskApiError.badRequestError(
-                'Asset upload is not allowed, set is in {} state'.format(state)
-            )
+            raise SamsAssetErrors.AssetUploadToInactiveSet()
 
         request_id = get_request_id()
         # Get the binary from storage media cache
-        binary = self.app.media.cache[request_id]
+        try:
+            binary = app.media.cache[request_id]
+        except KeyError:
+            raise SamsAssetErrors.BinaryNotSupplied()
+
         # Clear the cache
-        self.app.media.cache.pop(request_id)
+        app.media.cache.pop(request_id)
         docs[0]['binary'] = binary
         return super().create(docs)
 
@@ -87,15 +96,13 @@ class ProduceAssetService(SamsApiService):
 
         # Raise error if set state is 'draft' or 'disabled'
         if state in [SET_STATES.DRAFT, SET_STATES.DISABLED]:
-            raise SuperdeskApiError.badRequestError(
-                'Asset update is not allowed, set is in {} state'.format(state)
-            )
+            raise SamsAssetErrors.AssetUploadToInactiveSet()
 
         request_id = get_request_id()
         # If binary is not to be updated pass
         try:
-            binary = self.app.media.cache[request_id]
-            self.app.media.cache.pop(request_id)
+            binary = app.media.cache[request_id]
+            app.media.cache.pop(request_id)
             updates['binary'] = binary
         except KeyError:
             pass

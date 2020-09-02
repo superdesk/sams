@@ -4,7 +4,7 @@ from sams_client import SamsClient
 
 configs = {
     'HOST': 'localhost',
-    'PORT': 5000
+    'PORT': 5700
 }
 
 

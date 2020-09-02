@@ -1,7 +1,7 @@
 import pytest
 
 from sams.storage.providers.mongo import MongoGridFSProvider
-from sams.errors import SuperdeskApiError
+from sams_client.errors import SamsAssetErrors
 
 
 def test_mongo_upload(init_app, app):
@@ -21,10 +21,9 @@ def test_mongo_upload(init_app, app):
 
     provider.delete(item_id)
     assert not provider.exists(item_id)
-    with pytest.raises(SuperdeskApiError) as error:
+    with pytest.raises(SamsAssetErrors.AssetNotFound) as error:
         provider.get(item_id)
-
-    assert error.value.status_code == 404
+    assert error.value.description == 'Asset with id "{}" not found'.format(str(item_id))
 
     provider.delete(item_id)
 

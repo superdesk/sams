@@ -11,7 +11,7 @@
 
 from typing import Dict, List
 
-from sams.errors import SuperdeskApiError
+from sams_client.errors import SamsStorageDestinationErrors
 
 from .providers import Provider, providers
 from .providers.base import SamsBaseStorageProvider
@@ -100,15 +100,13 @@ class Destinations:
         :param str name: The name of the storage destination
         :return: Returns the Destination instance
         :rtype: Destination
-        :raises SuperdeskApiError.notFoundError: if the destination is not found
+        :raises sams_client.errors.SamsStorageDestinationErrors.NotFound: if the destination is not found
         """
 
         try:
             return self._destinations[name]
         except KeyError:
-            raise SuperdeskApiError.notFoundError(
-                'Destination "{}" not registered with the system'.format(name)
-            )
+            raise SamsStorageDestinationErrors.NotFound(name)
 
     def exists(self, name: str) -> bool:
         """Check if a storage destination with ``name`` exists

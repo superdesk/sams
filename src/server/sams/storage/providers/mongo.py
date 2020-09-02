@@ -31,7 +31,7 @@ from gridfs.errors import NoFile
 from bson import ObjectId
 
 from .base import SamsBaseStorageProvider
-from sams.errors import SuperdeskApiError
+from sams_client.errors import SamsAssetErrors
 
 
 class MongoGridFSProvider(SamsBaseStorageProvider):
@@ -108,7 +108,7 @@ class MongoGridFSProvider(SamsBaseStorageProvider):
         try:
             return self.fs().get(asset_id)
         except NoFile:
-            raise SuperdeskApiError.notFoundError('Asset with id {} not found'.format(asset_id))
+            raise SamsAssetErrors.AssetNotFound(asset_id)
 
     def delete(self, asset_id: ObjectId or str):
         """Delete as asset from the storage

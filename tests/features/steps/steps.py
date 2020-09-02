@@ -14,7 +14,7 @@ from flask import json
 
 from tests.features.steps.helpers import assert_200, apply_placeholders, test_json, store_last_item, expect_status
 from tests.features.steps.app import get_app, get_client
-from tests.server.utils import load_file
+from tests.server.utils import load_file, get_test_db_host
 
 
 @when('we send client.{model_name}.{method_name}')
@@ -50,8 +50,9 @@ def step_impl_upload_binary_client(context, model_name, method_name):
         assert False, 'client.{}.{} is not registered with the client'.format(model_name, method_name)
 
     kwargs = {} if not context.text else json.loads(apply_placeholders(context, context.text))
-    filepath = 'tests/fixtures/{}'.format(kwargs.pop('filename'))
-    files = {'binary': open(filepath, 'rb')}
+    filename = kwargs.pop('filename', None)
+    filepath = None if not filename else 'tests/fixtures/{}'.format(filename)
+    files = None if not filepath else {'binary': open(filepath, 'rb')}
 
     context.response = method(files=files, **kwargs)
     store_last_item(context, model_name)
@@ -72,8 +73,12 @@ def step_impl_download_binary_client(context, model_name, method_name):
         assert False, 'client.{}.{} is not registered with the client'.format(model_name, method_name)
 
     kwargs = {} if not context.text else json.loads(apply_placeholders(context, context.text))
-    length = kwargs.pop('length')
-    assert len(method(**kwargs).content) == length
+    length = kwargs.pop('length', None)
+    context.response = method(**kwargs)
+
+    if context.response.status_code in [200, 201, 204] and length:
+        assert len(context.response.content) == length
+
 
 @when('we get "{url}"')
 def step_impl_get(context, url: str):

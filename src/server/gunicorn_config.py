@@ -2,7 +2,10 @@
 import os
 import multiprocessing
 
-bind = '0.0.0.0:%s' % os.environ.get('PORT', '5700')
+bind = '{}:{}'.format(
+    os.environ.get('SAMS_HOST', '0.0.0.0'),
+    os.environ.get('SAMS_PORT', '5700')
+)
 workers = int(os.environ.get('WEB_CONCURRENCY', multiprocessing.cpu_count() + 1))
 
 accesslog = '-'

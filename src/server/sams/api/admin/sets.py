@@ -25,7 +25,6 @@ To access Sets inside the SAMS application, use the :mod:`sams.sets` module inst
 
 from superdesk.resource import Resource, build_custom_hateoas
 
-from sams_client.schemas import SET_SCHEMA
 from sams.api.service import SamsApiService
 from sams.api.consume.sets import ConsumeSetResource
 
@@ -36,7 +35,7 @@ class AdminSetResource(Resource):
     url = 'admin/sets'
     item_methods = ['PATCH', 'DELETE']
     resource_methods = ['POST']
-    schema = SET_SCHEMA
+    allow_unknown = True
 
 
 class AdminSetService(SamsApiService):
