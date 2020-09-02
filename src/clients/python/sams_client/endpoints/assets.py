@@ -60,8 +60,8 @@ class SamsAssetEndpoint(Endpoint):
         headers: Dict[str, Any] = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
-        """Helper method to get asset count for given set ids
-        will get count of all assets if set_ids is None
+        """Helper method to get asset count distribution for given set ids
+        will get asset count distribution over all sets if set_ids is None
 
         :param array bson.objectid.ObjectId set_ids: Id of sets
         :param dict headers: Dictionary of headers to apply
@@ -72,15 +72,31 @@ class SamsAssetEndpoint(Endpoint):
         if not self._read_url:
             return self._return_405()
 
-        # get total number of all assets if set_ids is None else get number of assets for given set_ids
-        query = {'size': 0} if set_ids is None else {'size': 0, 'query': {'terms': {'set_id': set_ids}}}
+        # get total asset count distribution over all sets if set_ids is None
+        if set_ids is None:
+            query = {
+                'size': 0,
+                'aggs': {'counts': {'terms': {'field': 'set_id.keyword'}}}
+            }
+        # get number of assets for given set_ids
+        else:
+            query = {
+                'query': {'terms': {'set_id': set_ids}},
+                'size': 0,
+                'aggs': {'counts': {'terms': {'field': 'set_id.keyword'}}}
+            }
 
         query = json.dumps(query)
-
         params = {'source': query}
-        return self._client.get(
+
+        response = self._client.get(
             url=self._read_url,
             params=params,
             headers=headers,
             callback=callback
         )
+        buckets = response.json().get('_aggregations').get('counts').get('buckets')
+
+        counts = {}
+        [counts.update({item.get('key'): item.get('doc_count')}) for item in buckets]
+        return counts, response.status_code
