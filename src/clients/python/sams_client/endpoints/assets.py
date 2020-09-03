@@ -76,14 +76,14 @@ class SamsAssetEndpoint(Endpoint):
         if set_ids is None:
             query = {
                 'size': 0,
-                'aggs': {'counts': {'terms': {'field': 'set_id.keyword'}}}
+                'aggs': {'counts': {'terms': {'field': 'set_id'}}}
             }
         # get number of assets for given set_ids
         else:
             query = {
                 'query': {'terms': {'set_id': set_ids}},
                 'size': 0,
-                'aggs': {'counts': {'terms': {'field': 'set_id.keyword'}}}
+                'aggs': {'counts': {'terms': {'field': 'set_id'}}}
             }
 
         query = json.dumps(query)
