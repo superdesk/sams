@@ -135,7 +135,8 @@ def step_impl_then_get_error(context, code):
 
 @then('we get existing resource')
 def step_impl_then_get_existing(context):
-    assert_200(context.response)
+    if not isinstance(context.response, tuple):
+        assert_200(context.response)
     test_json(context)
 
 

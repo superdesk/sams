@@ -170,11 +170,14 @@ def test_json(context, json_fields=None):
     if json_fields is None:
         json_fields = []
 
-    try:
-        response_data = json.loads(context.response.text)
-    except Exception:
-        fail_and_print_body(context.response, 'response is not valid json')
-        return
+    if isinstance(context.response, tuple):
+        response_data = context.response[0]
+    else:
+        try:
+            response_data = json.loads(context.response.text)
+        except Exception:
+            fail_and_print_body(context.response, 'response is not valid json')
+            return
 
     context_data = json.loads(
         apply_placeholders(
@@ -193,18 +196,26 @@ def test_json(context, json_fields=None):
 
 
 def store_last_item(context, model_name: str):
-    if not context.response.status_code in (200, 201):
-        return
-
-    try:
-        item = json.loads(context.response.text)
-    except ValueError:
-        assert False, context.response.text
-    if item.get('_status') == 'OK' and item.get('_id'):
+    if isinstance(context.response, tuple):
+        if not context.response[1] in (200, 201):
+            return
+        item = context.response[0]
         try:
             setattr(context, model_name.upper(), item)
         except (IndexError, KeyError):
             pass
+    else:
+        if not context.response.status_code in (200, 201):
+            return
+        try:
+            item = json.loads(context.response.text)
+        except ValueError:
+            assert False, context.response.text
+        if item.get('_status') == 'OK' and item.get('_id'):
+            try:
+                setattr(context, model_name.upper(), item)
+            except (IndexError, KeyError):
+                pass
 
 
 def expect_status(response, code):

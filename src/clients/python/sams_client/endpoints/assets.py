@@ -9,6 +9,7 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
+import json
 import requests
 from .endpoint import Endpoint
 from bson import ObjectId
@@ -52,3 +53,50 @@ class SamsAssetEndpoint(Endpoint):
             headers=headers,
             callback=callback
         )
+
+    def get_assets_count(
+        self,
+        set_ids: [ObjectId] = None,
+        headers: Dict[str, Any] = None,
+        callback: Callable[[requests.Response], requests.Response] = None
+    ) -> requests.Response:
+        """Helper method to get asset count distribution for given set ids
+        will get asset count distribution over all sets if set_ids is None
+
+        :param array bson.objectid.ObjectId set_ids: Id of sets
+        :param dict headers: Dictionary of headers to apply
+        :param callback: A callback function to manipulate the response
+        :rtype: requests.Response
+        """
+
+        if not self._read_url:
+            return self._return_405()
+
+        # get total asset count distribution over all sets if set_ids is None
+        if set_ids is None:
+            query = {
+                'size': 0,
+                'aggs': {'counts': {'terms': {'field': 'set_id'}}}
+            }
+        # get number of assets for given set_ids
+        else:
+            query = {
+                'query': {'terms': {'set_id': set_ids}},
+                'size': 0,
+                'aggs': {'counts': {'terms': {'field': 'set_id'}}}
+            }
+
+        query = json.dumps(query)
+        params = {'source': query}
+
+        response = self._client.get(
+            url=self._read_url,
+            params=params,
+            headers=headers,
+            callback=callback
+        )
+        buckets = response.json().get('_aggregations').get('counts').get('buckets')
+
+        counts = {}
+        [counts.update({item.get('key'): item.get('doc_count')}) for item in buckets]
+        return counts, response.status_code

@@ -351,3 +351,71 @@ Feature: Assets
             "description": "Asset with id \"unknown\" not found"
         }
         """
+    
+    Scenario: Get assets count distribution for sets
+        When we send client.sets.create
+        """
+        {
+            "docs": [{
+                "name": "foo",
+                "state": "usable",
+                "destination_name": "internal"
+            }]
+        }
+        """
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-jpg.jpg",
+                "name": "Jpeg Example",
+                "description": "Jpeg file asset example"
+            },
+            "filename": "file_example-jpg.jpg"
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "set_id": "#SETS._id#",
+            "filename": "file_example-jpg.jpg",
+            "name": "Jpeg Example",
+            "description": "Jpeg file asset example",
+            "state": "draft",
+            "binary": null,
+            "_media_id": "#ASSETS._media_id#",
+            "length": 12186,
+            "mimetype": "image/jpeg",
+            "_links": {
+                "self": {
+                    "title": "Asset",
+                    "href": "consume/assets/#ASSETS._id#"
+                }
+            }
+        }
+        """
+        When we send client.assets.get_assets_count
+        """
+        {
+            "set_ids": ["#SETS._id#"]
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "#SETS._id#": 1
+        }
+        """
+        When we send client.assets.get_assets_count
+        """
+        {
+            
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "#SETS._id#": 1
+        }
+        """
