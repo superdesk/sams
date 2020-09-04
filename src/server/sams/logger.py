@@ -23,6 +23,7 @@ logger = logging.getLogger('sams')
 logging.getLogger('kombu').setLevel(logging.WARNING)
 logging.getLogger('elasticsearch').setLevel(logging.ERROR)
 logging.getLogger('werkzeug').setLevel(logging.INFO)
+logging.getLogger('superdesk').setLevel(logging.INFO)
 
 logging.getLogger('sams').setLevel(logging.INFO)
 
