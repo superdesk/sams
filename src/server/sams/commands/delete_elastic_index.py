@@ -29,6 +29,7 @@ class DeleteElasticIndex(Command):
         $ python -m sams.manage app:delete_elastic_index
 
     """
+
     def run(self):
         logger.info('Delete elastic indices')
         self.delete_elastic(app.config['ELASTICSEARCH_INDEX'])

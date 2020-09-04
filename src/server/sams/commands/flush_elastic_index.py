@@ -9,9 +9,7 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from elasticsearch import exceptions as es_exceptions
 from flask import current_app as app
-from eve_elastic import get_es
 from superdesk import Command, command
 
 from sams.logger import logger

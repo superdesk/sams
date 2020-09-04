@@ -70,7 +70,10 @@ class IndexFromMongo(Command):
                 else:
                     break
 
-            logger.info('{} Inserted {} items in {:.3f} seconds'.format(time.strftime('%X %x %Z'), success, time.time() - s))
+            logger.info('{} Inserted {} items in {:.3f} seconds'.format(
+                time.strftime('%X %x %Z'),
+                success, time.time() - s)
+            )
             if failed:
                 logger.error('Failed to do bulk insert of items {}. Errors: {}'.format(len(failed), failed))
                 raise BulkIndexError(resource=resource, errors=failed)
