@@ -452,7 +452,9 @@ Feature: Sets
         Then we get OK response
         When we send client.sets.search
         """
-        {"params": {"where": {"name": "set2"}}}
+        {"params": {
+            "where": "{\"name\": \"set2\"}"
+        }}
         """
         Then we get existing resource
         """
@@ -468,7 +470,9 @@ Feature: Sets
         """
         When we send client.sets.search
         """
-        {"params": {"where": {"state": "draft"}}}
+        {"params": {
+            "where": "{\"state\": \"draft\"}"
+        }}
         """
         Then we get existing resource
         """
@@ -487,7 +491,7 @@ Feature: Sets
         """
         {"params": {
             "page": 1,
-            "sort": [["name", 1]],
+            "sort": "[[\"name\", 1]]",
             "max_results": 1
         }}
         """
@@ -508,7 +512,7 @@ Feature: Sets
         """
         {"params": {
             "page": 2,
-            "sort": [["name", 1]],
+            "sort": "[[\"name\", 1]]",
             "max_results": 1
         }}
         """
@@ -529,7 +533,7 @@ Feature: Sets
         """
         {"params": {
             "page": 3,
-            "sort": [["name", 1]],
+            "sort": "[[\"name\", 1]]",
             "max_results": 1
         }}
         """
@@ -550,7 +554,7 @@ Feature: Sets
         """
         {"params": {
             "page": 4,
-            "sort": [["name", 1]],
+            "sort": "[[\"name\", 1]]",
             "max_results": 1
         }}
         """
