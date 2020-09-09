@@ -12,7 +12,7 @@
 from eve import Eve
 from werkzeug.exceptions import HTTPException
 
-from sams.logging import logger
+from sams.logger import logger
 from sams_client.errors import SamsException, SamsHTTPError, SamsSystemErrors, SamsResourceErrors
 
 

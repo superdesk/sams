@@ -62,13 +62,13 @@ class Endpoint:
 
     def search(
         self,
-        args: Dict[str, Any] = None,
+        params: Dict[str, Any] = None,
         headers: Dict[str, Any] = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method to search this endpoint
 
-        :param dict args: Dictionary containing the search arguments
+        :param dict params: Dictionary containing the search arguments
         :param dict headers: Dictionary of headers to apply
         :param callback: A callback function to manipulate the response
         :rtype: requests.Response
@@ -80,7 +80,7 @@ class Endpoint:
 
         return self._client.search(
             url=self._read_url,
-            args=args,
+            params=params,
             headers=headers,
             callback=callback
         )

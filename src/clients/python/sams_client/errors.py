@@ -270,6 +270,7 @@ class SamsResourceErrors:
         app_code = '04002'
         http_code = 400
         description = 'Invalid search query'
+        log_exception = True
 
     class AuthNotSupplied(SamsException):
         """Raised when authentication failed"""

@@ -9,8 +9,7 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from typing import Dict, Any
-from json import dumps
+from typing import Dict
 
 from superdesk.default_settings import env
 
@@ -39,33 +38,6 @@ def load_config(config: Dict):
             'SAMS_AUTH_KEY', env('SAMS_AUTH_KEY', '')
         )
     }
-
-
-def urlencode(url: str, args: Dict[str, Any] = None) -> str:
-    """Generates a url with a query string included
-
-    Uses :meth:`json.dumps` to convert arg values to strings.
-    This is required as the urllib.parse.urlencode uses single quotes
-    where as Eve raises an exception unless double quotes are used.
-
-    :param str url: The base url
-    :param dict args: Dictionary containing query arguments
-    :rtype: str
-    :return: The full url including the query string
-    """
-
-    if not args:
-        return url
-
-    query_string = '?' + '&'.join([
-        '{}={}'.format(
-            key,
-            dumps(val)
-        )
-        for key, val in args.items()
-    ])
-
-    return url + query_string
 
 
 def schema_relation(

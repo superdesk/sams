@@ -21,7 +21,7 @@ from superdesk.notification import ClosedSocket
 from superdesk.validator import SuperdeskValidator
 
 from sams.storage.sams_media_storage import SamsMediaStorage
-from sams.logging import configure_logging
+from sams.logger import configure_logging
 from sams.errors import setup_error_handlers
 from sams_client.errors import SamsConfigErrors
 
@@ -35,7 +35,7 @@ def is_json_request(request):
 
 
 class SamsApp(Eve):
-    """The base Newsroom object.
+    """The base SAMS application instance.
 
     Usage::
 

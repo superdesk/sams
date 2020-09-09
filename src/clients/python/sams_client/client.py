@@ -14,7 +14,7 @@ import requests
 from json import dumps
 from typing import Dict, Any, Callable
 
-from .utils import load_config, urlencode
+from .utils import load_config
 from .endpoints import SamsSetEndpoint, SamsStorageDestinationsEndpoint, SamsAssetEndpoint
 
 
@@ -114,13 +114,11 @@ class SamsClient(object):
     def search(
         self,
         url: str,
-        args: Dict[str, Any] = None,
+        params: Dict[str, Any] = None,
         headers: Dict[str, any] = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method for GET requests with query args
-
-        Uses :mod:`sams_client.utils.urlencode` to convert args to a query string.
 
         :param str url: The url to get
         :param dict args: Dictionary of query args to apply
@@ -131,7 +129,8 @@ class SamsClient(object):
         """
 
         return self.get(
-            url=urlencode(url, args),
+            url,
+            params=params,
             headers=headers,
             callback=callback
         )

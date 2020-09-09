@@ -28,5 +28,9 @@ loggers:
     handlers: [console]
     level: DEBUG
     propagate: no
+  superdesk:
+    handlers: [console]
+    level: DEBUG
+    propagate: no
 root:
   handlers: [console]
