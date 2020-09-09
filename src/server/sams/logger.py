@@ -34,7 +34,7 @@ def configure_logging(file_path):
         return
     elif not path.exists(file_path):
         if not path.exists(path.join(SAMS_DIR, file_path)):
-            logger.error('file_path "{}" not found'.format(file_path))
+            logger.error('file_path "%s" not found', file_path)
             return
 
         file_path = path.join(SAMS_DIR, file_path)
@@ -47,7 +47,8 @@ def configure_logging(file_path):
 
         logger.debug('Logging configured')
     except Exception as e:
-        logger.warning('Cannot load logging config. File: {}, Error: {}'.format(
+        logger.warning(
+            'Cannot load logging config. File: %s, Error: %s',
             file_path,
             str(e)
-        ))
+        )

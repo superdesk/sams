@@ -52,8 +52,9 @@ class FlushElasticIndex(Command):
             resource_es_prefix = es_backend._resource_prefix(resource)
 
             if resource_es_prefix == SAMS_ELASTIC_PREFIX:
-                logger.info('Indexing mongo collections into "{}" elastic index.'.format(
-                    app.config['ELASTICSEARCH_INDEX'])
+                logger.info(
+                    'Indexing mongo collections into "%s" elastic index.',
+                    app.config['ELASTICSEARCH_INDEX']
                 )
                 IndexFromMongo.copy_resource(
                     resource,

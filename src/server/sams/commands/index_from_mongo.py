@@ -55,27 +55,39 @@ class IndexFromMongo(Command):
     @classmethod
     def copy_resource(cls, resource, page_size):
         for items in cls.get_mongo_items(resource, page_size):
-            logger.info('{} Inserting {} items'.format(time.strftime('%X %x %Z'), len(items)))
+            logger.info(
+                '%s Inserting %d items',
+                time.strftime('%X %x %Z'),
+                len(items)
+            )
             s = time.time()
             success, failed = 0, 0
 
             for i in range(1, 4):
                 try:
                     success, failed = app.data._search_backend(resource).bulk_insert(
-                        resource, items)
+                        resource,
+                        items
+                    )
                 except Exception as ex:
-                    logger.exception('Exception thrown on insert to elastic {}', ex)
+                    logger.exception('Exception thrown on insert to elastic %s', ex)
                     time.sleep(10)
                     continue
                 else:
                     break
 
-            logger.info('{} Inserted {} items in {:.3f} seconds'.format(
+            logger.info(
+                '%s Inserted %d items in %.3f seconds',
                 time.strftime('%X %x %Z'),
-                success, time.time() - s)
+                success,
+                time.time() - s
             )
             if failed:
-                logger.error('Failed to do bulk insert of items {}. Errors: {}'.format(len(failed), failed))
+                logger.error(
+                    'Failed to do bulk insert of items %d. Errors: %s',
+                    len(failed),
+                    str(failed)
+                )
                 raise BulkIndexError(resource=resource, errors=failed)
 
         return 'Finished indexing collection {}'.format(resource)
@@ -89,7 +101,11 @@ class IndexFromMongo(Command):
         :return: list of items
         """
         bucket_size = int(page_size) if page_size else cls.default_page_size
-        logger.info('Indexing data from mongo/{} to elastic/{}'.format(mongo_collection_name, mongo_collection_name))
+        logger.info(
+            'Indexing data from mongo/%s to elastic/%s',
+            mongo_collection_name,
+            mongo_collection_name
+        )
 
         db = app.data.get_mongo_collection(mongo_collection_name)
         args = {'limit': bucket_size, 'sort': [(config.ID_FIELD, pymongo.ASCENDING)]}

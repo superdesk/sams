@@ -50,15 +50,15 @@ class DeleteElasticIndex(Command):
             for index in indices:
                 if index.rsplit('_', 1)[0] == alias:
                     try:
-                        logger.info('Removing elastic index "{}"'.format(index))
+                        logger.info('Removing elastic index "%s"', index)
                         es.indices.delete(index=index)
                     except es_exceptions.NotFoundError:
-                        logger.warning('"{}" elastic index was not found. Continue without deleting.'.format(index))
+                        logger.warning('"%s" elastic index was not found. Continue without deleting.', index)
                     except es_exceptions.TransportError as e:
                         raise SystemExit(
                             '"{}" elastic index was not deleted. Exception: "{}"'.format(index, e.error))
                     else:
-                        logger.info('"{}" elastic index was deleted.'.format(index))
+                        logger.info('"%s" elastic index was deleted.', index)
                         break
 
 
