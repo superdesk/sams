@@ -114,7 +114,7 @@ class SamsClient(object):
     def search(
         self,
         url: str,
-        args: Dict[str, Any] = None,
+        params: Dict[str, Any] = None,
         headers: Dict[str, any] = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
@@ -131,7 +131,8 @@ class SamsClient(object):
         """
 
         return self.get(
-            url=urlencode(url, args),
+            url,
+            params=params,
             headers=headers,
             callback=callback
         )
