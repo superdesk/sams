@@ -14,7 +14,7 @@ import requests
 from json import dumps
 from typing import Dict, Any, Callable
 
-from .utils import load_config, urlencode
+from .utils import load_config
 from .endpoints import SamsSetEndpoint, SamsStorageDestinationsEndpoint, SamsAssetEndpoint
 
 
@@ -119,8 +119,6 @@ class SamsClient(object):
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method for GET requests with query args
-
-        Uses :mod:`sams_client.utils.urlencode` to convert args to a query string.
 
         :param str url: The url to get
         :param dict args: Dictionary of query args to apply
