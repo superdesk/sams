@@ -10,7 +10,7 @@
 # at https://www.sourcefabric.org/superdesk/license
 
 from flask import current_app as app
-from superdesk import Command, command
+from superdesk import Command, command, Option
 
 from sams.logger import logger
 
@@ -26,22 +26,33 @@ class FlushElasticIndex(Command):
 
     It removes elastic index, creates a new one and index it from mongo.
 
+    ===============   ======   ===============================================
+    **--page-size**   **-p**   Size of every list in each iteration
+    ===============   ======   ===============================================
+
     Example:
     ::
 
         $ python -m sams.manage app:flush_elastic_index
+        $ python -m sams.manage app:flush_elastic_index --page-size=100
 
     """
 
-    def run(self):
+    option_list = [
+        Option('--page-size', '-p', type=int, default=500)
+    ]
+
+    def run(self, page_size):
         logger.info('Flushing elastic index')
         DeleteElasticIndex.delete_elastic(app.config['ELASTICSEARCH_INDEX'])
-        self._index_from_mongo()
+        self._index_from_mongo(page_size)
 
-    def _index_from_mongo(self):
+    def _index_from_mongo(self, page_size):
         """Index elastic search from mongo.
 
+        :param page_size: Size of every list in each iteration
         """
+
         # get all es resources
         app.data.init_elastic(app)
         resources = app.data.get_elastic_resources()
@@ -58,7 +69,7 @@ class FlushElasticIndex(Command):
                 )
                 IndexFromMongo.copy_resource(
                     resource,
-                    IndexFromMongo.default_page_size
+                    page_size
                 )
 
 

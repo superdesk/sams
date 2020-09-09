@@ -26,6 +26,7 @@ works and can be developed further.
 
     server/factory
     server/settings
+    server/cli
     server/auth
     server/sets
     server/storage/index

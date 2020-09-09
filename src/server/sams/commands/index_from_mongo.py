@@ -24,22 +24,26 @@ class IndexFromMongo(Command):
 
     This will use the default APP mongo DB to read the data and the default Elastic APP index.
 
-    Use ``-f all`` to index all collections.
+    ===============    ======    =========================================
+    **--from**         **-f**    Re-index specific collection
+    **--all**          **-a**    Re-index all collections
+    **--page-size**    **-p**    Size of every list in each iteration
+    ===============    ======    =========================================
 
     Example:
     ::
 
         $ python -m sams.manage app:index_from_mongo --from=assets
         $ python -m sams.manage app:index_from_mongo --all
+        $ python -m sams.manage app:index_from_mongo --page-size=100
 
     """
 
     option_list = [
         Option('--from', '-f', dest='collection_name'),
-        Option('--all', action='store_true', dest='all_collections'),
-        Option('--page-size', '-p')
+        Option('--all', '-a', action='store_true', dest='all_collections'),
+        Option('--page-size', '-p', type=int, default=500)
     ]
-    default_page_size = 500
 
     def run(self, collection_name, all_collections, page_size):
         if not collection_name and not all_collections:
@@ -100,7 +104,7 @@ class IndexFromMongo(Command):
         :param page_size: Size of every list in each iteration
         :return: list of items
         """
-        bucket_size = int(page_size) if page_size else cls.default_page_size
+
         logger.info(
             'Indexing data from mongo/%s to elastic/%s',
             mongo_collection_name,
@@ -108,7 +112,10 @@ class IndexFromMongo(Command):
         )
 
         db = app.data.get_mongo_collection(mongo_collection_name)
-        args = {'limit': bucket_size, 'sort': [(config.ID_FIELD, pymongo.ASCENDING)]}
+        args = {
+            'limit': page_size,
+            'sort': [(config.ID_FIELD, pymongo.ASCENDING)]
+        }
         last_id = None
         while True:
             if last_id:
