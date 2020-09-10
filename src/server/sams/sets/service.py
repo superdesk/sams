@@ -85,8 +85,8 @@ class SetsService(SamsService):
         :param doc: The Set to delete
         :raises: Superdesk.validation.ValidationError: If the Set is not in ``SET_STATES.DRAFT`` state
         """
-
-        if doc.get('state') != SET_STATES.DRAFT:
+        count = self.get_asset_count(doc.get('_id'))
+        if doc.get('state') == SET_STATES.USABLE or (doc.get('state') == SET_STATES.DISABLED and count):
             raise SamsSetErrors.CannotDeleteActiveSet()
 
     def get_destination(self, set_id: ObjectId) -> Destination:
@@ -99,3 +99,9 @@ class SetsService(SamsService):
 
     def get_provider_instance(self, set_id: ObjectId) -> SamsBaseStorageProvider:
         return self.get_destination(set_id).provider_instance()
+
+    def get_asset_count(self, set_id: ObjectId):
+        from sams.assets import get_service as get_assets_service
+        service = get_assets_service()
+        response = service.get(req=None, lookup={'set_id': set_id})
+        return response.count()
