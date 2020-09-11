@@ -340,11 +340,11 @@ class SamsSetErrors:
             super().__init__({'destination_id': destination_id}, exception)
 
     class CannotDeleteActiveSet(SamsException):
-        """Raised when attempting to delete an active Set"""
+        """Raised when attempting to delete an active Set or Inactive Set with Assets"""
 
         app_code = '07005'
         http_code = 400
-        description = 'Can only delete Sets that are in draft state'
+        description = 'Can only delete Sets that are in draft state or disabled with no assets'
 
     class SetNotFound(SamsException):
         """Raised when a Set cannot be found"""

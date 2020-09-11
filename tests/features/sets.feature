@@ -354,7 +354,7 @@ Feature: Sets
         """
         Then we get OK response
 
-    Scenario: Cannot delete a Set that is not draft
+    Scenario: Cannot delete a Set that is usable or disabled with assets
         When we send client.sets.create
         """
         {"docs": [{
@@ -399,9 +399,56 @@ Feature: Sets
         """
         {
             "error": "07005",
-            "description": "Can only delete Sets that are in draft state"
+            "description": "Can only delete Sets that are in draft state or disabled with no assets"
         }
         """
+        When we send client.sets.update
+        """
+        {
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
+            "updates": {"state": "disabled"}
+        }
+        """
+        Then we get OK response
+        When we send client.sets.delete
+        """
+        {
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"}
+        }
+        """
+        Then we get OK response
+        When we send client.sets.create
+        """
+        {"docs": [{
+            "name": "test3",
+            "destination_name": "during_draft"
+        }]}
+        """
+        Then we get OK response
+        When we send client.sets.update
+        """
+        {
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
+            "updates": {"state": "usable"}
+        }
+        """
+        Then we get OK response
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-jpg.jpg",
+                "name": "Jpeg Example",
+                "description": "Jpeg file asset example"
+            },
+            "filename": "file_example-jpg.jpg"
+        }
+        """
+        Then we get OK response
         When we send client.sets.update
         """
         {
@@ -422,10 +469,10 @@ Feature: Sets
         """
         {
             "error": "07005",
-            "description": "Can only delete Sets that are in draft state"
+            "description": "Can only delete Sets that are in draft state or disabled with no assets"
         }
         """
-
+        
     Scenario: cant consume through admin interface
         When we get "/admin/sets"
         Then we get response code 405
