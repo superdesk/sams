@@ -62,7 +62,7 @@ def download_compressed_binary(asset_ids):
     asset_ids = ast.literal_eval(asset_ids) if asset_ids else None
     file = [get_asset_service().download_binary(asset_id) for asset_id in asset_ids]
     files = [(single_file.filename, single_file.read()) for single_file in file]
-    
+
     in_memory_zip = BytesIO()
     with zipfile.ZipFile(in_memory_zip, mode='w') as temp_zip:
         for f in files:
