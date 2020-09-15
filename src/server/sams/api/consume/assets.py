@@ -22,7 +22,10 @@ To access Assets inside the SAMS application, use the :mod:`sams.assets` module 
 **schema**               :attr:`sams_client.schemas.assets.ASSET_SCHEMA`
 =====================   =========================================================
 """
+import ast
 import superdesk
+import zipfile
+from io import BytesIO
 from flask import request, current_app as app
 from sams.api.service import SamsApiService
 from sams.assets import get_service as get_asset_service
@@ -47,6 +50,30 @@ def download_binary(asset_id):
         mimetype=file.content_type,
         direct_passthrough=True
     )
+    return response
+
+
+@assets_bp.route('/consume/assets/compressed_binary/<asset_ids>', methods=['GET'])
+def download_compressed_binary(asset_ids):
+    """
+    Uses asset_ids and returns the compressed
+    asset binaries zip
+    """
+    asset_ids = ast.literal_eval(asset_ids) if asset_ids else None
+    file = [get_asset_service().download_binary(asset_id) for asset_id in asset_ids]
+    files = [(single_file.filename, single_file.read()) for single_file in file]
+    
+    in_memory_zip = BytesIO()
+    with zipfile.ZipFile(in_memory_zip, mode='w') as temp_zip:
+        for f in files:
+            temp_zip.writestr(f[0], f[1])
+
+    response = app.response_class(
+        in_memory_zip.getvalue(),
+        content_type='application/zip',
+        direct_passthrough=True
+    )
+
     return response
 
 

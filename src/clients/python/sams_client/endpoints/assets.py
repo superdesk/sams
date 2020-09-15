@@ -26,6 +26,7 @@ class SamsAssetEndpoint(Endpoint):
     _read_url = '/consume/assets'
     _read_binary_url = '/consume/assets/binary'
     _write_url = '/produce/assets'
+    _read_binary_zip_url = '/consume/assets/compressed_binary'
 
     def get_binary_by_id(
         self,
@@ -49,6 +50,32 @@ class SamsAssetEndpoint(Endpoint):
             url='{}/{}'.format(
                 self._read_binary_url,
                 str(item_id)
+            ),
+            headers=headers,
+            callback=callback
+        )
+
+    def get_binary_zip_by_id(
+        self,
+        item_ids: [ObjectId] = None,
+        headers: Dict[str, Any] = None,
+        callback: Callable[[requests.Response], requests.Response] = None
+    ) -> requests.Response:
+        """Helper method to get asset binaries by its ids
+
+        :param bson.objectid.ObjectId item_id: The ID of the asset
+        :param dict headers: Dictionary of headers to apply
+        :param callback: A callback function to manipulate the response
+        :rtype: requests.Response
+        :return: The compressed binaries zip, if found
+        """
+
+        if not self._read_binary_zip_url:
+            return self._return_405()
+        return self._client.get(
+            url='{}/{}'.format(
+                self._read_binary_zip_url,
+                str(item_ids)
             ),
             headers=headers,
             callback=callback
