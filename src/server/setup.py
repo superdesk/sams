@@ -17,7 +17,7 @@ with open('README.md', 'r') as f:
 LONG_DESCRIPTION = 'Super Asset Management Service'
 
 install_requires = [
-    'eve==1.1.1',
+    'eve==1.1.2',
     'eve-elastic>=7.0.0,<8.0.0',
     'flask>=1.1,<1.2',
     'flask-script>=2.0.5,<3.0',
