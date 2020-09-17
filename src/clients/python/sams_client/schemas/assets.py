@@ -33,7 +33,8 @@ ASSET_SCHEMA = {
         'type': 'string',
         'allowed': ['draft', 'internal', 'public'],
         'default': 'draft',
-        'nullable': False
+        'nullable': False,
+        'mapping': not_analyzed
     },
     'filename': {
         'type': 'string',
@@ -48,7 +49,17 @@ ASSET_SCHEMA = {
         'mapping': not_analyzed
     },
     'name': {
-        'type': 'string'
+        'type': 'string',
+        'mapping': {
+            'type': 'text',
+            # Add subtype `keyword` so that we can sort by `name`
+            'fields': {
+                'keyword': {
+                    'type': 'keyword',
+                    'ignore_above': 256
+                }
+            }
+        }
     },
     'description': {
         'type': 'string'
@@ -56,11 +67,19 @@ ASSET_SCHEMA = {
     'tags': {
         'type': 'list',
         'nullable': True,
-        'mapping': {
-            'type': 'object',
-            'properties': {
-                'code': not_analyzed,
-                'name': not_analyzed
+        'schema': {
+            'type': 'dict',
+            'schema': {
+                'code': {
+                    'type': 'string',
+                    'required': True,
+                    'mapping': not_analyzed
+                },
+                'name': {
+                    'type': 'string',
+                    'required': True,
+                    'mapping': not_analyzed
+                }
             }
         },
     },
@@ -70,7 +89,8 @@ ASSET_SCHEMA = {
         'allow_unknown': True
     },
     'binary': {
-        'type': 'media'
+        'type': 'media',
+        'mapping': not_analyzed
     }
 }
 """

@@ -31,9 +31,11 @@ from sams.api.service import SamsApiService
 from sams.assets import get_service as get_asset_service
 from superdesk.resource import Resource, build_custom_hateoas
 from werkzeug.wsgi import wrap_file
+from sams.default_settings import strtobool
 
 
 assets_bp = superdesk.Blueprint('assets', __name__)
+cache_for = 3600 * 24 * 30  # 30d cache
 
 
 @assets_bp.route('/consume/assets/binary/<asset_id>', methods=['GET'])
@@ -42,14 +44,29 @@ def download_binary(asset_id):
     Uses asset_id and returns the corresponding
     asset binary
     """
+
     service = get_asset_service()
+    asset = service.get_by_id(asset_id)
     file = service.download_binary(asset_id)
     data = wrap_file(request.environ, file, buffer_size=1024 * 256)
     response = app.response_class(
         data,
-        mimetype=file.content_type,
+        mimetype=asset['mimetype'],
         direct_passthrough=True
     )
+    response.content_length = asset['length']
+    response.last_modified = asset['_updated']
+    response.set_etag(asset['_etag'])
+    response.cache_control.max_age = cache_for
+    response.cache_control.s_max_age = cache_for
+    response.cache_control.public = True
+    response.make_conditional(request)
+
+    if strtobool(request.args.get('download', 'False')):
+        response.headers['Content-Disposition'] = 'Attachment; filename={}'.format(asset['filename'])
+    else:
+        response.headers['Content-Disposition'] = 'Inline; filename={}'.format(asset['filename'])
+
     return response
 
 

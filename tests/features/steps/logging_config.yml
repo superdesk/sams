@@ -28,6 +28,10 @@ loggers:
     handlers: [console]
     level: ERROR
     propagate: no
+  superdesk:
+    handlers: [console]
+    level: ERROR
+    propagate: no
 root:
   handlers: [console]
   level: ERROR

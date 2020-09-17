@@ -19,4 +19,5 @@ app = SamsApp()
 manager = Manager(app)
 
 if __name__ == '__main__':
-    manager.run(superdesk.COMMANDS)
+    with app.app_context():
+        manager.run(superdesk.COMMANDS)

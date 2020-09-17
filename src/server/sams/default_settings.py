@@ -71,7 +71,8 @@ X_HEADERS = ['Content-Type', 'Authorization', 'If-Match']
 CORE_APPS = [
     'sams.sets',
     'sams.storage',
-    'sams.assets'
+    'sams.assets',
+    'sams.commands',
 ]
 INSTALLED_APPS = [
     'sams.factory.sentry',
