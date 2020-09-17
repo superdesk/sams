@@ -446,7 +446,7 @@ Feature: Assets
         When we download a binary file with client.assets.get_binary_zip_by_id
         """
         {
-            "item_ids": "['#ASSETS._id#','#ASSETS._id#']",
+            "item_ids": ["#ASSETS._id#","#ASSETS._id#"],
             "length": 24626
         }
         """

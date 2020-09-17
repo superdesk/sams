@@ -13,7 +13,7 @@ import json
 import requests
 from .endpoint import Endpoint
 from bson import ObjectId
-from typing import Dict, Any, Callable
+from typing import Dict, Any, Callable, List, Union
 
 
 class SamsAssetEndpoint(Endpoint):
@@ -57,25 +57,26 @@ class SamsAssetEndpoint(Endpoint):
 
     def get_binary_zip_by_id(
         self,
-        item_ids: [ObjectId] = None,
+        item_ids: List[Union[ObjectId, str]] = None,
         headers: Dict[str, Any] = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
-        """Helper method to get asset binaries by its ids
+        """Helper method to get assets' compressed binaries by its ids
 
-        :param bson.objectid.ObjectId item_id: The ID of the asset
+        :param bson.objectid.ObjectId item_ids: The IDs' Array of the asset
         :param dict headers: Dictionary of headers to apply
         :param callback: A callback function to manipulate the response
         :rtype: requests.Response
         :return: The compressed binaries zip, if found
         """
 
+        item_ids = ','.join(str(item_id) for item_id in item_ids) if item_ids else ''
         if not self._read_binary_zip_url:
             return self._return_405()
         return self._client.get(
             url='{}/{}'.format(
                 self._read_binary_zip_url,
-                str(item_ids)
+                item_ids
             ),
             headers=headers,
             callback=callback
