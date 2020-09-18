@@ -23,7 +23,7 @@ install_requires = [
     'flask-script>=2.0.5,<3.0',
     'gunicorn>=19.7.1',
     'honcho>=1.0.1',
-    'superdesk-core @ https://github.com/superdesk/superdesk-core/tarball/develop#egg=Superdesk-Core',
+    'superdesk-core @ https://github.com/superdesk/superdesk-core/tarball/sams#egg=Superdesk-Core',
 ]
 
 setup(

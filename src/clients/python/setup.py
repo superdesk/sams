@@ -18,7 +18,7 @@ LONG_DESCRIPTION = 'Super Asset Management Service Client'
 
 install_requires = [
     'setuptools==36.6.0',
-    'requests==2.21.0'
+    'requests>=2.7.0,<3.0'
 ]
 
 setup(
