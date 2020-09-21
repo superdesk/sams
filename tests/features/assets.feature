@@ -419,3 +419,34 @@ Feature: Assets
             "#SETS._id#": 1
         }
         """
+    Scenario: Compress binaries to Zip
+       When we send client.sets.create
+        """
+        {
+            "docs": [{
+                "name": "foo",
+                "state": "usable",
+                "destination_name": "internal"
+            }]
+        }
+        """
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-jpg.jpg",
+                "name": "Jpeg Example",
+                "description": "Jpeg file asset example"
+            },
+            "filename": "file_example-jpg.jpg"
+        }
+        """
+        Then we get OK response
+        When we download a binary file with client.assets.get_binary_zip_by_id
+        """
+        {
+            "item_ids": ["#ASSETS._id#","#ASSETS._id#"],
+            "length": 24626
+        }
+        """
