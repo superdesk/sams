@@ -63,10 +63,18 @@ jobs:
           - CLIENT=true
           - SERVICES=true
           - START_SAMS=true
-      - name: "behave"
+      - name: "behave-mongo-gridfs"
         script: behave tests/features --format progress2
         env:
           - SERVER=true
           - CLIENT=true
           - SERVICES=true
           - BEHAVE=true
+      - name: "behave-aws-s3"
+          script: behave tests/features --format progress2
+          env:
+            - SERVER=true
+            - CLIENT=true
+            - SERVICES=true
+            - BEHAVE=true
+            - TEST_AMAZON_S3=true
