@@ -1,5 +1,5 @@
 :mod:`SamsSystemErrors` -- System Errors
-===========================================================
+========================================
 
 .. autoclass:: sams_client.errors.SamsSystemErrors.UnknownError
     :members:
