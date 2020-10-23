@@ -13,7 +13,7 @@ import json
 import requests
 from .endpoint import Endpoint
 from bson import ObjectId
-from typing import Dict, Any, Callable, List, Union
+from typing import Dict, Any, Callable, List, Union, Tuple
 
 
 class SamsAssetEndpoint(Endpoint):
@@ -27,6 +27,39 @@ class SamsAssetEndpoint(Endpoint):
     _read_binary_url = '/consume/assets/binary'
     _write_url = '/produce/assets'
     _read_binary_zip_url = '/consume/assets/compressed_binary'
+
+    def get_by_ids(
+        self,
+        item_ids: List[ObjectId],
+        headers: Dict[str, Any] = None,
+        callback: Callable[[requests.Response], requests.Response] = None
+    ) -> requests.Response:
+        """Helper method to get Assets by ids
+
+        :param list<bson.objectid.ObjectId> item_ids: The Asset IDs
+        :param dict headers: Dictionary of headers to apply
+        :param callback: A callback function to manipulate the response
+        :rtype: requests.Response
+        :return: The Assets, if found
+        """
+
+        if not self._read_url:
+            return self._return_405()
+
+        return self._client.search(
+            url=self._read_url,
+            headers=headers,
+            callback=callback,
+            params={'source': json.dumps({
+                'query': {
+                    'bool': {
+                        'must': [
+                            {'terms': {'_id': item_ids}}
+                        ]
+                    }
+                }
+            })}
+        )
 
     def get_binary_by_id(
         self,
@@ -87,18 +120,18 @@ class SamsAssetEndpoint(Endpoint):
         set_ids: [ObjectId] = None,
         headers: Dict[str, Any] = None,
         callback: Callable[[requests.Response], requests.Response] = None
-    ) -> requests.Response:
+    ) -> Tuple[Dict[str, int], int]:
         """Helper method to get asset count distribution for given set ids
         will get asset count distribution over all sets if set_ids is None
 
         :param array bson.objectid.ObjectId set_ids: Id of sets
         :param dict headers: Dictionary of headers to apply
         :param callback: A callback function to manipulate the response
-        :rtype: requests.Response
+        :rtype: dict<str, int>, int
         """
 
         if not self._read_url:
-            return self._return_405()
+            return {}, 405
 
         # get total asset count distribution over all sets if set_ids is None
         if set_ids is None:
