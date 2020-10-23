@@ -45,32 +45,32 @@ before_install:
 
 jobs:
     include:
-      - name: "lint"
-        script: cd src/server && flake8 && cd ../clients/python && flake8 && cd ../../../tests/server && flake8 && cd ../clients/python && flake8
-        env:
-          - SERVER=true
-          - CLIENT=true
-      - name: "server-unit"
-        script: pytest tests/server --disable-pytest-warnings
-        env:
-          - SERVER=true
-          - CLIENT=true
-          - SERVICES=true
-      - name: "clients-unit"
-        script: pytest tests/clients --disable-pytest-warnings
-        env:
-          - SERVER=true
-          - CLIENT=true
-          - SERVICES=true
-          - START_SAMS=true
-      - name: "behave-mongo-gridfs"
-        script: behave tests/features --format progress2
-        env:
-          - SERVER=true
-          - CLIENT=true
-          - SERVICES=true
-          - BEHAVE=true
-      - name: "behave-aws-s3"
+        - name: "lint"
+          script: cd src/server && flake8 && cd ../clients/python && flake8 && cd ../../../tests/server && flake8 && cd ../clients/python && flake8
+          env:
+            - SERVER=true
+            - CLIENT=true
+        - name: "server-unit"
+          script: pytest tests/server --disable-pytest-warnings
+          env:
+            - SERVER=true
+            - CLIENT=true
+            - SERVICES=true
+        - name: "clients-unit"
+          script: pytest tests/clients --disable-pytest-warnings
+          env:
+            - SERVER=true
+            - CLIENT=true
+            - SERVICES=true
+            - START_SAMS=true
+        - name: "behave-mongo-gridfs"
+          script: behave tests/features --format progress2
+          env:
+            - SERVER=true
+            - CLIENT=true
+            - SERVICES=true
+            - BEHAVE=true
+        - name: "behave-aws-s3"
           script: behave tests/features --format progress2
           env:
             - SERVER=true
