@@ -9,45 +9,38 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
+from io import BytesIO
 from behave import *
 from flask import json
+import hashlib
+from werkzeug.http import unquote_etag
+from zipfile import ZipFile
 
-from tests.features.steps.helpers import assert_200, apply_placeholders, test_json, store_last_item, expect_status
+from tests.features.steps.helpers import assert_200, apply_placeholders, test_json, store_last_item, expect_status, \
+    get_client_model_and_method_from_step
 from tests.features.steps.app import get_app, get_client
-from tests.server.utils import load_file, get_test_db_host
 
 
 @when('we send client.{model_name}.{method_name}')
 def step_impl_send_client(context, model_name, method_name):
-    client = get_client(context)
-
-    try:
-        model = getattr(client, model_name)
-    except AttributeError:
-        assert False, 'client.{} is not registered with the client'.format(model_name)
-
-    try:
-        method = getattr(model, method_name)
-    except AttributeError:
-        assert False, 'client.{}.{} is not registered with the client'.format(model_name, method_name)
+    client, model, method = get_client_model_and_method_from_step(
+        context,
+        model_name,
+        method_name
+    )
 
     kwargs = {} if not context.text else json.loads(apply_placeholders(context, context.text))
     context.response = method(**kwargs)
     store_last_item(context, model_name)
 
+
 @when('we upload a binary file with client.{model_name}.{method_name}')
 def step_impl_upload_binary_client(context, model_name, method_name):
-    client = get_client(context)
-
-    try:
-        model = getattr(client, model_name)
-    except AttributeError:
-        assert False, 'client.{} is not registered with the client'.format(model_name)
-
-    try:
-        method = getattr(model, method_name)
-    except AttributeError:
-        assert False, 'client.{}.{} is not registered with the client'.format(model_name, method_name)
+    client, model, method = get_client_model_and_method_from_step(
+        context,
+        model_name,
+        method_name
+    )
 
     kwargs = {} if not context.text else json.loads(apply_placeholders(context, context.text))
     filename = kwargs.pop('filename', None)
@@ -60,24 +53,40 @@ def step_impl_upload_binary_client(context, model_name, method_name):
 
 @when('we download a binary file with client.{model_name}.{method_name}')
 def step_impl_download_binary_client(context, model_name, method_name):
-    client = get_client(context)
-
-    try:
-        model = getattr(client, model_name)
-    except AttributeError:
-        assert False, 'client.{} is not registered with the client'.format(model_name)
-
-    try:
-        method = getattr(model, method_name)
-    except AttributeError:
-        assert False, 'client.{}.{} is not registered with the client'.format(model_name, method_name)
+    client, model, method = get_client_model_and_method_from_step(
+        context,
+        model_name,
+        method_name
+    )
 
     kwargs = {} if not context.text else json.loads(apply_placeholders(context, context.text))
     length = kwargs.pop('length', None)
     context.response = method(**kwargs)
 
     if context.response.status_code in [200, 201, 204] and length:
-        assert len(context.response.content) == length
+        response_etag, _ = unquote_etag(context.response.headers['ETag'])
+        h = hashlib.sha1()
+        h.update(context.response.content)
+        expected_etag = h.hexdigest()
+        assert response_etag == expected_etag, 'response.etag({}) != expected.etag({})'.format(
+            response_etag,
+            expected_etag
+        )
+        assert len(context.response.content) == length, 'response.length({}) != expected.length({})'.format(
+            len(context.response.content),
+            length
+        )
+
+        if method_name == 'get_binary_zip_by_id':
+            zip_file = ZipFile(BytesIO(context.response.content))
+            assert zip_file.testzip() is None
+
+            item_ids = kwargs['item_ids']
+            assets = client.assets.get_by_ids(item_ids).json()['_items']
+
+            zip_filenames = zip_file.namelist()
+            for asset in assets:
+                assert asset['filename'] in zip_filenames
 
 
 @when('we get "{url}"')
@@ -157,3 +166,9 @@ def step_impl_client_config(context):
         apply_placeholders(context, context.text)
     )
     app.client = app.create_client_instance(config_overrides)
+
+
+@then('we store response in "{tag}"')
+def step_impl_store_response_in_cts(context, tag):
+    data = json.loads(context.response.content)
+    setattr(context, tag, data)

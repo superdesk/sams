@@ -142,6 +142,7 @@ def test_upload_using_stream(init_app):
             'binary': f,
         }])[0]
 
+        f.seek(0)
         original_bytes = f.read()
         original_size = f.tell()
 

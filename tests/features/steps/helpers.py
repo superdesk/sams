@@ -19,6 +19,7 @@ from requests.models import Response
 from flask import json
 
 from superdesk.utc import utcnow
+from tests.features.steps.app import get_client
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
 
@@ -224,3 +225,19 @@ def expect_status(response, code):
         expected=code,
         reason=response.text,
     )
+
+
+def get_client_model_and_method_from_step(context, model_name, method_name):
+    client = get_client(context)
+
+    try:
+        model = getattr(client, model_name)
+    except AttributeError:
+        assert False, 'client.{} is not registered with the client'.format(model_name)
+
+    try:
+        method = getattr(model, method_name)
+    except AttributeError:
+        assert False, 'client.{}.{} is not registered with the client'.format(model_name, method_name)
+
+    return client, model, method

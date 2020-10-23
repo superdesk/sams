@@ -1,4 +1,4 @@
-from tests.server.utils import get_test_db_host
+from tests.server.utils import get_test_db_host, get_test_storage_destinations
 
 test_sets = [{
     'name': 'Test_Set',
@@ -14,11 +14,6 @@ test_sets = [{
     'destination_config': {'test': '123'}
 }]
 
-db_host = get_test_db_host()
-
-STORAGE_DESTINATIONS = [
-    'MongoGridFS,internal,mongodb://{}/tests_sams'.format(db_host),
-    'MongoGridFS,during_draft,mongodb://{}/tests_sams'.format(db_host)
-]
+STORAGE_DESTINATIONS = get_test_storage_destinations()
 
 MONGO_STORAGE_PROVIDER = 'sams.storage.providers.mongo.MongoGridFSProvider'
