@@ -13,4 +13,5 @@ Resource Schema
 Service
 -------
 .. autoclass:: sams.sets.service.SetsService
-    :members: validate_patch,on_delete
+    :members: validate_patch,on_delete,get_max_asset_size
+    :member-order: bysource

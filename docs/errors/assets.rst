@@ -15,3 +15,8 @@
     :members:
     :member-order: bysource
     :undoc-members:
+
+.. autoclass:: sams_client.errors.SamsAssetErrors.AssetExceedsMaximumSizeForSet
+    :members:
+    :member-order: bysource
+    :undoc-members:

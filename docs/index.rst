@@ -31,6 +31,7 @@ works and can be developed further.
     server/sets
     server/storage/index
     server/assets
+    server/utils
 
 API Implementation
 ------------------
@@ -59,6 +60,7 @@ The following is a technical reference for the SAMS Client library.
     client/python/client/index
     client/python/schemas/index
     client/python/auth
+    client/python/utils
 
 API Error Reference
 -------------------

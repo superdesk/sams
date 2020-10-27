@@ -82,3 +82,13 @@ Default: ``['sams.storage.providers.mongo.MongoGridFSProvider']``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Default: ``None``
+
+Asset settings
+--------------
+
+``MAX_ASSET_SIZE``
+^^^^^^^^^^^^^^^^^^
+
+Default: ``0``
+
+Set's a global restriction on the maximum size of an Asset allowed to be uploaded.
