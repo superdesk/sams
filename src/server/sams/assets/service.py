@@ -19,6 +19,8 @@ from superdesk.storage.mimetype_mixin import MimetypeMixin
 
 from sams.factory.service import SamsService
 from sams.sets import get_service
+from sams.utils import get_binary_stream_size
+
 from sams_client.errors import SamsAssetErrors
 
 
@@ -84,6 +86,23 @@ class AssetsService(SamsService, MimetypeMixin):
             provider = set_service.get_provider_instance(doc.get('set_id'))
             provider.delete(doc['_media_id'])
 
+    def _validate_upload_size(self, set_id: ObjectId, content: BinaryIO):
+        """Validates the size of the upload against the Set or App config
+
+        :param bson.objectid.ObjectId set_id: The ID of the Set
+        :param io.BytesIO content: The binary stream
+        :raises: sams_client.errors.SamsAssetErrors.AssetExceedsMaximumSizeForSet: If Asset size is too big
+        """
+
+        max_size = get_service().get_max_asset_size(set_id)
+
+        if max_size == 0:
+            return
+
+        content_size = get_binary_stream_size(content)
+        if content_size > max_size:
+            raise SamsAssetErrors.AssetExceedsMaximumSizeForSet(content_size, max_size)
+
     def upload_binary(self, asset: Dict[str, Any], content: BinaryIO or bytes, delete_original: bool = True) -> dict:
         """Uploads binary data for provided Asset
 
@@ -102,6 +121,8 @@ class AssetsService(SamsService, MimetypeMixin):
             content.seek(0)
         except AttributeError:
             content = BytesIO(content)
+
+        self._validate_upload_size(set_id, content)
 
         set_service = get_service()
         provider = set_service.get_provider_instance(set_id)

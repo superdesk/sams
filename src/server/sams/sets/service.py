@@ -12,6 +12,8 @@
 from copy import deepcopy
 from bson import ObjectId
 
+from flask import current_app as app
+
 from sams_client.schemas import SET_STATES
 
 from sams.factory.service import SamsService
@@ -105,3 +107,27 @@ class SetsService(SamsService):
         service = get_assets_service()
         response = service.get(req=None, lookup={'set_id': set_id})
         return response.count()
+
+    def get_max_asset_size(self, set_id: ObjectId) -> int:
+        """Returns the maximum allowed size of an Asset for a Set
+
+        Based on the configured settings, this method returns:
+            * ``Set.maximum_asset_size`` if ``MAX_ASSET_SIZE == 0``
+            * ``MAX_ASSET_SIZE`` if ``Set.maximum_asset_size == 0``
+            * Otherwise whichever is lowest
+
+        :param bson.objectid.ObjectId set_id: The ID of the Set
+        :return: The configured MAX_ASSET_SIZE of Set.maximum_asset_size, whichever is lower
+        :rtype: int
+        """
+
+        set_item = self.get_by_id(set_id)
+        max_set_size = set_item.get('maximum_asset_size') or 0
+        max_app_size = app.config.get('MAX_ASSET_SIZE') or 0
+
+        if max_app_size == 0:
+            return max_set_size
+        elif max_set_size == 0:
+            return max_app_size
+        else:
+            return max_set_size if max_set_size < max_app_size else max_app_size
