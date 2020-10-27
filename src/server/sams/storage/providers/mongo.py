@@ -23,15 +23,41 @@ This will then allow destinations to be configured for Sets to use. For example:
     STORAGE_DESTINATION_1 = 'MongoGridFS,Default,mongodb://localhost/sams'
 """
 
-from typing import BinaryIO
+from typing import BinaryIO, Union
 
 from pymongo import MongoClient
 from gridfs import GridFS
 from gridfs.errors import NoFile
+from gridfs.grid_file import GridOut, EMPTY
 from bson import ObjectId
+
+from superdesk.storage.superdesk_file import SuperdeskFile
 
 from .base import SamsBaseStorageProvider
 from sams_client.errors import SamsAssetErrors
+
+
+class GridfsFileWrapper(SuperdeskFile):
+    """SuperdeskFile implementation for GridFS files"""
+
+    def __init__(self, gridfs_file: GridOut):
+        super().__init__()
+
+        blocksize = 65636
+        buf = gridfs_file.read(blocksize)
+        while buf != EMPTY:
+            self.write(buf)
+            buf = gridfs_file.read(blocksize)
+
+        self.seek(0)
+        self.content_type = gridfs_file.content_type
+        self.length = gridfs_file.length
+        self._name = gridfs_file.name
+        self.filename = gridfs_file.filename
+        self.metadata = gridfs_file.metadata
+        self.upload_date = gridfs_file.upload_date
+        self.md5 = gridfs_file.md5
+        self._id = gridfs_file._id
 
 
 class MongoGridFSProvider(SamsBaseStorageProvider):
@@ -63,20 +89,20 @@ class MongoGridFSProvider(SamsBaseStorageProvider):
 
         return self._fs
 
-    def exists(self, asset_id: ObjectId or str) -> bool:
+    def exists(self, media_id: Union[ObjectId, str]) -> bool:
         """Checks if a file exists in the storage destination
 
-        :param bson.objectid.ObjectId asset_id: The ID of the asset
+        :param bson.objectid.ObjectId media_id: The ID of the asset
         :return: ``True`` if a matching file exists, ``False`` otherwise
         :rtype: bool
         """
 
-        if isinstance(asset_id, str):
-            asset_id = ObjectId(asset_id)
+        if isinstance(media_id, str):
+            media_id = ObjectId(media_id)
 
-        return self.fs().exists(asset_id)
+        return self.fs().exists(media_id)
 
-    def put(self, content: BinaryIO or bytes, filename: str) -> str:
+    def put(self, content: Union[BinaryIO, bytes], filename: str, mimetype: str = None) -> str:
         """Upload a file to the storage destination
 
         `content` must be an instance of :class:`bytes` or a file-like object
@@ -84,8 +110,9 @@ class MongoGridFSProvider(SamsBaseStorageProvider):
 
         :param bytes content: The data to be uploaded
         :param str filename: The filename
+        :param str mimetype: The mimetype of the content (not used here)
         :return: The ``"id"`` of the created file
-        :rtype: bson.objectid.ObjectId
+        :rtype: str
         """
 
         media_id = self.fs().put(
@@ -94,32 +121,34 @@ class MongoGridFSProvider(SamsBaseStorageProvider):
         )
         return str(media_id)
 
-    def get(self, asset_id: ObjectId or str) -> BinaryIO:
+    def get(self, media_id: Union[ObjectId, str]) -> GridfsFileWrapper:
         """Get an asset from the storage
 
-        :param bson.objectid.ObjectId asset_id: The ID of the asset
+        :param bson.objectid.ObjectId media_id: The ID of the asset
         :return: A file-like object providing a :meth:`read` method
         :rtype: io.BytesIO
         """
 
-        if isinstance(asset_id, str):
-            asset_id = ObjectId(asset_id)
+        if isinstance(media_id, str):
+            media_id = ObjectId(media_id)
 
         try:
-            return self.fs().get(asset_id)
+            gridfs_file = self.fs().get(media_id)
+            if gridfs_file:
+                return GridfsFileWrapper(gridfs_file)
         except NoFile:
-            raise SamsAssetErrors.AssetNotFound(asset_id)
+            raise SamsAssetErrors.AssetNotFound(media_id)
 
-    def delete(self, asset_id: ObjectId or str):
+    def delete(self, media_id: Union[ObjectId, str]):
         """Delete as asset from the storage
 
-        :param bson.objectid.ObjectId asset_id: The ID of the asset
+        :param bson.objectid.ObjectId media_id: The ID of the asset
         """
 
-        if isinstance(asset_id, str):
-            asset_id = ObjectId(asset_id)
+        if isinstance(media_id, str):
+            media_id = ObjectId(media_id)
 
-        self.fs().delete(asset_id)
+        self.fs().delete(media_id)
 
     def drop(self):
         """Deletes all assets from the storage"""

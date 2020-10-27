@@ -419,6 +419,7 @@ Feature: Assets
             "#SETS._id#": 1
         }
         """
+
     Scenario: Compress binaries to Zip
        When we send client.sets.create
         """
@@ -442,11 +443,76 @@ Feature: Assets
             "filename": "file_example-jpg.jpg"
         }
         """
-        Then we get OK response
+        Then we store response in "asset_1"
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-docx.docx",
+                "name": "Docx Example",
+                "description": "Docx file asset example"
+            },
+            "filename": "file_example-docx.docx"
+        }
+        """
+        Then we store response in "asset_2"
         When we download a binary file with client.assets.get_binary_zip_by_id
         """
         {
-            "item_ids": ["#ASSETS._id#","#ASSETS._id#"],
-            "length": 24626
+            "item_ids": ["#asset_1._id#","#asset_2._id#"],
+            "length": 123747
         }
+        """
+
+    Scenario: Get assets by ids
+        When we send client.sets.create
+        """
+        {
+            "docs": [{
+                "name": "foo",
+                "state": "usable",
+                "destination_name": "internal"
+            }]
+        }
+        """
+        Then we get OK response
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-jpg.jpg",
+                "name": "Jpeg Example",
+                "description": "Jpeg file asset example"
+            },
+            "filename": "file_example-jpg.jpg"
+        }
+        """
+        Then we store response in "asset_1"
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-docx.docx",
+                "name": "Docx Example",
+                "description": "Docx file asset example"
+            },
+            "filename": "file_example-docx.docx"
+        }
+        """
+        Then we store response in "asset_2"
+        When we send client.assets.get_by_ids
+        """
+        {
+            "item_ids": ["#asset_1._id#", "#asset_2._id#"]
+        }
+        """
+        Then we get existing resource
+        """
+        {"_items": [
+            {"_id": "#asset_1._id#", "name": "Jpeg Example"},
+            {"_id": "#asset_2._id#", "name": "Docx Example"}
+        ]}
         """

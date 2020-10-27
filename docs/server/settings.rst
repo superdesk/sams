@@ -76,7 +76,12 @@ Storage Provider/Destination settings
 ``STORAGE_PROVIDERS``
 ^^^^^^^^^^^^^^^^^^^^^
 
-Default: ``['sams.storage.providers.mongo.MongoGridFSProvider']``
+Default::
+
+    [
+        'sams.storage.providers.mongo.MongoGridFSProvider',
+        'sams.storage.providers.amazon.AmazonS3Provider',
+    ]
 
 ``STORAGE_DESTINATION_<x>``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^

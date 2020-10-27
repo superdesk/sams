@@ -23,24 +23,27 @@ To access Assets inside the SAMS application, use the :mod:`sams.assets` module 
 =====================   =========================================================
 """
 
-import superdesk
-import zipfile
-from bson import ObjectId
 from io import BytesIO
+import zipfile
+import hashlib
+
+from bson import ObjectId
 from flask import request, current_app as app
+from werkzeug.wsgi import wrap_file
+
+from superdesk import Blueprint
+from superdesk.resource import Resource, build_custom_hateoas
+
 from sams.api.service import SamsApiService
 from sams.assets import get_service as get_asset_service
 from sams.default_settings import strtobool
-from superdesk.resource import Resource, build_custom_hateoas
-from werkzeug.wsgi import wrap_file
-from sams.default_settings import strtobool
 
-assets_bp = superdesk.Blueprint('assets', __name__)
+assets_bp = Blueprint('assets', __name__)
 cache_for = 3600 * 24 * 30  # 30d cache
 
 
 @assets_bp.route('/consume/assets/binary/<asset_id>', methods=['GET'])
-def download_binary(asset_id):
+def download_binary(asset_id: str):
     """
     Uses asset_id and returns the corresponding
     asset binary
@@ -57,7 +60,10 @@ def download_binary(asset_id):
     )
     response.content_length = asset['length']
     response.last_modified = asset['_updated']
-    response.set_etag(asset['_etag'])
+    h = hashlib.sha1()
+    h.update(file.read())
+    file.seek(0)
+    response.set_etag(h.hexdigest())
     response.cache_control.max_age = cache_for
     response.cache_control.s_max_age = cache_for
     response.cache_control.public = True
@@ -72,7 +78,7 @@ def download_binary(asset_id):
 
 
 @assets_bp.route('/consume/assets/compressed_binary/<asset_ids>', methods=['GET'])
-def download_compressed_binary(asset_ids):
+def download_compressed_binary(asset_ids: str):
     """
     Uses asset_ids and returns the compressed
     asset binaries zip
@@ -95,6 +101,9 @@ def download_compressed_binary(asset_ids):
     )
 
     response.content_length = len(data)
+    h = hashlib.sha1()
+    h.update(data)
+    response.set_etag(h.hexdigest())
 
     if strtobool(request.args.get('download', 'False')):
         response.headers['Content-Disposition'] = 'Attachment'

@@ -15,3 +15,14 @@ services:
             - discovery.type=single-node
         tmpfs:
             - /usr/share/elasticsearch/data
+
+    minio:
+        image: minio/minio
+        ports:
+            - "9000:9000"
+        environment:
+            - MINIO_ACCESS_KEY=minioadmin
+            - MINIO_SECRET_KEY=minioadmin
+        command: server /data/minio
+        tmpfs:
+            - /data/minio

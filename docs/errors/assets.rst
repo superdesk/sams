@@ -1,5 +1,5 @@
 :mod:`SamsAssetErrors` -- Asset Errors
-=========================================================
+======================================
 
 .. autoclass:: sams_client.errors.SamsAssetErrors.BinaryNotSupplied
     :members:

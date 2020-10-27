@@ -1,5 +1,5 @@
 :mod:`SamsStorageDestinationErrors` -- Storage Destination Errors
-====================================================================================
+=================================================================
 
 .. autoclass:: sams_client.errors.SamsStorageDestinationErrors.NotFound
     :members:

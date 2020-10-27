@@ -9,13 +9,14 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from typing import BinaryIO, Dict, Any, List
+from typing import BinaryIO, Dict, Any, List, Union
 from bson import ObjectId
 from io import BytesIO
 from copy import deepcopy
 
 from superdesk.services import Service
 from superdesk.storage.mimetype_mixin import MimetypeMixin
+from superdesk.storage.superdesk_file import SuperdeskFile
 
 from sams.factory.service import SamsService
 from sams.sets import get_service
@@ -44,20 +45,20 @@ class AssetsService(SamsService, MimetypeMixin):
 
         return super(Service, self).post(docs, **kwargs)
 
-    def patch(self, id: ObjectId, updates: Dict[str, Any]) -> Dict[str, Any]:
+    def patch(self, item_id: ObjectId, updates: Dict[str, Any]) -> Dict[str, Any]:
         """Updates the binary and/or metadata
 
         .. note::
             When uploading a new binary to an existing Asset, the original binary
             will be deleted from the StorageDestination.
 
-        :param bson.objectid.ObjectId id: ID for the Asset
+        :param bson.objectid.ObjectId item_id: ID for the Asset
         :param dict updates: Dictionary containing the desired metadata/binary to update
         :return: Dictionary containing the updated attributes of the Asset
         :rtype: dict
         """
 
-        original = self.get_by_id(id)
+        original = self.get_by_id(item_id)
         content = updates.pop('binary', None)
         self.validate_patch(original, updates)
 
@@ -71,7 +72,7 @@ class AssetsService(SamsService, MimetypeMixin):
             file_meta = self.upload_binary(asset, content)
             updates.update(file_meta)
 
-        return super(Service, self).patch(id, updates)
+        return super(Service, self).patch(item_id, updates)
 
     def on_deleted(self, doc: Dict[str, Any]):
         """Delete the Asset Binary after the Metadata is deleted
@@ -84,7 +85,12 @@ class AssetsService(SamsService, MimetypeMixin):
             provider = set_service.get_provider_instance(doc.get('set_id'))
             provider.delete(doc['_media_id'])
 
-    def upload_binary(self, asset: Dict[str, Any], content: BinaryIO or bytes, delete_original: bool = True) -> dict:
+    def upload_binary(
+        self,
+        asset: Dict[str, Any],
+        content: Union[BinaryIO, bytes],
+        delete_original: bool = True
+    ) -> dict:
         """Uploads binary data for provided Asset
 
         :param dict asset: The Asset Metadata used to store the binary for
@@ -96,7 +102,7 @@ class AssetsService(SamsService, MimetypeMixin):
 
         set_id = asset.get('set_id')
         filename = asset.get('filename')
-        mimetype = asset.get('mimetype')
+        mimetype = self._get_mimetype(content, filename, asset.get('mimetype'))
 
         try:
             content.seek(0)
@@ -105,8 +111,7 @@ class AssetsService(SamsService, MimetypeMixin):
 
         set_service = get_service()
         provider = set_service.get_provider_instance(set_id)
-        media_id = provider.put(content, filename)
-        content.seek(0)
+        media_id = provider.put(content, filename, mimetype)
 
         asset_binary = provider.get(media_id)
 
@@ -117,15 +122,15 @@ class AssetsService(SamsService, MimetypeMixin):
             'binary': media_id,
             '_media_id': media_id,
             'length': asset_binary.length,
-            'mimetype': self._get_mimetype(asset_binary, filename, mimetype)
+            'mimetype': mimetype
         }
 
-    def download_binary(self, asset_id: ObjectId) -> BinaryIO:
+    def download_binary(self, asset_id: Union[ObjectId, str]) -> SuperdeskFile:
         """Downloads the Asset Binary
 
         :param bson.objectid.ObjectId asset_id: The ID of the Asset
         :return: The Binary Stream for the Asset Binary
-        :rtype: io.BytesIO
+        :rtype: superdesk.storage.superdesk_file.SuperdeskFile
         """
 
         asset = self.get_by_id(asset_id)
@@ -134,4 +139,6 @@ class AssetsService(SamsService, MimetypeMixin):
 
         set_service = get_service()
         provider = set_service.get_provider_instance(asset.get('set_id'))
-        return provider.get(asset.get('_media_id'))
+        asset_file = provider.get(asset.get('_media_id'))
+        asset_file.filename = asset['filename']
+        return asset_file
