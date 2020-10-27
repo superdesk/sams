@@ -10,7 +10,7 @@
 # at https://www.sourcefabric.org/superdesk/license
 
 from bson import ObjectId
-from typing import Dict, List, Tuple, Any
+from typing import Dict, List, Tuple, Any, Union
 
 try:
     # When used in the SAMS API errors will inherit from Werkzeug errors
@@ -47,6 +47,7 @@ class SamsException(BaseException):
     def get_name(self) -> str:
         """Returns the class name of the exception.
         For example::
+
             SamsSetErrors.InvalidStateTransition('usable').get_name()
             'InvalidStateTransition'
         """
@@ -56,6 +57,7 @@ class SamsException(BaseException):
     def __str__(self) -> str:
         """Returns a string containing all relevant information
         For example::
+
             str(SamsSetErrors.InvalidStateTransition('usable'))
             'Error[07001] - InvalidStateTransition: Cannot change state from "usable" to draft'
         """
@@ -71,6 +73,7 @@ class SamsException(BaseException):
 
         This is used for constructing the response to send to the client.
         For example::
+
             SamsSetErrors.InvalidStateTransition('usable').to_dict()
             {
                 'error': '07001',
@@ -88,6 +91,7 @@ class SamsException(BaseException):
     def to_error_response(self) -> Tuple[Dict[str, str or Dict], int]:
         """Returns a tuple containing a results of ``to_dict()`` and ``http_code``
         For example::
+
             SamsSetErrors.InvalidStateTransition('usable').to_error_response()
             {
                 'error': '07001',
@@ -198,6 +202,7 @@ class SamsHTTPError(SamsException):
 
     The ``app_code`` will be the supplied ``http_code`` prefixed with ``03``.
     For example::
+
         from flask import abort
 
         abort(401, description='Not allowed to do that')
@@ -236,6 +241,7 @@ class SamsResourceErrors:
 
         The response will include the list of fields and rules that failed validation, under the ``errors`` attribute.
         For example::
+
             "error": "04001",
             "name": "ValidationError",
             "description": "Validation error",
@@ -374,7 +380,7 @@ class SamsAssetErrors:
         http_code = 404
         description = 'Asset with id "{asset_id}" not found'
 
-        def __init__(self, asset_id: ObjectId, exception: Exception = None):
+        def __init__(self, asset_id: Union[ObjectId, str], exception: Exception = None):
             super().__init__({'asset_id': str(asset_id)}, exception)
 
     class AssetUploadToInactiveSet(SamsException):
@@ -396,3 +402,86 @@ class SamsAssetErrors:
                 'asset_size': bytes_to_human_readable(asset_size),
                 'max_size': bytes_to_human_readable(max_size),
             })
+
+
+class SamsAmazonS3Errors:
+    class InvalidAmazonEndpoint(SamsException):
+        """Raised when an invalid config is provided"""
+
+        app_code = '09001'
+        http_code = 500
+        description = 'Invalid Amazon URL'
+
+    class InvalidAccessKeyId(SamsException):
+        """Raised when an invalid access key id was provided"""
+
+        app_code = '09002'
+        http_code = 500
+        description = 'Invalid AccessKeyId provided'
+
+    class InvalidSecret(SamsException):
+        """Raised when an invalid access key id was provided"""
+
+        app_code = '09003'
+        http_code = 500
+        description = 'Invalid Secret provided'
+
+    class MissingAmazonConfig(SamsException):
+        """Raised when the config is missing a required field"""
+
+        app_code = '09004'
+        http_code = 500
+        description = 'Required Amazon config "{key}" missing'
+
+        def __init__(self, key: str, exception: Exception = None):
+            super().__init__({'key': key}, exception)
+
+    class InvalidAmazonDestinationConfig(SamsException):
+        """Raised when Amazon destination config string was provided"""
+
+        app_code = '09005'
+        http_code = 500
+        description = 'Invalid Amazon destination config "{config}". Error: {error}'
+
+        def __init__(self, config: str, exception: Exception = None):
+            super().__init__({'config': config, 'error': str(exception)}, exception)
+
+    class BucketNotFound(SamsException):
+        """Raised when the configured bucket does not exist"""
+
+        app_code = '09006'
+        http_code = 500
+        description = 'Amazon bucket "{bucket}" not found'
+
+        def __init__(self, bucket: str, exception: Exception = None):
+            super().__init__({'bucket': bucket}, exception)
+
+    class BucketAlreadyExists(SamsException):
+        """Raised when attempting to create a bucket that already exists"""
+
+        app_code = '09007'
+        http_code = 400
+        description = 'Amazon bucket "{bucket}" already exists'
+
+        def __init__(self, bucket: str, exception: Exception = None):
+            super().__init__({'bucket': bucket}, exception)
+
+    class InvalidBucketName(SamsException):
+        """Raised when using an invalid AWS Bucket name"""
+
+        app_code = '09008'
+        http_code = 500
+        description = 'Invalid Amazon bucket name "{bucket}"'
+
+        def __init__(self, bucket: str, exception: Exception = None):
+            super().__init__({'bucket': bucket}, exception)
+
+    class UnknownAmazonException(SamsException):
+        """Raised when an unknown Amazon error was raised"""
+
+        app_code = '09999'
+        http_code = 500
+        description = 'Unknown Amazon error: {error}'
+
+        def __init__(self, exception: Exception):
+            super().__init__({'error': str(exception)}, exception)

@@ -19,8 +19,11 @@ from requests.exceptions import ConnectionError
 
 from sams.factory.app import SamsApp
 from sams.default_settings import INSTALLED_APPS
+from sams.storage.destinations import destinations
+from sams.storage.providers.amazon import AmazonS3Provider
 
 from sams_client import SamsClient
+from sams_client.errors import SamsAmazonS3Errors
 
 from tests.server.conftest import get_test_config as get_test_config_base
 
@@ -133,6 +136,18 @@ class TestApp:
             except ConnectionError:
                 attempts += 1
                 sleep(0.5)
+
+        self.create_s3_buckets()
+
+    def create_s3_buckets(self):
+        for destination in destinations.all().values():
+            if destination.provider.type_name != AmazonS3Provider.type_name:
+                continue
+
+            try:
+                destination.provider_instance().create_bucket()
+            except SamsAmazonS3Errors.BucketAlreadyExists:
+                continue
 
 
 def get_test_config():

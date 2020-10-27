@@ -10,11 +10,12 @@
 # at https://www.sourcefabric.org/superdesk/license
 
 from tests.features.steps.app import get_app
-from tests.server.utils import get_test_db_host
+from tests.server.utils import get_test_db_host, get_test_storage_destinations
 
 
 def before_all(context):
     setattr(context, 'DB_HOST', get_test_db_host())
+    setattr(context, 'STORAGE_PROVIDER', {'type': get_test_storage_destinations()[0].split(',')[0]})
     get_app(context).start()
 
 

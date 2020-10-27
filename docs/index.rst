@@ -79,6 +79,7 @@ The following is a list of all the known errors that can occur.
    errors/storage_providers
    errors/sets
    errors/assets
+   errors/amazon_s3
 
 Indices and tables
 ==================

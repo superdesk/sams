@@ -4,8 +4,8 @@ Feature: Storage Destinations
         Then we get existing resource
         """
         {"_items": [
-            {"_id": "internal", "provider": "MongoGridFS"},
-            {"_id": "during_draft", "provider": "MongoGridFS"}
+            {"_id": "internal", "provider": "#STORAGE_PROVIDER.type#"},
+            {"_id": "during_draft", "provider": "#STORAGE_PROVIDER.type#"}
         ]}
         """
 
@@ -27,20 +27,20 @@ Feature: Storage Destinations
         """
         Then we get existing resource
         """
-        {"_id": "internal", "provider": "MongoGridFS"}
+        {"_id": "internal", "provider": "#STORAGE_PROVIDER.type#"}
         """
 
     Scenario: Write methods are not allowed
         When we send client.destinations.create
         """
-        {"docs": [{"_id": "mock", "provider": "MongoGridFS"}]}
+        {"docs": [{"_id": "mock", "provider": "#STORAGE_PROVIDER.type#"}]}
         """
         Then we get error 405
         When we send client.destinations.update
         """
         {
             "item_id": "internal",
-            "updates": {"provider": "MongoGridFS"}
+            "updates": {"provider": "#STORAGE_PROVIDER.type#"}
         }
         """
         Then we get error 405

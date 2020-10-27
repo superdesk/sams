@@ -1,5 +1,5 @@
 :mod:`SamsSetErrors` -- Set Errors
-=====================================================
+==================================
 
 .. autoclass:: sams_client.errors.SamsSetErrors.InvalidStateTransition
     :members:

@@ -15,7 +15,12 @@ The :mod:`sams.storage.providers.base` package provides storage io implementatio
 
 """
 
-from typing import BinaryIO
+from typing import Union, BinaryIO
+
+from bson import ObjectId
+
+from superdesk.storage.superdesk_file import SuperdeskFile
+
 from sams_client.errors import SamsConfigErrors
 
 
@@ -58,19 +63,19 @@ class SamsBaseStorageProvider(object):
         self.name = config_parts[1]
         self.config_string = config_parts[2]
 
-    def exists(self, asset_id) -> bool:
+    def exists(self, media_id: Union[ObjectId, str]) -> bool:
         """Checks if a file exists in the storage destination
 
         This method *must* be defined in the derived class
 
-        :param asset_id: The ID of the asset
+        :param media_id: The ID of the asset
         :return: ``True`` if a matching file exists, ``False`` otherwise
         :raises NotImplementedError: If not defined in derived class
         """
 
         raise NotImplementedError()
 
-    def put(self, content, filename: str) -> str:
+    def put(self, content: Union[BinaryIO, str], filename: str, mimetype: str = None) -> str:
         """Upload a file to the storage destination
 
         `content` must be an instance of :class:`bytes` or a file-like object
@@ -78,32 +83,33 @@ class SamsBaseStorageProvider(object):
 
         This method *must* be defined in the derived class
 
-        :param content: The data to be uploaded
-        :param filename: The filename
+        :param bytes content: The data to be uploaded
+        :param str filename: The filename
+        :param str mimetype: The mimetype of the content
         :return: The ``"id"`` of the created file
         :raises NotImplementedError: If not defined in derived class
         """
 
         raise NotImplementedError()
 
-    def get(self, asset_id) -> BinaryIO:
+    def get(self, media_id: Union[ObjectId, str]) -> SuperdeskFile:
         """Get an asset from the storage
 
         This method *must* be defined in the derived class
 
-        :param asset_id: The ID of the asset
+        :param media_id: The ID of the asset
         :return:
         :raises NotImplementedError: If not defined in derived class
         """
 
         raise NotImplementedError()
 
-    def delete(self, asset_id):
+    def delete(self, media_id: Union[ObjectId, str]):
         """Delete as asset from the storage
 
         This method *must* be defined in the derived class
 
-        :param asset_id: The ID of the asset
+        :param media_id: The ID of the asset
         :raises NotImplementedError: If not defined in derived class
         """
 

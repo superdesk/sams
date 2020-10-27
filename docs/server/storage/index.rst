@@ -11,3 +11,4 @@
     providers
     provider_base
     mongo
+    amazon_s3

@@ -1,5 +1,5 @@
 :mod:`SamsResourceErrors` -- Resource Errors
-===============================================================
+============================================
 
 .. autoclass:: sams_client.errors.SamsResourceErrors.ValidationError
     :members: app_code,http_code,message,errors

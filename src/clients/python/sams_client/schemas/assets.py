@@ -42,7 +42,10 @@ ASSET_SCHEMA = {
         'mapping': not_analyzed
     },
     'length': {
-        'type': 'integer'
+        'type': 'integer',
+        'mapping': {
+            'type': 'long'
+        }
     },
     'mimetype': {
         'type': 'string',

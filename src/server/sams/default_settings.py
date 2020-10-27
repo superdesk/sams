@@ -82,7 +82,8 @@ INSTALLED_APPS = [
 ]
 
 STORAGE_PROVIDERS = [
-    'sams.storage.providers.mongo.MongoGridFSProvider'
+    'sams.storage.providers.mongo.MongoGridFSProvider',
+    'sams.storage.providers.amazon.AmazonS3Provider',
 ]
 
 # Uncomment this next line and modify the config to add MongoGridFS storage destination
