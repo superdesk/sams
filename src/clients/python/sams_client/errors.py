@@ -21,6 +21,8 @@ except ImportError:
     HTTPException = Any
     BaseException = Exception
 
+from sams_client.utils import bytes_to_human_readable
+
 
 class SamsException(BaseException):
     """Base class used for all SAMS Errors
@@ -381,3 +383,16 @@ class SamsAssetErrors:
         app_code = '08003'
         http_code = 400
         description = 'Asset upload is not allowed to an inactive Set'
+
+    class AssetExceedsMaximumSizeForSet(SamsException):
+        """Raised when an Asset size exceeds the configured max size of a Set"""
+
+        app_code = '08004'
+        http_code = 400
+        description = 'Asset size ({asset_size}) exceeds the maximum size for the Set ({max_size})'
+
+        def __init__(self, asset_size: int, max_size: int):
+            super().__init__({
+                'asset_size': bytes_to_human_readable(asset_size),
+                'max_size': bytes_to_human_readable(max_size),
+            })
