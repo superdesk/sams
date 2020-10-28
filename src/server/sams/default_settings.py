@@ -95,6 +95,9 @@ SAMS_AUTH_TYPE = env('SAMS_AUTH_TYPE', 'sams.auth.public')
 # Specify api keys for basic auth
 CLIENT_API_KEYS = env('SAMS_CLIENT_API_KEYS', '')
 
+# Specify the maximum size of an Asset
+MAX_ASSET_SIZE = int(env('SAMS_MAX_ASSET_SIZE', '0'))
+
 # Specify the location of the log config file
 LOG_CONFIG_FILE = 'logging_config.yml'
 

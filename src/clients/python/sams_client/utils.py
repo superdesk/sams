@@ -9,7 +9,7 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from typing import Dict
+from typing import Dict, Any
 
 from superdesk.default_settings import env
 
@@ -19,13 +19,14 @@ from .constants import DEFAULT_HOST, DEFAULT_PORT, DEFAULT_PROTOCOL
 not_analyzed = {'type': 'string', 'index': 'not_analyzed'}
 
 
-def load_config(config: Dict):
+def load_config(config: Dict[str, Any]) -> Dict[str, str]:
     """Load host, port from config
 
     :param dict config: Dictionary of configuration provided
     :rtype: dict
     :return: A dictionary containing base_url, auth_type and auth_key
     """
+
     host = config.get('HOST', DEFAULT_HOST)
     port = config.get('PORT', DEFAULT_PORT)
 
@@ -47,11 +48,20 @@ def schema_relation(
     data_type: str = 'objectid',
     nullable: bool = False,
     readonly: bool = False
-):
+) -> Dict[str, Any]:
     """Creates an Eve/Cerberus relation attribute
 
     This is copied from superdesk.resource.rel so that we don't have to
     import Superdesk-Core for the sams_client library
+
+    :param str resource: The name of the resource
+    :param bool embeddable: If the relation can be embedded when fetching
+    :param bool required: If this relation is required, for validation purposes
+    :param str data_type: The data type to apply to the schema, defaults to 'objectid'
+    :param bool nullable: If this relation can have a ``null`` value
+    :param bool readonly: If this relation is read-only
+    :return: A dictionary to apply to a Resource schema
+    :rtype: dict
     """
 
     return {
@@ -66,3 +76,24 @@ def schema_relation(
         },
         'mapping': {'type': 'keyword'},
     }
+
+
+def bytes_to_human_readable(size: int) -> str:
+    """Converts size in bytes to a human readable string
+
+    Converts the integer provided into one of the following:
+        * ``'x bytes'``
+        * ``'x.yy KB'`` (to 2 decimal places)
+        * ``'x.yy MB'`` (to 2 decimal places)
+
+    :param int size: Size in bytes to convert
+    :return: A human readable string
+    :rtype: int
+    """
+
+    if size < 1024:
+        return f'{size} bytes'
+    elif size < 1048576:
+        return f'{size / 1024:.2f} KB'
+    else:
+        return f'{size / 1048576:.2f} MB'

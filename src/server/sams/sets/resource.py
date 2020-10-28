@@ -28,6 +28,8 @@ class SetsResource(Resource):
             The name of a registered StorageDestination (:mod:`sams.storage.destinations`)
         ``destination_config`` *dict*
             A dictionary containing the configuration options for the specific destination used
+        ``maximum_asset_size`` *long*
+            The maximum size of an Asset that can be uploaded to this Set (optional)
     """
 
     endpoint_name = resource_title = 'sets'

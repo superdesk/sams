@@ -72,6 +72,12 @@ SET_SCHEMA = {
         'type': 'dict',
         'schema': {},
         'allow_unknown': True,
+    },
+    'maximum_asset_size': {
+        'type': 'integer',
+        'mapping': {
+            'type': 'long'
+        }
     }
 }
 """
@@ -88,4 +94,6 @@ SET_SCHEMA = {
         The name of a registered StorageDestination (:mod:`sams.storage.destinations`)
     ``destination_config`` *dict*
         A dictionary containing the configuration options for the specific destination used
+    ``maximum_asset_size`` *long*
+        The maximum size of an Asset that can be uploaded to this Set (optional)
 """

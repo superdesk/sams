@@ -516,3 +516,104 @@ Feature: Assets
             {"_id": "#asset_2._id#", "name": "Docx Example"}
         ]}
         """
+
+    Scenario: Error raised when Asset size exceeds Set.maximum_asset_size
+        When we send client.sets.create
+        """
+        {
+            "docs": [{
+                "name": "foo",
+                "state": "usable",
+                "destination_name": "internal"
+            }]
+        }
+        """
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-docx.docx",
+                "name": "file example docx",
+                "description": "Test unrestricted size"
+            },
+            "filename": "file_example-docx.docx"
+        }
+        """
+        Then we get OK response
+        Given server config
+        """
+        {"MAX_ASSET_SIZE": 102400}
+        """
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-docx.docx",
+                "name": "file example docx 2",
+                "description": "Test global restriction deny"
+            },
+            "filename": "file_example-docx.docx"
+        }
+        """
+        Then we get error 400
+        """
+        {
+            "error": "08004",
+            "description": "Asset size (108.69 KB) exceeds the maximum size for the Set (100.00 KB)"
+        }
+        """
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example2-jpg.jpg",
+                "name": "file example 2",
+                "description": "Test global restriction allow"
+            },
+            "filename": "file_example2-jpg.jpg"
+        }
+        """
+        Then we get OK response
+        When we send client.sets.update
+        """
+        {
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
+            "updates": {"maximum_asset_size": 16000}
+        }
+        """
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example2-jpg.jpg",
+                "name": "file example 2",
+                "description": "Test Set restriction deny"
+            },
+            "filename": "file_example2-jpg.jpg"
+        }
+        """
+        Then we get error 400
+        """
+        {
+            "error": "08004",
+            "description": "Asset size (16.16 KB) exceeds the maximum size for the Set (15.62 KB)"
+        }
+        """
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-jpg.jpg",
+                "name": "file example",
+                "description": "Test Set restriction allow"
+            },
+            "filename": "file_example-jpg.jpg"
+        }
+        """
+        Then we get OK response
