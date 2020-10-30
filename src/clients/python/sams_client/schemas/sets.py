@@ -1,11 +1,25 @@
-from collections import namedtuple
+#!/usr/bin/env python
+# -*- coding: utf-8; -*-
+#
+# This file is part of SAMS.
+#
+# Copyright 2020 Sourcefabric z.u. and contributors.
+#
+# For the full copyright and license information, please see the
+# AUTHORS and LICENSE files distributed with this source code, or
+# at https://www.sourcefabric.org/superdesk/license
 
-# set states
-set_states = ['draft', 'usable', 'disabled']
-SET_STATES = namedtuple(
-    'SET_STATE',
-    ['DRAFT', 'USABLE', 'DISABLED']
-)(*set_states)
+from typing import NamedTuple
+
+
+#: Set states
+class SetStates(NamedTuple):
+    DRAFT: str
+    USABLE: str
+    DISABLED: str
+
+
+SET_STATES: SetStates = SetStates('draft', 'usable', 'disabled')
 """
 The state of a *Set* defines the available actions on it. \
 A *Set* can be in any one of the following states:
@@ -57,7 +71,7 @@ SET_SCHEMA = {
     },
     'state': {
         'type': 'string',
-        'allowed': set_states,
+        'allowed': tuple(SET_STATES),
         'default': SET_STATES.DRAFT,
         'nullable': False
     },

@@ -9,6 +9,6 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from .assets import ASSET_SCHEMA # noqa
+from .assets import ASSET_SCHEMA, ASSET_STATES # noqa
 from .destinations import destinationSchema # noqa
-from .sets import SET_SCHEMA, SET_STATES, set_states # noqa
+from .sets import SET_SCHEMA, SET_STATES # noqa
