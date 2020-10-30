@@ -1,4 +1,4 @@
-from sams.factory import get_app
+from sams.apps.api.app import get_app
 from sams.auth.public import PublicAuth
 from tests.server.mock_auth_reject import MockAuthReject
 

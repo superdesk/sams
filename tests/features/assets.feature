@@ -302,8 +302,15 @@ Feature: Assets
         When we download a binary file with client.assets.get_binary_by_id
         """
         {
-            "item_id": "#ASSETS._id#",
-            "length": 12186
+            "item_id": "#ASSETS._id#"
+        }
+        """
+        Then we get file response with headers
+        """
+        {
+            "Content-Type": "#ASSETS.mimetype#",
+            "Content-Length": #ASSETS.length#,
+            "Content-Disposition": "Inline; filename=#ASSETS.filename#"
         }
         """
 
@@ -460,8 +467,21 @@ Feature: Assets
         When we download a binary file with client.assets.get_binary_zip_by_id
         """
         {
-            "item_ids": ["#asset_1._id#","#asset_2._id#"],
-            "length": 123747
+            "item_ids": ["#asset_1._id#","#asset_2._id#"]
+        }
+        """
+        Then we get file response with headers
+        """
+        {
+            "Content-Type": "application/zip",
+            "Content-Length": 123747,
+            "Content-Disposition": "Inline"
+        }
+        """
+        And we get zip file with assets
+        """
+        {
+            "item_ids": ["#asset_1._id#","#asset_2._id#"]
         }
         """
 

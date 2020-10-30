@@ -2,7 +2,7 @@ from sys import path
 from pathlib import Path
 from pytest import fixture
 
-from sams.factory import get_app
+from sams.apps.api.app import get_app
 from sams.storage.providers import providers
 from sams.storage.destinations import destinations
 

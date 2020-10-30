@@ -19,7 +19,7 @@ from requests.models import Response
 from flask import json
 
 from superdesk.utc import utcnow
-from tests.features.steps.app import get_client
+from tests.features.steps.apps.api import get_api_client
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
 
@@ -228,7 +228,7 @@ def expect_status(response, code):
 
 
 def get_client_model_and_method_from_step(context, model_name, method_name):
-    client = get_client(context)
+    client = get_api_client(context)
 
     try:
         model = getattr(client, model_name)
