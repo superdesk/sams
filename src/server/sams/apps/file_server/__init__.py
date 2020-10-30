@@ -8,3 +8,8 @@
 # For the full copyright and license information, please see the
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
+
+"""The SAMS File Server Application
+
+This application that serves public files using a web server.
+"""

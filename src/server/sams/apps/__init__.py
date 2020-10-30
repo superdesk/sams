@@ -8,7 +8,3 @@
 # For the full copyright and license information, please see the
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
-
-from sams.factory import get_app
-
-application = get_app(__name__)

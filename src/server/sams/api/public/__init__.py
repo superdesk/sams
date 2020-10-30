@@ -8,3 +8,11 @@
 # For the full copyright and license information, please see the
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
+
+from superdesk import blueprint
+from sams.factory.app import SamsApp
+from .assets import asset_binary_bp
+
+
+def init_app(app: SamsApp):
+    blueprint(asset_binary_bp, app)
