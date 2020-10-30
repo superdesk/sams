@@ -23,7 +23,7 @@ install_requires = [
 
 setup(
     name='sams-client',
-    version='0.0.1.dev2',
+    version='0.1.0',
     description='Super Asset Management Service Client',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -35,7 +35,7 @@ setup(
     packages=find_packages(exclude=['tests']),
     install_requires=install_requires,
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 3 - Alpha',
         'Environment :: Console',
         'Intended Audience :: Developers',
         'Intended Audience :: Information Technology',
@@ -50,5 +50,5 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
         'Topic :: Multimedia'
     ],
-    python_requires='~=3.5'
+    python_requires='~=3.6'
 )
