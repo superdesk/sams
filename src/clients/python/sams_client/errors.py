@@ -21,6 +21,12 @@ except ImportError:
     HTTPException = Any
     BaseException = Exception
 
+
+try:
+    from flask import current_app as app
+except ImportError:
+    app = {'config': {}}
+
 from sams_client.utils import bytes_to_human_readable
 
 
@@ -88,7 +94,7 @@ class SamsException(BaseException):
             'description': self.description,
         }
 
-    def to_error_response(self) -> Tuple[Dict[str, str or Dict], int]:
+    def to_error_response(self) -> Tuple[Union[Dict[str, str or Dict], str], int]:
         """Returns a tuple containing a results of ``to_dict()`` and ``http_code``
         For example::
 
@@ -101,7 +107,10 @@ class SamsException(BaseException):
             400
         """
 
-        return self.to_dict(), self.http_code
+        if (getattr(app, 'config') or {}).get('RETURN_ERRORS_AS_JSON', False):
+            return self.to_dict(), self.http_code
+        else:
+            return str(self), self.http_code
 
 
 class SamsSystemErrors:

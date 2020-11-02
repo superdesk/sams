@@ -20,6 +20,8 @@ SERVER_DOMAIN = server_url.netloc or 'localhost'
 API_VERSION = ''
 URL_PREFIX = env('SAMS_URL_PREFIX', server_url.path.lstrip('/')) or ''
 
+SAMS_PUBLIC_URL = env('SAMS_PUBLIC_URL')
+
 #: mongo db name, only used when mongo_uri is not set
 MONGO_DBNAME = env('SAMS_MONGO_DBNAME', 'sams')
 
@@ -53,6 +55,8 @@ ITEM_METHODS = ['GET', 'PATCH', 'PUT', 'DELETE']
 EXTENDED_MEDIA_INFO = ['content_type', 'name', 'length', '_id']
 RETURN_MEDIA_AS_BASE64_STRING = False
 VERSION = '_current_version'
+
+RETURN_ERRORS_AS_JSON = True
 
 #: uses for generation of media url ``(<media_prefix>/<media_id>)``::
 MEDIA_PREFIX = env('SAMS_MEDIA_PREFIX', '%s/upload-raw' % SERVER_URL.rstrip('/'))

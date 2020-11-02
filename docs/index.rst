@@ -15,6 +15,18 @@ Welcome to SAMS documentation!
 Welcome. This is the home of SAMS technical documentation. You will learn
 here mainly about the SAMS server application and client library.
 
+Applications
+------------
+
+Currently there are two types of server side applications, API and FileServer.
+
+.. toctree::
+   :maxdepth: 2
+
+   server/apps/honcho
+   server/apps/api
+   server/apps/file_server
+
 Server Reference
 ----------------
 
@@ -47,7 +59,9 @@ works and can be developed further.
 
     server/api/service
     server/api/admin
+    server/api/produce
     server/api/consume
+    server/api/public
 
 Client Reference
 ----------------

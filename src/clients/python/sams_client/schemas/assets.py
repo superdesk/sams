@@ -9,7 +9,30 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
+from typing import NamedTuple
+
 from sams_client.utils import schema_relation, not_analyzed
+
+
+#: Asset states
+class AssetStates(NamedTuple):
+    DRAFT: str
+    INTERNAL: str
+    PUBLIC: str
+
+
+ASSET_STATES: AssetStates = AssetStates('draft', 'internal', 'public')
+"""
+The state of an *Asset* defines the available actions on it.
+An *Asset* can be in any one of the following states:
+
+* **DRAFT:** Marks an Asset as not ready for use
+
+* **INTERNAL:** Marks an Asset for internal use only
+
+* **PUBLIC:** Marks an Asset for public consumption
+"""
+
 
 ASSET_SCHEMA = {
     '_media_id': {
@@ -31,8 +54,8 @@ ASSET_SCHEMA = {
     'parent_id': schema_relation('assets'),
     'state': {
         'type': 'string',
-        'allowed': ['draft', 'internal', 'public'],
-        'default': 'draft',
+        'allowed': tuple(ASSET_STATES),
+        'default': ASSET_STATES.DRAFT,
         'nullable': False,
         'mapping': not_analyzed
     },

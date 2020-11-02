@@ -1,1 +1,2 @@
-api: gunicorn -c gunicorn_config.py sams.wsgi
+api: gunicorn -c gunicorn_config_api.py sams.apps.api.wsgi
+file_server: gunicorn -c gunicorn_config_file_server.py sams.apps.file_server.wsgi

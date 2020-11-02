@@ -2,4 +2,4 @@
 ===========================================
 
 .. automodule:: sams_client.schemas.assets
-    :members:
+    :members: ASSET_SCHEMA,ASSET_STATES
