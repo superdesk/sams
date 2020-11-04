@@ -1,0 +1,170 @@
+name: "CI"
+
+on:
+  push:
+    branches: [develop, master, release/**]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [develop]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6]
+    env:
+      SERVER: true
+      CLIENT: true
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/dev-requirements.txt', '**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip
+            ${{ runner.os }}-
+      - name: Setup Environment
+        run: ./scripts/ci-install.sh
+      - name: Flake8 server
+        working-directory: ./src/server
+        run: flake8
+      - name: Flake8 client
+        working-directory: ./src/clients/python
+        run: flake8
+      - name: Flake8 server tests
+        working-directory: ./tests/server
+        run: flake8
+      - name: Flake8 client tests
+        working-directory: ./tests/clients/python
+        run: flake8
+
+  unit-server:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6]
+    env:
+      SERVER: true
+      CLIENT: true
+      SERVICES: true
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/dev-requirements.txt', '**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip
+            ${{ runner.os }}-
+      - name: Setup Environment
+        run: ./scripts/ci-install.sh
+      - name: Start Services
+        run: ./scripts/ci-start-services.sh
+      - name: Pytest
+        run: pytest tests/server --disable-pytest-warnings
+
+  unit-client:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6]
+    env:
+      SERVER: true
+      CLIENT: true
+      SERVICES: true
+      START_SAMS: true
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/dev-requirements.txt', '**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip
+            ${{ runner.os }}-
+      - name: Setup Environment
+        run: ./scripts/ci-install.sh
+      - name: Start Services
+        run: ./scripts/ci-start-services.sh
+      - name: Pytest
+        run: pytest tests/clients --disable-pytest-warnings
+
+  behave-mongo-gridfs:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6]
+    env:
+      SERVER: true
+      CLIENT: true
+      SERVICES: true
+      BEHAVE: true
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/dev-requirements.txt', '**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip
+            ${{ runner.os }}-
+      - name: Setup Environment
+        run: ./scripts/ci-install.sh
+      - name: Start Services
+        run: ./scripts/ci-start-services.sh
+      - name: Behave
+        run: behave tests/features --format progress2
+
+  behave-aws-s3:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6]
+    env:
+      SERVER: true
+      CLIENT: true
+      SERVICES: true
+      BEHAVE: true
+      TEST_AMAZON_S3: true
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/dev-requirements.txt', '**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip
+            ${{ runner.os }}-
+      - name: Setup Environment
+        run: ./scripts/ci-install.sh
+      - name: Start Services
+        run: ./scripts/ci-start-services.sh
+      - name: Behave
+        run: behave tests/features --format progress2
