@@ -62,7 +62,29 @@ ASSET_SCHEMA = {
     'filename': {
         'type': 'string',
         'required': True,
-        'mapping': not_analyzed
+        'mapping': {
+            'type': 'text',
+
+            # Use the `filename_analyzer` to tokenize filenames
+            # i.e. tokenizes
+            # `bbb_0001.png`
+            # to
+            # [`bbb`, `0001`, `png`]
+            'analyzer': 'filename_analyzer',
+            'search_analyzer': 'filename_analyzer',
+
+            # Keep field data in case we need aggregations
+            # on each token, otherwise aggregate against `filename.keyword`
+            'fielddata': True,
+
+            # Add subtype `keyword` so that we can sort by `name`
+            'fields': {
+                'keyword': {
+                    'type': 'keyword',
+                    'ignore_above': 256
+                }
+            }
+        }
     },
     'length': {
         'type': 'integer',
@@ -78,6 +100,19 @@ ASSET_SCHEMA = {
         'type': 'string',
         'mapping': {
             'type': 'text',
+
+            # Use the `filename_analyzer` to tokenize names
+            # i.e. tokenizes
+            # `bbb_0001.png`
+            # to
+            # [`bbb`, `0001`, `png`]
+            'analyzer': 'filename_analyzer',
+            'search_analyzer': 'filename_analyzer',
+
+            # Keep field data in case we need aggregations
+            # on each token, otherwise aggregate against `name.keyword`
+            'fielddata': True,
+
             # Add subtype `keyword` so that we can sort by `name`
             'fields': {
                 'keyword': {
