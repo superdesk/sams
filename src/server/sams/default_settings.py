@@ -42,6 +42,40 @@ if env('SAMS_ELASTIC_PORT'):
 
 ELASTICSEARCH_BACKUPS_PATH = env('SAMS_ELASTICSEARCH_BACKUPS_PATH', '')
 
+ELASTICSEARCH_SETTINGS = {
+    'settings': {
+        'analysis': {
+            'tokenizer': {
+                # Tokenizer for characters that *may* be used
+                # in filenames
+                'filename_tokenizer': {
+                    'type': 'char_group',
+                    'tokenize_on_chars': [
+                        'whitespace',
+                        '-',
+                        '_',
+                        '.',
+                        '!',
+                        '?',
+                        ','
+                    ]
+                }
+            },
+            'analyzer': {
+                # Analyzer for fields that contain file-like names
+                'filename_analyzer': {
+                    'type': 'custom',
+                    'filter': [
+                        'lowercase',
+                        'asciifolding'
+                    ],
+                    'tokenizer': 'filename_tokenizer'
+                }
+            }
+        }
+    }
+}
+
 # Eve config attributes
 IF_MATCH = True
 BANDWIDTH_SAVER = False

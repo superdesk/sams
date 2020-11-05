@@ -215,18 +215,37 @@ def test_search_elastic(init_app):
         assert 'file_example-2' in filenames
         assert 'file_example-4' in filenames
 
-    def _search_filename():
-        """Filenames are not analyzed, so full name is required"""
-        query = {'must': {'term': {'filename': 'example'}}}
+    def _search_filename_exact():
+        """Search for exact filename"""
+        query = {'must': {'term': {'filename.keyword': 'example'}}}
         assert _search(query).count() == 0
 
-        query = {'must': {'term': {'filename': 'file_example-1'}}}
+        query = {'must': {'term': {'filename.keyword': 'file_example-2'}}}
         assert _search(query).count() == 1
 
-    def _search_name():
-        """Names are analyzed/tokenized, so partial names work"""
+    def _search_filename_words():
+        """Search using a partial filename"""
+        query = {'must': {'term': {'filename': 'example'}}}
+        assert _search(query).count() == 4
+
+        query = {'must': {'query_string': {'query': 'filename:(file AND "example-1")'}}}
+        assert _search(query).count() == 1
+
+    def _search_name_exact():
+        """Search for exact name"""
+        query = {'must': {'term': {'name.keyword': 'Example'}}}
+        assert _search(query).count() == 0
+
+        query = {'must': {'term': {'name.keyword': 'Jpeg Example 2'}}}
+        assert _search(query).count() == 1
+
+    def _search_name_words():
+        """Search using a partial name"""
         query = {'must': {'term': {'name': 'example'}}}
         assert _search(query).count() == 4
+
+        query = {'must': {'query_string': {'query': 'name:(Jpeg AND "Example 2")'}}}
+        assert _search(query).count() == 1
 
     def _search_set_id():
         query = {'must': {'term': {'set_id': str(set_1)}}}
@@ -247,7 +266,9 @@ def test_search_elastic(init_app):
         assert filenames == ['file_example-2']
 
     _search_tags()
-    _search_filename()
-    _search_name()
+    _search_filename_exact()
+    _search_filename_words()
+    _search_name_exact()
+    _search_name_words()
     _search_set_id()
     _search_combined()
