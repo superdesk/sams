@@ -9,11 +9,14 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
+from typing import Dict, Any, Callable, List, Union, Tuple, Optional
+
 import json
 import requests
-from .endpoint import Endpoint
 from bson import ObjectId
-from typing import Dict, Any, Callable, List, Union, Tuple
+
+from .endpoint import Endpoint
+from sams_client.utils import get_aggregation_buckets
 
 
 class SamsAssetEndpoint(Endpoint):
@@ -156,8 +159,54 @@ class SamsAssetEndpoint(Endpoint):
             headers=headers,
             callback=callback
         )
-        buckets = response.json().get('_aggregations').get('counts').get('buckets')
+        buckets = get_aggregation_buckets(response, 'counts')
 
         counts = {}
         [counts.update({item.get('key'): item.get('doc_count')}) for item in buckets]
         return counts, response.status_code
+
+    def get_tag_codes(
+        self,
+        query: Optional[Dict[str, Any]] = None,
+        size: Optional[int] = 100,
+        headers: Optional[Dict[str, Any]] = None,
+        callback: Optional[Callable[[requests.Response], requests.Response]] = None
+    ) -> Tuple[Dict[str, List[str]], int]:
+        """Helper method to get the list of tag codes used in Asset metadata
+
+        :param dict query: Optional elasticsearch query to apply
+        :param int size: The maximum number of tag codes to return (defaults to 100)
+        :param dict headers: Dictionary of headers to apply
+        :param callback: A callback function to manipulate the response
+        :return: A tuple containing the list of tag codes and status_code
+        :rtype: dict<str, int>, int
+        """
+
+        if not self._read_url:
+            return {}, 405
+
+        source = {
+            'size': 0,
+            'aggs': {
+                'tags': {
+                    'terms': {
+                        'field': 'tags.code',
+                        'size': size
+                    }
+                }
+            }
+        }
+
+        if query is not None:
+            source['query'] = query
+
+        response = self._client.get(
+            url=self._read_url,
+            params={'source': json.dumps(source)},
+            headers=headers,
+            callback=callback
+        )
+
+        buckets = get_aggregation_buckets(response, 'tags')
+        codes = [tag.get('key') for tag in buckets]
+        return {'tags': codes}, response.status_code

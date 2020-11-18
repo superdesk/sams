@@ -22,7 +22,7 @@ To access Assets inside the SAMS application, use the :mod:`sams.assets` module 
 **schema**               :attr:`sams_client.schemas.assets.ASSET_SCHEMA`
 =====================   =================================================================
 """
-from flask import current_app as app
+from flask import current_app as app, json
 
 from sams.api.service import SamsApiService
 from sams.api.consume import ConsumeAssetResource
@@ -31,6 +31,9 @@ from sams.sets import get_service as get_sets_service
 from sams.storage.sams_media_storage import get_request_id
 from superdesk.resource import Resource, build_custom_hateoas
 from sams_client.errors import SamsAssetErrors
+
+
+FIELDS_TO_JSON_PARSE = ('tags', 'extra')
 
 
 class ProduceAssetResource(Resource):
@@ -61,6 +64,12 @@ class ProduceAssetService(SamsApiService):
                 doc,
                 _id=str(doc.get('_id'))
             )
+
+    def on_create(self, docs):
+        for doc in docs:
+            for field in FIELDS_TO_JSON_PARSE:
+                if isinstance(doc.get(field), str):
+                    doc[field] = json.loads(doc[field])
 
     def create(self, docs, **lookup):
         """
