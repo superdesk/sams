@@ -637,3 +637,83 @@ Feature: Assets
         }
         """
         Then we get OK response
+
+    Scenario: Ability to retrieve the list of tags used in Assets
+        When we send client.sets.create
+        """
+        {
+            "docs": [{
+                "name": "foo",
+                "state": "usable",
+                "destination_name": "internal"
+            }]
+        }
+        """
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-jpg.jpg",
+                "name": "Jpeg Example",
+                "description": "Jpeg file asset example",
+                "tags": [{"code": "publication", "name": "Publication"}]
+            },
+            "filename": "file_example-jpg.jpg"
+        }
+        """
+        Then we get OK response
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-docx.docx",
+                "name": "Docx Example",
+                "description": "Docx file asset example",
+                "tags": [
+                    {"code": "publication", "name": "Publication"},
+                    {"code": "docs", "name": "Documents"}
+                ]
+            },
+            "filename": "file_example-docx.docx"
+        }
+        """
+        Then we get OK response
+        When we send client.assets.get_tag_codes
+        Then we get existing resource
+        """
+        {
+            "tags": ["publication", "docs"]
+        }
+        """
+        When we send client.assets.get_tag_codes
+        """
+        {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"name.keyword": "Jpeg Example"}}
+                    ]
+                }
+            }
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "tags": ["publication"]
+        }
+        """
+         When we send client.assets.get_tag_codes
+        """
+        {
+            "size": 1
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "tags": ["publication"]
+        }
+        """

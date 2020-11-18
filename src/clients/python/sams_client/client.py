@@ -165,6 +165,11 @@ class SamsClient(object):
         # In case of multipart form data don't dump
         if not isinstance(data, str) and files is None:
             data = dumps(data)
+        elif isinstance(data, dict) and files is not None:
+            data = {
+                field: dumps(value) if isinstance(value, (list, dict)) else value
+                for field, value in data.items()
+            }
 
         return self.request(
             api=url,

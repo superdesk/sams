@@ -9,7 +9,8 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from typing import Dict, Any
+from typing import Dict, Any, List
+from requests import Response
 
 from superdesk.default_settings import env
 
@@ -97,3 +98,16 @@ def bytes_to_human_readable(size: int) -> str:
         return f'{size / 1024:.2f} KB'
     else:
         return f'{size / 1048576:.2f} MB'
+
+
+def get_aggregation_buckets(response: Response, bucket_name: str) -> List[Dict[str, Any]]:
+    """Utility function to get aggregation buckets
+
+    :param requests.Response response: The response object from the API call
+    :param str bucket_name: The name of the bucket to retrieve
+    :return: The list of buckets from the aggregation query
+    :rtype: list
+    """
+
+    json = response.json()
+    return ((json.get('_aggregations') or {}).get(bucket_name) or {}).get('buckets') or []
