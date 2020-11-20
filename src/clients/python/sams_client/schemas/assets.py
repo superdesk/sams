@@ -98,6 +98,9 @@ ASSET_SCHEMA = {
     },
     'name': {
         'type': 'string',
+        'required': True,
+        'nullable': False,
+        'empty': False,
         'mapping': {
             'type': 'text',
 
