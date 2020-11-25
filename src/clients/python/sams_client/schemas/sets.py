@@ -9,6 +9,7 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
+from superdesk.utc import utcnow
 from typing import NamedTuple
 
 
@@ -92,6 +93,23 @@ SET_SCHEMA = {
         'mapping': {
             'type': 'long'
         }
+    },
+    'original_creator': {
+        'type': 'string'
+    },
+    'version_creator': {
+        'type': 'string'
+    },
+    'firstcreated': {
+        'type': 'datetime',
+        'default': utcnow()
+    },
+    'versioncreated': {
+        'type': 'datetime',
+        'default': utcnow()
+    },
+    'external_user_id': {
+        'type': 'string'
     }
 }
 """

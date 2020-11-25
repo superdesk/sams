@@ -12,6 +12,7 @@
 from typing import NamedTuple
 
 from sams_client.utils import schema_relation, not_analyzed
+from superdesk.utc import utcnow
 
 
 #: Asset states
@@ -39,13 +40,23 @@ ASSET_SCHEMA = {
         'type': 'string',
         'mapping': not_analyzed
     },
-    '_created_by': {
+    'original_creator': {
         'type': 'string',
         'mapping': not_analyzed
     },
-    '_updated_by': {
+    'version_creator': {
         'type': 'string',
         'mapping': not_analyzed
+    },
+    'firstcreated': {
+        'type': 'datetime',
+        'mapping': not_analyzed,
+        'default': utcnow()
+    },
+    'versioncreated': {
+        'type': 'datetime',
+        'mapping': not_analyzed,
+        'default': utcnow()
     },
     '_version': {
         'type': 'number'
@@ -155,6 +166,9 @@ ASSET_SCHEMA = {
     'binary': {
         'type': 'media',
         'mapping': not_analyzed
+    },
+    'external_user_id': {
+        'type': 'string'
     }
 }
 """

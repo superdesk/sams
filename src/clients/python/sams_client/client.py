@@ -59,6 +59,7 @@ class SamsClient(object):
         method: str = 'get',
         params: Dict = None,
         headers: Dict[str, Any] = None,
+        external_user_id: str = None,
         data: str = None,
         files=None,
         callback: Callable[[requests.Response], requests.Response] = None
@@ -92,6 +93,7 @@ class SamsClient(object):
         url: str,
         params: Dict = None,
         headers: Dict[str, Any] = None,
+        external_user_id: str = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method for GET requests
@@ -116,6 +118,7 @@ class SamsClient(object):
         url: str,
         params: Dict[str, Any] = None,
         headers: Dict[str, any] = None,
+        external_user_id: str = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method for GET requests with query args
@@ -139,6 +142,7 @@ class SamsClient(object):
         self,
         url: str,
         headers: Dict[str, Any] = None,
+        external_user_id: str = None,
         data: str or Dict[str, Any] = None,
         files=None,
         callback: Callable[[requests.Response], requests.Response] = None
@@ -184,6 +188,7 @@ class SamsClient(object):
         self,
         url: str,
         headers: Dict[str, Any] = None,
+        external_user_id: str = None,
         data: str or Dict[str, Any] = None,
         files=None,
         callback: Callable[[requests.Response], requests.Response] = None
@@ -224,6 +229,7 @@ class SamsClient(object):
         self,
         url: str,
         headers: Dict[str, Any] = None,
+        external_user_id: str = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method for DELETE requests

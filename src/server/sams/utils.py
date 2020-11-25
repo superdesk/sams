@@ -71,3 +71,13 @@ def construct_asset_download_response(
         response.headers['Content-Disposition'] = 'Inline; filename={}'.format(asset['filename'])
 
     return response
+
+
+def get_external_user_id(asset: dict) -> str:
+
+    try:
+        external_user_id = asset.get('external_user_id')
+    except KeyError:
+        pass
+
+    return external_user_id
