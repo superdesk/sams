@@ -9,6 +9,7 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
+from typing import Dict, Any, List
 from copy import deepcopy
 from bson import ObjectId
 
@@ -20,9 +21,54 @@ from sams.factory.service import SamsService
 from sams.storage.destinations import Destination, destinations
 from sams.storage.providers.base import SamsBaseStorageProvider
 from sams_client.errors import SamsSetErrors
+from sams.utils import get_external_user_id
+
+from superdesk.services import Service
+from superdesk.utc import utcnow
 
 
 class SetsService(SamsService):
+    def post(self, docs: List[Dict[str, Any]], **kwargs) -> List[ObjectId]:
+        """Stores the metadata
+
+        :param docs: An array of metadata to create
+        :param kwargs: Dictionary containing the keyword arguments
+        :return: list of generated IDs for the new documents
+        :rtype: list[bson.objectid.ObjectId]
+        """
+        for doc in docs:
+            doc['firstcreated'] = utcnow()
+            doc['versioncreated'] = utcnow()
+            external_user_id = get_external_user_id()
+
+            if external_user_id:
+                doc['original_creator'] = external_user_id
+                doc['version_creator'] = external_user_id
+
+            self.validate_post(doc)
+
+        return super(Service, self).post(docs, **kwargs)
+
+    def patch(self, item_id: ObjectId, updates: Dict[str, Any]) -> Dict[str, Any]:
+        """Updates the metadata
+
+
+        :param bson.objectid.ObjectId item_id: ID for the Set
+        :param dict updates: Dictionary containing the desired metadata to update
+        :return: Dictionary containing the updated attributes of the Set
+        :rtype: dict
+        """
+        original = self.get_by_id(item_id)
+        self.validate_patch(original, updates)
+
+        updates['versioncreated'] = utcnow()
+        external_user_id = get_external_user_id()
+
+        if external_user_id:
+            updates['version_creator'] = external_user_id
+
+        return super(Service, self).patch(item_id, updates)
+
     def validate_post(self, doc):
         """Validates the Set on creation
 

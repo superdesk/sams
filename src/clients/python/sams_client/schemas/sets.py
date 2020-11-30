@@ -9,7 +9,6 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from superdesk.utc import utcnow
 from typing import NamedTuple
 
 
@@ -102,14 +101,9 @@ SET_SCHEMA = {
     },
     'firstcreated': {
         'type': 'datetime',
-        'default': utcnow()
     },
     'versioncreated': {
         'type': 'datetime',
-        'default': utcnow()
-    },
-    'external_user_id': {
-        'type': 'string'
     }
 }
 """
@@ -128,4 +122,12 @@ SET_SCHEMA = {
         A dictionary containing the configuration options for the specific destination used
     ``maximum_asset_size`` *long*
         The maximum size of an Asset that can be uploaded to this Set (optional)
+    ``original_creator`` *string*
+        A field to store the id of the user who created the set
+    ``version_creator`` *string*
+        A field to store the id of the user who updated the set
+    ``firstcreated`` *string*
+        A field to store time, when set is created
+    ``versioncreated`` *string*
+        A field to store time, when set is updated
 """

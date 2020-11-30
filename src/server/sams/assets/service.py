@@ -35,9 +35,10 @@ class AssetsService(SamsService, MimetypeMixin):
         :return: list of generated IDs for the new documents
         :rtype: list[bson.objectid.ObjectId]
         """
-
         for doc in docs:
-            external_user_id = get_external_user_id(doc)
+            doc['firstcreated'] = utcnow()
+            doc['versioncreated'] = utcnow()
+            external_user_id = get_external_user_id()
 
             if external_user_id:
                 doc['original_creator'] = external_user_id
@@ -66,15 +67,14 @@ class AssetsService(SamsService, MimetypeMixin):
         :return: Dictionary containing the updated attributes of the Asset
         :rtype: dict
         """
-
         original = self.get_by_id(item_id)
         content = updates.pop('binary', None)
         self.validate_patch(original, updates)
 
-        external_user_id = get_external_user_id(updates)
+        updates['versioncreated'] = utcnow()
+        external_user_id = get_external_user_id()
 
         if external_user_id:
-            updates['versioncreated'] = utcnow()
             updates['version_creator'] = external_user_id
 
         if content:

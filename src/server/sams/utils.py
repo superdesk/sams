@@ -73,11 +73,5 @@ def construct_asset_download_response(
     return response
 
 
-def get_external_user_id(asset: dict) -> str:
-
-    try:
-        external_user_id = asset.get('external_user_id')
-    except KeyError:
-        pass
-
-    return external_user_id
+def get_external_user_id() -> str:
+    return request.args.get('external_user_id')
