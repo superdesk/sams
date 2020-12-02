@@ -1,8 +1,2 @@
-eve==1.1.1
-eve-elastic>=7.0.0,<8.0.0
-flask>=1.1,<1.2
-flask-script>=2.0.5,<3.0
-gunicorn==19.7.1
-honcho==1.0.1
 git+git://github.com/superdesk/superdesk-core.git@sams#egg=superdesk-core
 

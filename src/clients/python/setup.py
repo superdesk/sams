@@ -17,7 +17,6 @@ with open('README.md', 'r') as f:
 LONG_DESCRIPTION = 'Super Asset Management Service Client'
 
 install_requires = [
-    'setuptools==36.6.0',
     'requests>=2.7.0,<3.0'
 ]
 

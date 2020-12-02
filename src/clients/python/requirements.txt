@@ -1,5 +1,1 @@
-setuptools==36.6.0
-typing==3.7.4
 requests>=2.7.0,<3.0
-git+git://github.com/superdesk/superdesk-core.git@sams#egg=superdesk-core
-
