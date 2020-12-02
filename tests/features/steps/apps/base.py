@@ -149,6 +149,7 @@ class BaseTestApp:
                 else:
                     attempts += 1
                     sleep(0.5)
-            except Exception:
+            except Exception as e:
+                print(e)
                 attempts += 1
                 sleep(0.5)
