@@ -17,12 +17,6 @@ with open('README.md', 'r') as f:
 LONG_DESCRIPTION = 'Super Asset Management Service'
 
 install_requires = [
-    'eve==1.1.2',
-    'eve-elastic>=7.0.0,<8.0.0',
-    'flask>=1.1,<1.2',
-    'flask-script>=2.0.5,<3.0',
-    'gunicorn>=19.7.1',
-    'honcho>=1.0.1',
     'superdesk-core @ https://github.com/superdesk/superdesk-core/tarball/sams#egg=Superdesk-Core',
 ]
 
