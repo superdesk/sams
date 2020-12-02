@@ -15,7 +15,7 @@ import requests
 
 
 class Endpoint:
-    """Base helper class for endpoint specifics
+    r"""Base helper class for endpoint specifics
 
     :var sams_client.client.SamsClient _client: Reference to the parent client instance
     :var str _read_url: The URL for all read based requests

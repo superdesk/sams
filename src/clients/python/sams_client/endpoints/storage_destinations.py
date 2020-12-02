@@ -13,7 +13,7 @@ from .endpoint import Endpoint
 
 
 class SamsStorageDestinationsEndpoint(Endpoint):
-    """Helper class for the StorageDestinatino resource
+    r"""Helper class for the StorageDestinatino resource
 
     This class automatically sets ``_read_url`` to ``/admin/destinations`` \
     and leaves the ``_write_url`` as ``None``

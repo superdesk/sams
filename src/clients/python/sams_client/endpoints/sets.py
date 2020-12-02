@@ -13,7 +13,7 @@ from .endpoint import Endpoint
 
 
 class SamsSetEndpoint(Endpoint):
-    """Helper class for the Sets resource
+    r"""Helper class for the Sets resource
 
     This class automatically sets ``_read_url`` to ``/consume/sets`` \
     and the ``_write_url`` to ``/admin/sets``

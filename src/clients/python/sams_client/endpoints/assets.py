@@ -20,7 +20,7 @@ from sams_client.utils import get_aggregation_buckets
 
 
 class SamsAssetEndpoint(Endpoint):
-    """Helper class for the Assets resource
+    r"""Helper class for the Assets resource
 
     This class automatically sets ``_read_url`` to ``/consume/assets`` \
     and the ``_write_url`` to ``/produce/assets``
