@@ -37,7 +37,7 @@ class SetsService(SamsService):
         self._validate_destination_name(doc)
 
     def validate_patch(self, original, updates):
-        """Validates the Set on update
+        r"""Validates the Set on update
 
         The following additional validation is performed on Sets being updated:
             * Once a set has changed from ``draft`` state, it can never return to ``draft``

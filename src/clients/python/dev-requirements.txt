@@ -3,8 +3,10 @@ flake8-docstrings
 flake8-quotes
 pep8
 pyflakes
-pydocstyle
+pydocstyle<4.0
 
-pytest==3.10.0
+pytest==5.2.2
 pytest-cov
 pytest-mock
+
+git+git://github.com/superdesk/superdesk-core.git@sams#egg=superdesk-core
