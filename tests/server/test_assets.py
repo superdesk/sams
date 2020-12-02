@@ -31,19 +31,20 @@ def test_asset_is_internal(init_app, client):
     assert service.find({}).count() == 0
 
 
-def test_asset_upload(init_app):
-    asset_service = get_asset_service()
-    set_id, provider = add_set(deepcopy(test_sets[0]))
+def test_asset_upload(init_app, app):
+    with app.test_request_context():
+        asset_service = get_asset_service()
+        set_id, provider = add_set(deepcopy(test_sets[0]))
 
-    original_bytes, original_size = load_file('tests/fixtures/file_example-jpg.jpg')
+        original_bytes, original_size = load_file('tests/fixtures/file_example-jpg.jpg')
 
-    asset_id = asset_service.post([{
-        'set_id': set_id,
-        'filename': 'file_example-jpg.jpg',
-        'name': 'Jpeg Example',
-        'description': 'Jpeg file asset example',
-        'binary': original_bytes,
-    }])[0]
+        asset_id = asset_service.post([{
+            'set_id': set_id,
+            'filename': 'file_example-jpg.jpg',
+            'name': 'Jpeg Example',
+            'description': 'Jpeg file asset example',
+            'binary': original_bytes,
+        }])[0]
 
     asset = asset_service.get_by_id(asset_id)
     assert asset['length'] == original_size
@@ -55,29 +56,32 @@ def test_asset_upload(init_app):
     assert asset_binary.read() == original_bytes
 
 
-def test_asset_patch(init_app):
-    asset_service = get_asset_service()
-    set_id, provider = add_set(deepcopy(test_sets[0]))
+def test_asset_patch(init_app, app):
+    with app.test_request_context():
+        asset_service = get_asset_service()
+        set_id, provider = add_set(deepcopy(test_sets[0]))
 
-    original_bytes, _ = load_file('tests/fixtures/file_example-jpg.jpg')
+        original_bytes, _ = load_file('tests/fixtures/file_example-jpg.jpg')
 
-    asset_id = asset_service.post([{
-        'set_id': set_id,
-        'filename': 'file_example-jpg.jpg',
-        'name': 'Jpeg Example',
-        'description': 'Jpeg file asset example',
-        'binary': original_bytes,
-    }])[0]
+        asset_id = asset_service.post([{
+            'set_id': set_id,
+            'filename': 'file_example-jpg.jpg',
+            'name': 'Jpeg Example',
+            'description': 'Jpeg file asset example',
+            'binary': original_bytes,
+        }])[0]
 
     asset = asset_service.get_by_id(asset_id)
     original_media_id = asset['_media_id']
     original_binary = asset_service.download_binary(asset_id)
 
     updated_bytes, _ = load_file('tests/fixtures/file_example-docx.docx')
-    asset_service.patch(asset_id, {
-        'filename': 'file_example-docx.docx',
-        'binary': updated_bytes
-    })
+
+    with app.test_request_context():
+        asset_service.patch(asset_id, {
+            'filename': 'file_example-docx.docx',
+            'binary': updated_bytes
+        })
 
     asset = asset_service.get_by_id(asset_id)
     updated_media_id = asset['_media_id']
@@ -93,19 +97,20 @@ def test_asset_patch(init_app):
     assert provider.exists(updated_media_id)
 
 
-def test_delete(init_app):
-    asset_service = get_asset_service()
-    set_id, provider = add_set(deepcopy(test_sets[0]))
+def test_delete(init_app, app):
+    with app.test_request_context():
+        asset_service = get_asset_service()
+        set_id, provider = add_set(deepcopy(test_sets[0]))
 
-    original_bytes, _ = load_file('tests/fixtures/file_example-jpg.jpg')
+        original_bytes, _ = load_file('tests/fixtures/file_example-jpg.jpg')
 
-    asset_id = asset_service.post([{
-        'set_id': set_id,
-        'filename': 'file_example-jpg.jpg',
-        'name': 'Jpeg Example',
-        'description': 'Jpeg file asset example',
-        'binary': original_bytes,
-    }])[0]
+        asset_id = asset_service.post([{
+            'set_id': set_id,
+            'filename': 'file_example-jpg.jpg',
+            'name': 'Jpeg Example',
+            'description': 'Jpeg file asset example',
+            'binary': original_bytes,
+        }])[0]
 
     asset = asset_service.get_by_id(asset_id)
     media_id = asset['_media_id']
@@ -116,86 +121,90 @@ def test_delete(init_app):
     assert not provider.exists(media_id)
 
 
-def test_binary_undefined(init_app):
-    asset_service = get_asset_service()
-    set_id, provider = add_set(deepcopy(test_sets[0]))
+def test_binary_undefined(init_app, app):
+    with app.test_request_context():
+        asset_service = get_asset_service()
+        set_id, provider = add_set(deepcopy(test_sets[0]))
 
-    with pytest.raises(SamsAssetErrors.BinaryNotSupplied):
-        asset_service.post([{
-            'set_id': set_id,
-            'filename': 'file_example-jpg.jpg',
-            'name': 'Jpeg Example',
-            'description': 'Jpeg file asset example',
-        }])
+        with pytest.raises(SamsAssetErrors.BinaryNotSupplied):
+            asset_service.post([{
+                'set_id': set_id,
+                'filename': 'file_example-jpg.jpg',
+                'name': 'Jpeg Example',
+                'description': 'Jpeg file asset example',
+            }])
 
 
-def test_upload_using_stream(init_app):
-    asset_service = get_asset_service()
-    set_id, provider = add_set(deepcopy(test_sets[0]))
+def test_upload_using_stream(init_app, app):
+    with app.test_request_context():
+        asset_service = get_asset_service()
+        set_id, provider = add_set(deepcopy(test_sets[0]))
+
+        with open('tests/fixtures/file_example-jpg.jpg', 'rb') as f:
+            asset_id = asset_service.post([{
+                'set_id': set_id,
+                'filename': 'file_example',
+                'name': 'Jpeg Example',
+                'description': 'Jpeg file asset example',
+                'binary': f,
+            }])[0]
+
+            f.seek(0)
+            original_bytes = f.read()
+            original_size = f.tell()
+
+            asset = asset_service.get_by_id(asset_id)
+            media_id = asset['_media_id']
+
+            assert asset['length'] == original_size
+            assert asset['mimetype'] == 'image/jpeg'
+            assert provider.exists(media_id)
+
+            asset_binary = asset_service.download_binary(asset_id)
+            assert asset_binary.length == original_size
+            assert asset_binary.read() == original_bytes
+
+
+def test_search_elastic(init_app, app):
+    with app.test_request_context():
+        asset_service = get_asset_service()
+        set_1, _ = add_set(deepcopy(test_sets[0]))
+        set_2, _ = add_set(deepcopy(test_sets[1]))
 
     with open('tests/fixtures/file_example-jpg.jpg', 'rb') as f:
-        asset_id = asset_service.post([{
-            'set_id': set_id,
-            'filename': 'file_example',
-            'name': 'Jpeg Example',
-            'description': 'Jpeg file asset example',
-            'binary': f,
-        }])[0]
-
-        f.seek(0)
-        original_bytes = f.read()
-        original_size = f.tell()
-
-        asset = asset_service.get_by_id(asset_id)
-        media_id = asset['_media_id']
-
-        assert asset['length'] == original_size
-        assert asset['mimetype'] == 'image/jpeg'
-        assert provider.exists(media_id)
-
-        asset_binary = asset_service.download_binary(asset_id)
-        assert asset_binary.length == original_size
-        assert asset_binary.read() == original_bytes
-
-
-def test_search_elastic(init_app):
-    asset_service = get_asset_service()
-    set_1, _ = add_set(deepcopy(test_sets[0]))
-    set_2, _ = add_set(deepcopy(test_sets[1]))
-
-    with open('tests/fixtures/file_example-jpg.jpg', 'rb') as f:
-        asset_service.post([{
-            'set_id': set_1,
-            'filename': 'file_example-1',
-            'name': 'Jpeg Example 1',
-            'description': 'Jpeg file asset example 1',
-            'tags': [{'code': 'abg123', 'name': 'Alpha Beta Gamma 123'}],
-            'binary': f,
-        }, {
-            'set_id': set_1,
-            'filename': 'file_example-2',
-            'name': 'Jpeg Example 2',
-            'description': 'Jpeg file asset example 2',
-            'tags': [{'code': 'dez456', 'name': 'Delta Epsilon Zeta 456'}],
-            'binary': f,
-        }, {
-            'set_id': set_2,
-            'filename': 'file_example-3',
-            'name': 'Jpeg Example 3',
-            'description': 'Jpeg file asset example 3',
-            'tags': [
-                {'code': 'abg123', 'name': 'Alpha Beta Gamma 123'},
-                {'code': 'dez456', 'name': 'Delta Epsilon Zeta 456'}
-            ],
-            'binary': f,
-        }, {
-            'set_id': set_2,
-            'filename': 'file_example-4',
-            'name': 'Jpeg Example 4',
-            'description': 'Jpeg file asset example 4',
-            'tags': [],
-            'binary': f,
-        }])
+        with app.test_request_context():
+            asset_service.post([{
+                'set_id': set_1,
+                'filename': 'file_example-1',
+                'name': 'Jpeg Example 1',
+                'description': 'Jpeg file asset example 1',
+                'tags': [{'code': 'abg123', 'name': 'Alpha Beta Gamma 123'}],
+                'binary': f,
+            }, {
+                'set_id': set_1,
+                'filename': 'file_example-2',
+                'name': 'Jpeg Example 2',
+                'description': 'Jpeg file asset example 2',
+                'tags': [{'code': 'dez456', 'name': 'Delta Epsilon Zeta 456'}],
+                'binary': f,
+            }, {
+                'set_id': set_2,
+                'filename': 'file_example-3',
+                'name': 'Jpeg Example 3',
+                'description': 'Jpeg file asset example 3',
+                'tags': [
+                    {'code': 'abg123', 'name': 'Alpha Beta Gamma 123'},
+                    {'code': 'dez456', 'name': 'Delta Epsilon Zeta 456'}
+                ],
+                'binary': f,
+            }, {
+                'set_id': set_2,
+                'filename': 'file_example-4',
+                'name': 'Jpeg Example 4',
+                'description': 'Jpeg file asset example 4',
+                'tags': [],
+                'binary': f,
+            }])
 
     def _search(query):
         req = ParsedRequest()
