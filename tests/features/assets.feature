@@ -717,3 +717,130 @@ Feature: Assets
             "tags": ["publication"]
         }
         """
+
+    Scenario: Create and update an Asset with external_user_id
+        When we send client.sets.create
+        """
+        {
+            "docs": [{
+                "name": "foo",
+                "state": "usable",
+                "destination_name": "internal"
+            }]
+        }
+        """
+        Then we get OK response
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-jpg.jpg",
+                "name": "Jpeg Example",
+                "description": "Jpeg file asset example"
+            },
+            "filename": "file_example-jpg.jpg",
+            "external_user_id": "test_user"
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "set_id": "#SETS._id#",
+            "filename": "file_example-jpg.jpg",
+            "name": "Jpeg Example",
+            "description": "Jpeg file asset example",
+            "firstcreated": "#DATE#",
+            "versioncreated": "#DATE#",
+            "original_creator": "test_user",
+            "version_creator": "test_user",
+            "state": "draft",
+            "binary": null,
+            "_media_id": "#ASSETS._media_id#",
+            "length": 12186,
+            "mimetype": "image/jpeg",
+            "_links": {
+                "self": {
+                    "title": "Asset",
+                    "href": "consume/assets/#ASSETS._id#"
+                }
+            }
+        }
+        """
+        When we send client.assets.get_by_id
+        """
+        {"item_id": "#ASSETS._id#"}
+        """
+        Then we get existing resource
+        """
+        {
+            "set_id": "#SETS._id#",
+            "filename": "file_example-jpg.jpg",
+            "name": "Jpeg Example",
+            "description": "Jpeg file asset example",
+            "state": "draft",
+            "binary": "#ASSETS._media_id#",
+            "_media_id": "#ASSETS._media_id#",
+            "length": 12186,
+            "mimetype": "image/jpeg",
+            "_links": {
+                "self": {
+                    "title": "Asset",
+                    "href": "consume/assets/#ASSETS._id#"
+                }
+            }
+        }
+        """
+        When we send client.assets.update
+        """
+        {
+            "item_id": "#ASSETS._id#",
+            "headers": {"If-Match": "#ASSETS._etag#"},
+            "updates": {"description": "Updated Jpeg file asset example"},
+            "external_user_id": "test_user"
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "set_id": "#SETS._id#",
+            "filename": "file_example-jpg.jpg",
+            "name": "Jpeg Example",
+            "description": "Updated Jpeg file asset example",
+            "versioncreated": "#DATE#",
+            "version_creator": "test_user"
+        }
+        """
+        When we upload a binary file with client.assets.update
+        """
+        {
+            "item_id": "#ASSETS._id#",
+            "headers": {"If-Match": "#ASSETS._etag#"},
+            "updates": {"name": "Updated Jpeg Example"},
+            "filename": "file_example2-jpg.jpg",
+            "external_user_id": "test_user"
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "name": "Updated Jpeg Example",
+            "length": 16549,
+            "mimetype": "image/jpeg",
+            "versioncreated": "#DATE#",
+            "version_creator": "test_user"
+        }
+        """
+        When we send client.assets.delete
+        """
+        {
+            "item_id": "#ASSETS._id#",
+            "headers": {"If-Match": "#ASSETS._etag#"}
+        }
+        """
+        Then we get OK response
+        When we send client.assets.get_by_id
+        """
+        {"item_id": "#ASSETS._id#"}
+        """
+        Then we get error 404

@@ -76,8 +76,13 @@ class SamsClient(object):
         :return: The API response
         """
 
+        if params is None:
+            params = {}
         if headers is None:
             headers = {}
+
+        if external_user_id:
+            params['external_user_id'] = external_user_id
 
         if callback is None:
             # set default callback
@@ -91,8 +96,7 @@ class SamsClient(object):
             headers=headers,
             data=data,
             files=files,
-            params=params,
-            external_user_id=external_user_id)
+            params=params)
         return callback(response)
 
     def get(

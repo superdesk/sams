@@ -616,3 +616,92 @@ Feature: Sets
             }
         }
         """
+    Scenario: Create and update a Set with external_user_id
+        When we send client.sets.create
+        """
+        {
+            "docs": [{
+                "name": "foo",
+                "destination_name": "internal"
+            }],
+            "external_user_id": "test_user"
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "name": "foo",
+            "firstcreated": "#DATE#",
+            "versioncreated": "#DATE#",
+            "original_creator": "test_user",
+            "version_creator": "test_user",
+            "destination_name": "internal",
+            "_links": {
+                "self": {
+                    "title": "Set",
+                    "href": "consume/sets/#SETS._id#"
+                }
+            }
+        }
+        """
+        When we send client.sets.get_by_id
+        """
+        {"item_id": "#SETS._id#"}
+        """
+        Then we get existing resource
+        """
+        {
+            "name": "foo",
+            "destination_name": "internal",
+            "_links": {
+                "self": {
+                    "title": "Set",
+                    "href": "consume/sets/#SETS._id#"
+                }
+            }
+        }
+        """
+        When we send client.sets.update
+        """
+        {
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"},
+            "updates": {"description": "testing"},
+            "external_user_id": "test_user"
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "name": "foo",
+            "destination_name": "internal",
+            "description": "testing",
+            "versioncreated": "#DATE#",
+            "version_creator": "test_user"
+        }
+        """
+        When we send client.sets.get_by_id
+        """
+        {"item_id": "#SETS._id#"}
+        """
+        Then we get existing resource
+        """
+        {
+            "name": "foo",
+            "destination_name": "internal",
+            "description": "testing"
+        }
+        """
+        When we send client.sets.delete
+        """
+        {
+            "item_id": "#SETS._id#",
+            "headers": {"If-Match": "#SETS._etag#"}
+        }
+        """
+        Then we get OK response
+        When we send client.sets.get_by_id
+        """
+        {"item_id": "#SETS._id#"}
+        """
+        Then we get error 404
