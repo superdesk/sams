@@ -71,3 +71,7 @@ def construct_asset_download_response(
         response.headers['Content-Disposition'] = 'Inline; filename={}'.format(asset['filename'])
 
     return response
+
+
+def get_external_user_id() -> str:
+    return request.args.get('external_user_id')

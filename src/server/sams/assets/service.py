@@ -17,10 +17,11 @@ from copy import deepcopy
 from superdesk.services import Service
 from superdesk.storage.mimetype_mixin import MimetypeMixin
 from superdesk.storage.superdesk_file import SuperdeskFile
+from superdesk.utc import utcnow
 
 from sams.factory.service import SamsService
 from sams.sets import get_service
-from sams.utils import get_binary_stream_size
+from sams.utils import get_binary_stream_size, get_external_user_id
 
 from sams_client.errors import SamsAssetErrors
 
@@ -34,8 +35,15 @@ class AssetsService(SamsService, MimetypeMixin):
         :return: list of generated IDs for the new documents
         :rtype: list[bson.objectid.ObjectId]
         """
-
         for doc in docs:
+            doc['firstcreated'] = utcnow()
+            doc['versioncreated'] = utcnow()
+            external_user_id = get_external_user_id()
+
+            if external_user_id:
+                doc['original_creator'] = external_user_id
+                doc['version_creator'] = external_user_id
+
             content = doc.pop('binary', None)
 
             if not content:
@@ -59,10 +67,15 @@ class AssetsService(SamsService, MimetypeMixin):
         :return: Dictionary containing the updated attributes of the Asset
         :rtype: dict
         """
-
         original = self.get_by_id(item_id)
         content = updates.pop('binary', None)
         self.validate_patch(original, updates)
+
+        updates['versioncreated'] = utcnow()
+        external_user_id = get_external_user_id()
+
+        if external_user_id:
+            updates['version_creator'] = external_user_id
 
         if content:
             asset = deepcopy(original)

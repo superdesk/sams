@@ -31,7 +31,12 @@ def step_impl_send_client(context, model_name, method_name):
     )
 
     kwargs = {} if not context.text else json.loads(apply_placeholders(context, context.text))
-    context.response = method(**kwargs)
+    external_user_id = kwargs.pop('external_user_id', None)
+    if external_user_id:
+        context.response = method(external_user_id=external_user_id, **kwargs)
+    else:
+        context.response = method(**kwargs)
+
     store_last_item(context, model_name)
 
 
@@ -45,10 +50,14 @@ def step_impl_upload_binary_client(context, model_name, method_name):
 
     kwargs = {} if not context.text else json.loads(apply_placeholders(context, context.text))
     filename = kwargs.pop('filename', None)
+    external_user_id = kwargs.pop('external_user_id', None)
     filepath = None if not filename else 'tests/fixtures/{}'.format(filename)
     files = None if not filepath else {'binary': open(filepath, 'rb')}
 
-    context.response = method(files=files, **kwargs)
+    if external_user_id:
+        context.response = method(files=files, external_user_id=external_user_id, **kwargs)
+    else:
+        context.response = method(files=files, **kwargs)
     store_last_item(context, model_name)
 
 

@@ -59,6 +59,7 @@ class SamsClient(object):
         method: str = 'get',
         params: Dict = None,
         headers: Dict[str, Any] = None,
+        external_user_id: str = None,
         data: str = None,
         files=None,
         callback: Callable[[requests.Response], requests.Response] = None
@@ -67,6 +68,7 @@ class SamsClient(object):
 
         :param str api: The url for the request
         :param str method: The HTTP method to use
+        :param str external_user_id: the external user id for versioncreator
         :param dict headers: Dictionary of headers to apply
         :param data: The body for the request
         :param callback: A callback function to manipulate the response
@@ -74,8 +76,13 @@ class SamsClient(object):
         :return: The API response
         """
 
+        if params is None:
+            params = {}
         if headers is None:
             headers = {}
+
+        if external_user_id:
+            params['external_user_id'] = external_user_id
 
         if callback is None:
             # set default callback
@@ -84,7 +91,12 @@ class SamsClient(object):
         base_url = self.config.get('base_url')
         url = f'{base_url}{api}'
         headers = self.auth.apply_headers(headers)
-        response = request(url, headers=headers, data=data, files=files, params=params)
+        response = request(
+            url,
+            headers=headers,
+            data=data,
+            files=files,
+            params=params)
         return callback(response)
 
     def get(
@@ -92,12 +104,14 @@ class SamsClient(object):
         url: str,
         params: Dict = None,
         headers: Dict[str, Any] = None,
+        external_user_id: str = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method for GET requests
 
         :param str url: The url to get
         :param dict headers: Dictionary of headers to apply
+        :param str external_user_id: the external user id for versioncreator
         :param callback: A callback function to manipulate the response
         :rtype: requests.Response
         :return: The API response
@@ -108,7 +122,8 @@ class SamsClient(object):
             method='get',
             params=params,
             headers=headers,
-            callback=callback
+            callback=callback,
+            external_user_id=external_user_id
         )
 
     def search(
@@ -116,6 +131,7 @@ class SamsClient(object):
         url: str,
         params: Dict[str, Any] = None,
         headers: Dict[str, any] = None,
+        external_user_id: str = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method for GET requests with query args
@@ -123,6 +139,7 @@ class SamsClient(object):
         :param str url: The url to get
         :param dict args: Dictionary of query args to apply
         :param dict headers: Dictionary of headers to apply
+        :param str external_user_id: the external user id for versioncreator
         :param callback: A callback function to manipulate the response
         :rtype: requests.Response
         :return: The API response
@@ -132,13 +149,15 @@ class SamsClient(object):
             url,
             params=params,
             headers=headers,
-            callback=callback
+            callback=callback,
+            external_user_id=external_user_id
         )
 
     def post(
         self,
         url: str,
         headers: Dict[str, Any] = None,
+        external_user_id: str = None,
         data: str or Dict[str, Any] = None,
         files=None,
         callback: Callable[[requests.Response], requests.Response] = None
@@ -149,6 +168,7 @@ class SamsClient(object):
 
         :param str url: The url to post to
         :param dict headers: Dictionary of headers to apply
+        :param str external_user_id: the external user id for versioncreator
         :param data: The body for the request
         :param callback: A callback function to manipulate the response
         :rtype: requests.Response
@@ -177,13 +197,15 @@ class SamsClient(object):
             headers=headers,
             data=data,
             files=files,
-            callback=callback
+            callback=callback,
+            external_user_id=external_user_id
         )
 
     def patch(
         self,
         url: str,
         headers: Dict[str, Any] = None,
+        external_user_id: str = None,
         data: str or Dict[str, Any] = None,
         files=None,
         callback: Callable[[requests.Response], requests.Response] = None
@@ -194,6 +216,7 @@ class SamsClient(object):
 
         :param str url: The url to patch to
         :param dict headers: Dictionary of headers to apply
+        :param str external_user_id: the external user id for versioncreator
         :param data: The body of the request
         :param callback: A callback function to manipulate the response
         :rtype: requests.Response
@@ -217,19 +240,22 @@ class SamsClient(object):
             headers=headers,
             data=data,
             files=files,
-            callback=callback
+            callback=callback,
+            external_user_id=external_user_id
         )
 
     def delete(
         self,
         url: str,
         headers: Dict[str, Any] = None,
+        external_user_id: str = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method for DELETE requests
 
         :param str url: The url to delete
         :param dict headers: Dictionary of headers to apply
+        :param str external_user_id: the external user id for versioncreator
         :param callback: A callback function to manipulate the response
         :rtype: requests.Response
         :return: The API response
@@ -239,7 +265,8 @@ class SamsClient(object):
             api=url,
             method='delete',
             headers=headers,
-            callback=callback
+            callback=callback,
+            external_user_id=external_user_id
         )
 
     def _default_resp_callback(self, response: requests.Response) -> requests.Response:

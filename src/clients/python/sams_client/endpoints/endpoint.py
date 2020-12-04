@@ -117,6 +117,7 @@ class Endpoint:
         docs: List[Dict[str, Any]],
         headers: Dict[str, Any] = None,
         files=None,
+        external_user_id: str = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method to create a new document(s)
@@ -136,6 +137,7 @@ class Endpoint:
             headers=headers,
             data=docs,
             files=files,
+            external_user_id=external_user_id,
             callback=callback
         )
 
@@ -145,6 +147,7 @@ class Endpoint:
         updates: Dict[str, Any],
         headers: Dict[str, Any] = None,
         files=None,
+        external_user_id: str = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method to update an existing document
@@ -156,7 +159,6 @@ class Endpoint:
         :rtype: requests.Response
         :return: The updated document
         """
-
         if not self._write_url:
             return self._return_405()
 
@@ -168,6 +170,7 @@ class Endpoint:
             headers=headers,
             data=updates,
             files=files,
+            external_user_id=external_user_id,
             callback=callback
         )
 

@@ -92,6 +92,18 @@ SET_SCHEMA = {
         'mapping': {
             'type': 'long'
         }
+    },
+    'original_creator': {
+        'type': 'string'
+    },
+    'version_creator': {
+        'type': 'string'
+    },
+    'firstcreated': {
+        'type': 'datetime',
+    },
+    'versioncreated': {
+        'type': 'datetime',
     }
 }
 """
@@ -110,4 +122,12 @@ SET_SCHEMA = {
         A dictionary containing the configuration options for the specific destination used
     ``maximum_asset_size`` *long*
         The maximum size of an Asset that can be uploaded to this Set (optional)
+    ``original_creator`` *string*
+        A field to store the id of the user who created the set
+    ``version_creator`` *string*
+        A field to store the id of the user who updated the set
+    ``firstcreated`` *string*
+        A field to store time, when set is created
+    ``versioncreated`` *string*
+        A field to store time, when set is updated
 """
