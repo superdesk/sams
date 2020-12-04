@@ -75,3 +75,7 @@ def construct_asset_download_response(
 
 def get_external_user_id() -> str:
     return request.args.get('external_user_id')
+
+
+def get_external_session_id() -> str:
+    return request.args.get('external_session_id')

@@ -73,6 +73,23 @@ def assert_is_now(val, key):
 def format_date(date_to_format):
     return date_to_format.strftime(DATETIME_FORMAT)
 
+def change_null_to_none(response_data):
+    """Checks for locking parameters in response_data and changes null values to string "None" for comparison
+    :response_data: dict of response_data
+    """
+    try:
+        if not response_data['lock_user']:
+            response_data['lock_user'] = "None"
+        if not response_data['lock_session']:
+            response_data['lock_session'] = "None"
+        if not response_data['lock_action']:
+            response_data['lock_action'] = "None"
+        if not response_data['lock_time']:
+            response_data['lock_time'] = "None"
+    except KeyError:
+        pass
+
+    return response_data
 
 def apply_placeholders(context, text):
     placeholders = getattr(context, 'placeholders', {})
@@ -180,13 +197,19 @@ def test_json(context, json_fields=None):
             fail_and_print_body(context.response, 'response is not valid json')
             return
 
+        try:
+            context_data = json.loads(context.text)
+        except Exception:
+            fail_and_print_body(context, 'response is not valid json')
+            return
+
     context_data = json.loads(
         apply_placeholders(
             context,
             context.text
         )
     )
-
+    response_data = change_null_to_none(response_data)
     assert_equal(
         json_match(context_data, response_data, json_fields),
         True,

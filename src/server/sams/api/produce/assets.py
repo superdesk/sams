@@ -22,18 +22,104 @@ To access Assets inside the SAMS application, use the :mod:`sams.assets` module 
 **schema**               :attr:`sams_client.schemas.assets.ASSET_SCHEMA`
 =====================   =================================================================
 """
+from bson import ObjectId
 from flask import current_app as app, json
+from flask import request
 
 from sams.api.service import SamsApiService
 from sams.api.consume import ConsumeAssetResource
 from sams_client.schemas import SET_STATES
 from sams.sets import get_service as get_sets_service
+from sams.assets import get_service as get_asset_service
 from sams.storage.sams_media_storage import get_request_id
 from superdesk.resource import Resource, build_custom_hateoas
 from sams_client.errors import SamsAssetErrors
+from sams.utils import get_external_user_id, get_external_session_id
 
+from superdesk import Blueprint
+from superdesk.utc import utcnow
 
 FIELDS_TO_JSON_PARSE = ('tags', 'extra')
+
+assets_produce_bp = Blueprint('assets_produce', __name__)
+
+
+@assets_produce_bp.route('/produce/assets/lock/<asset_id>', methods=['PATCH'])
+def lock_asset(asset_id: str):
+    """
+    Uses asset_id and lock action and locks the corresponding asset
+    """
+
+    service = get_asset_service()
+    asset = service.get_by_id(asset_id)
+    updates = {}
+
+    try:
+        lock_action = asset['lock_action']
+    except KeyError:
+        lock_action = None
+        pass
+
+    if lock_action:
+        raise SamsAssetErrors.LockingAssetLocked
+
+    external_user_id = get_external_user_id()
+    external_session_id = get_external_session_id()
+
+    if not external_user_id:
+        raise SamsAssetErrors.ExternalUserIdNotFound
+
+    if not external_session_id:
+        raise SamsAssetErrors.ExternalSessionIdNotFound
+
+    updates['lock_action'] = request.json['lock_action']
+    updates['lock_user'] = external_user_id
+    updates['lock_session'] = external_session_id
+    updates['lock_time'] = utcnow()
+
+    return service.patch(ObjectId(asset_id), updates)
+
+
+@assets_produce_bp.route('/produce/assets/unlock/<asset_id>', methods=['PATCH'])
+def unlock_asset(asset_id: str):
+    """
+    Uses asset_id and unlocks the corresponding asset
+    """
+
+    service = get_asset_service()
+    asset = service.get_by_id(asset_id)
+    updates = {}
+
+    try:
+        lock_action = asset['lock_action']
+    except KeyError:
+        lock_action = None
+        pass
+
+    if not lock_action:
+        raise SamsAssetErrors.UnlockingAssetUnlocked
+
+    external_user_id = get_external_user_id()
+    external_session_id = get_external_session_id()
+
+    if not external_user_id:
+        raise SamsAssetErrors.ExternalUserIdNotFound
+
+    if not external_session_id:
+        raise SamsAssetErrors.ExternalSessionIdNotFound
+
+    if asset['lock_user'] != external_user_id:
+        raise SamsAssetErrors.ExternalUserIdNotFound
+
+    if asset['lock_session'] != external_session_id:
+        raise SamsAssetErrors.ExternalSessionIdNotFound
+
+    updates['lock_action'] = None
+    updates['lock_user'] = None
+    updates['lock_session'] = None
+    updates['lock_time'] = None
+
+    return service.patch(ObjectId(asset_id), updates)
 
 
 class ProduceAssetResource(Resource):

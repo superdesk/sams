@@ -60,6 +60,7 @@ class SamsClient(object):
         params: Dict = None,
         headers: Dict[str, Any] = None,
         external_user_id: str = None,
+        external_session_id: str = None,
         data: str = None,
         files=None,
         callback: Callable[[requests.Response], requests.Response] = None
@@ -83,6 +84,8 @@ class SamsClient(object):
 
         if external_user_id:
             params['external_user_id'] = external_user_id
+        if external_session_id:
+            params['external_session_id'] = external_session_id
 
         if callback is None:
             # set default callback
@@ -157,6 +160,7 @@ class SamsClient(object):
         self,
         url: str,
         headers: Dict[str, Any] = None,
+        external_session_id: str = None,
         external_user_id: str = None,
         data: str or Dict[str, Any] = None,
         files=None,
@@ -198,7 +202,8 @@ class SamsClient(object):
             data=data,
             files=files,
             callback=callback,
-            external_user_id=external_user_id
+            external_user_id=external_user_id,
+            external_session_id=external_session_id
         )
 
     def patch(
@@ -206,6 +211,7 @@ class SamsClient(object):
         url: str,
         headers: Dict[str, Any] = None,
         external_user_id: str = None,
+        external_session_id: str = None,
         data: str or Dict[str, Any] = None,
         files=None,
         callback: Callable[[requests.Response], requests.Response] = None
@@ -241,7 +247,8 @@ class SamsClient(object):
             data=data,
             files=files,
             callback=callback,
-            external_user_id=external_user_id
+            external_user_id=external_user_id,
+            external_session_id=external_session_id
         )
 
     def delete(

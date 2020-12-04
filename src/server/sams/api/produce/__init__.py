@@ -9,9 +9,11 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from .assets import ProduceAssetResource, ProduceAssetService
+import superdesk
+from .assets import ProduceAssetResource, ProduceAssetService, assets_produce_bp
 from sams.factory.app import SamsApp
 from sams.assets import get_service as get_assets_service
+from sams.auth.decorator import blueprint_auth
 
 
 def init_app(app: SamsApp):
@@ -22,3 +24,13 @@ def init_app(app: SamsApp):
         app=app,
         service=service
     )
+
+    @assets_produce_bp.before_request
+    @blueprint_auth()
+    def before_request():
+        """
+        Add authentication before request to all blueprint
+        """
+        pass
+
+    superdesk.blueprint(assets_produce_bp, app)

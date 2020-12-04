@@ -163,6 +163,34 @@ ASSET_SCHEMA = {
     'binary': {
         'type': 'media',
         'mapping': not_analyzed
+    },
+    'lock_user': {
+        'type': 'string',
+        'mapping': not_analyzed,
+        'required': False,
+        'nullable': True,
+        'empty': True
+    },
+    'lock_session': {
+        'type': 'string',
+        'mapping': not_analyzed,
+        'required': False,
+        'nullable': True,
+        'empty': True
+    },
+    'lock_action': {
+        'type': 'string',
+        'mapping': not_analyzed,
+        'required': False,
+        'nullable': True,
+        'empty': True
+    },
+    'lock_time': {
+        'type': 'datetime',
+        'mapping': not_analyzed,
+        'required': False,
+        'nullable': True,
+        'empty': True
     }
 }
 """
