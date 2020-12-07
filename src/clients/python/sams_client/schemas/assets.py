@@ -48,12 +48,10 @@ ASSET_SCHEMA = {
         'mapping': not_analyzed
     },
     'firstcreated': {
-        'type': 'datetime',
-        'mapping': not_analyzed
+        'type': 'datetime'
     },
     'versioncreated': {
-        'type': 'datetime',
-        'mapping': not_analyzed
+        'type': 'datetime'
     },
     '_version': {
         'type': 'number'
@@ -186,8 +184,7 @@ ASSET_SCHEMA = {
         'empty': True
     },
     'lock_time': {
-        'type': 'datetime',
-        'mapping': not_analyzed,
+        'type': 'datetime'
         'required': False,
         'nullable': True,
         'empty': True
