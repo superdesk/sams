@@ -30,6 +30,8 @@ class SamsAssetEndpoint(Endpoint):
     _read_binary_url = '/consume/assets/binary'
     _write_url = '/produce/assets'
     _read_binary_zip_url = '/consume/assets/compressed_binary'
+    _lock_asset_url = _write_url + '/lock'
+    _unlock_asset_url = _write_url + '/unlock'
 
     def get_by_ids(
         self,
@@ -210,3 +212,75 @@ class SamsAssetEndpoint(Endpoint):
         buckets = get_aggregation_buckets(response, 'tags')
         codes = [tag.get('key') for tag in buckets]
         return {'tags': codes}, response.status_code
+
+    def lock_asset(
+        self,
+        docs: Dict[str, Any],
+        item_id: ObjectId,
+        headers: Dict[str, Any] = None,
+        external_user_id: str = None,
+        external_session_id: str = None,
+        callback: Callable[[requests.Response], requests.Response] = None
+    ) -> requests.Response:
+        """Helper method to lock Assets by ids
+
+        :param dict docs: The documents to update
+        :param bson.objectid.ObjectId item_id: The Asset IDs
+        :param dict headers: Dictionary of headers to apply
+        :param str external_user_id: External user id
+        :param str external_session_id: External session id
+        :param callback: A callback function to manipulate the response
+        :rtype: requests.Response
+        :return: The updates in asset, if found
+        """
+
+        if not self._lock_asset_url:
+            return self._return_405()
+
+        return self._client.patch(
+            url='{}/{}'.format(
+                self._lock_asset_url,
+                item_id
+            ),
+            headers=headers,
+            data=docs,
+            callback=callback,
+            external_user_id=external_user_id,
+            external_session_id=external_session_id,
+        )
+
+    def unlock_asset(
+        self,
+        docs: Dict[str, Any],
+        item_id: ObjectId,
+        headers: Dict[str, Any] = None,
+        external_user_id: str = None,
+        external_session_id: str = None,
+        callback: Callable[[requests.Response], requests.Response] = None
+    ) -> requests.Response:
+        """Helper method to unlock asset by ids
+
+        :param dict docs: The documents to update
+        :param bson.objectid.ObjectId item_ids: The Asset IDs
+        :param dict headers: Dictionary of headers to apply
+        :param str external_user_id: External user id
+        :param str external_session_id: External session id
+        :param callback: A callback function to manipulate the response
+        :rtype: requests.Response
+        :return: The changes in asset, if found
+        """
+
+        if not self._lock_asset_url:
+            return self._return_405()
+
+        return self._client.patch(
+            url='{}/{}'.format(
+                self._unlock_asset_url,
+                item_id
+            ),
+            headers=headers,
+            data=docs,
+            callback=callback,
+            external_user_id=external_user_id,
+            external_session_id=external_session_id,
+        )

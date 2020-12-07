@@ -118,6 +118,7 @@ class Endpoint:
         headers: Dict[str, Any] = None,
         files=None,
         external_user_id: str = None,
+        external_session_id: str = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method to create a new document(s)
@@ -138,6 +139,7 @@ class Endpoint:
             data=docs,
             files=files,
             external_user_id=external_user_id,
+            external_session_id=external_session_id,
             callback=callback
         )
 
@@ -148,6 +150,7 @@ class Endpoint:
         headers: Dict[str, Any] = None,
         files=None,
         external_user_id: str = None,
+        external_session_id: str = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
         """Helper method to update an existing document

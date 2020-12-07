@@ -73,6 +73,25 @@ def step_impl_download_binary_client(context, model_name, method_name):
     context.response = method(**kwargs)
 
 
+@when('we lock/unlock an asset with client.{model_name}.{method_name}')
+def step_impl_lock_asset(context, model_name, method_name):
+    client, model, method = get_client_model_and_method_from_step(
+        context,
+        model_name,
+        method_name
+    )
+
+    kwargs = {} if not context.text else json.loads(apply_placeholders(context, context.text))
+    external_user_id = kwargs.pop('external_user_id', None)
+    external_session_id = kwargs.pop('external_session_id', None)
+
+    context.response = method(
+        external_user_id=external_user_id,
+        external_session_id=external_session_id,
+        **kwargs)
+    store_last_item(context, model_name)
+
+
 @when('we get "{url}"')
 def step_impl_get(context, url: str):
     url = apply_placeholders(context, url)

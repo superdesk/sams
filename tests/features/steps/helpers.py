@@ -180,13 +180,18 @@ def test_json(context, json_fields=None):
             fail_and_print_body(context.response, 'response is not valid json')
             return
 
+        try:
+            context_data = json.loads(context.text)
+        except Exception:
+            fail_and_print_body(context, 'response is not valid json')
+            return
+
     context_data = json.loads(
         apply_placeholders(
             context,
             context.text
         )
     )
-
     assert_equal(
         json_match(context_data, response_data, json_fields),
         True,

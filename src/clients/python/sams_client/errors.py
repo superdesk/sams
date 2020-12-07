@@ -412,6 +412,34 @@ class SamsAssetErrors:
                 'max_size': bytes_to_human_readable(max_size),
             })
 
+    class ExternalUserIdNotFound(SamsException):
+        """Raised when attempting to create a new Asset without External User Id"""
+
+        app_code = '08005'
+        http_code = 400
+        description = 'Can not Lock asset without External User ID'
+
+    class ExternalSessionIdNotFound(SamsException):
+        """Raised when attempting to create a new Asset without External Session Id"""
+
+        app_code = '08006'
+        http_code = 400
+        description = 'Can not Lock asset without External Session ID'
+
+    class LockingAssetLocked(SamsException):
+        """Raised when attempting to lock an already locked asset"""
+
+        app_code = '08007'
+        http_code = 400
+        description = 'Can not Lock asset which is already locked'
+
+    class UnlockingAssetUnlocked(SamsException):
+        """Raised when attempting to unlock an already unlocked asset"""
+
+        app_code = '08008'
+        http_code = 400
+        description = 'Can not Unlock asset which is already unlocked'
+
 
 class SamsAmazonS3Errors:
     class InvalidAmazonEndpoint(SamsException):

@@ -844,3 +844,129 @@ Feature: Assets
         {"item_id": "#ASSETS._id#"}
         """
         Then we get error 404
+    Scenario: Lock an asset with external_user_id and external_session_id
+       When we send client.sets.create
+        """
+        {
+            "docs": [{
+                "name": "foo",
+                "state": "usable",
+                "destination_name": "internal"
+            }]
+        }
+        """
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-jpg.jpg",
+                "name": "Jpeg Example",
+                "description": "Jpeg file asset example"
+            },
+            "filename": "file_example-jpg.jpg",
+            "external_user_id": "test_user"
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "set_id": "#SETS._id#",
+            "filename": "file_example-jpg.jpg",
+            "name": "Jpeg Example",
+            "description": "Jpeg file asset example",
+            "firstcreated": "#DATE#",
+            "versioncreated": "#DATE#",
+            "original_creator": "test_user",
+            "version_creator": "test_user",
+            "state": "draft",
+            "binary": null,
+            "_media_id": "#ASSETS._media_id#",
+            "length": 12186,
+            "mimetype": "image/jpeg",
+            "_links": {
+                "self": {
+                    "title": "Asset",
+                    "href": "consume/assets/#ASSETS._id#"
+                }
+            }
+        }
+        """
+        When we lock/unlock an asset with client.assets.lock_asset
+        """
+        {
+            "docs": {
+                "lock_action": "edit"
+            },
+            "item_id": "#ASSETS._id#",
+            "external_user_id": "test_user",
+            "external_session_id": "test_1234"
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "lock_action": "edit",
+            "lock_user": "test_user",
+            "lock_session": "test_1234",
+            "lock_time": "#DATE#",
+            "versioncreated": "#DATE#",
+            "version_creator": "test_user"
+        }
+        """
+        When we lock/unlock an asset with client.assets.lock_asset
+        """
+        {
+            "docs": {
+                "lock_action": "edit"
+            },
+            "item_id": "#ASSETS._id#",
+            "external_user_id": "test_user",
+            "external_session_id": "test_1234"
+        }
+        """
+        Then we get error 400
+        """
+        {
+            "error": "08007",
+            "description": "Can not Lock asset which is already locked"
+        }
+        """
+        When we lock/unlock an asset with client.assets.unlock_asset
+        """
+        {
+            "docs": {
+                "lock_action": "edit"
+            },
+            "item_id": "#ASSETS._id#",
+            "external_user_id": "test_user",
+            "external_session_id": "test_1234"
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "lock_action": null,
+            "lock_user": null,
+            "lock_session": null,
+            "lock_time": null
+        }
+        """
+        When we lock/unlock an asset with client.assets.unlock_asset
+        """
+        {
+            "docs": {
+                "lock_action": "edit"
+            },
+            "item_id": "#ASSETS._id#",
+            "external_user_id": "test_user",
+            "external_session_id": "test_1234"
+        }
+        """
+        Then we get error 400
+        """
+        {
+            "error": "08008",
+            "description": "Can not Unlock asset which is already unlocked"
+        }
+        """
