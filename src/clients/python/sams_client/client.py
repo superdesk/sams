@@ -70,6 +70,7 @@ class SamsClient(object):
         :param str api: The url for the request
         :param str method: The HTTP method to use
         :param str external_user_id: the external user id for versioncreator
+        :param str external_session_id: the external session id for locking session
         :param dict headers: Dictionary of headers to apply
         :param data: The body for the request
         :param callback: A callback function to manipulate the response
@@ -160,8 +161,8 @@ class SamsClient(object):
         self,
         url: str,
         headers: Dict[str, Any] = None,
-        external_session_id: str = None,
         external_user_id: str = None,
+        external_session_id: str = None,
         data: str or Dict[str, Any] = None,
         files=None,
         callback: Callable[[requests.Response], requests.Response] = None
@@ -173,6 +174,7 @@ class SamsClient(object):
         :param str url: The url to post to
         :param dict headers: Dictionary of headers to apply
         :param str external_user_id: the external user id for versioncreator
+        :param str external_session_id: the external session id for locking session
         :param data: The body for the request
         :param callback: A callback function to manipulate the response
         :rtype: requests.Response
@@ -223,6 +225,7 @@ class SamsClient(object):
         :param str url: The url to patch to
         :param dict headers: Dictionary of headers to apply
         :param str external_user_id: the external user id for versioncreator
+        :param str external_session_id: the external session id for locking session
         :param data: The body of the request
         :param callback: A callback function to manipulate the response
         :rtype: requests.Response

@@ -61,16 +61,16 @@ def lock_asset(asset_id: str):
         pass
 
     if lock_action:
-        raise SamsAssetErrors.LockingAssetLocked
+        raise SamsAssetErrors.LockingAssetLocked()
 
     external_user_id = get_external_user_id()
     external_session_id = get_external_session_id()
 
     if not external_user_id:
-        raise SamsAssetErrors.ExternalUserIdNotFound
+        raise SamsAssetErrors.ExternalUserIdNotFound()
 
     if not external_session_id:
-        raise SamsAssetErrors.ExternalSessionIdNotFound
+        raise SamsAssetErrors.ExternalSessionIdNotFound()
 
     updates['lock_action'] = request.json['lock_action']
     updates['lock_user'] = external_user_id
@@ -97,22 +97,22 @@ def unlock_asset(asset_id: str):
         pass
 
     if not lock_action:
-        raise SamsAssetErrors.UnlockingAssetUnlocked
+        raise SamsAssetErrors.UnlockingAssetUnlocked()
 
     external_user_id = get_external_user_id()
     external_session_id = get_external_session_id()
 
     if not external_user_id:
-        raise SamsAssetErrors.ExternalUserIdNotFound
+        raise SamsAssetErrors.ExternalUserIdNotFound()
 
     if not external_session_id:
-        raise SamsAssetErrors.ExternalSessionIdNotFound
+        raise SamsAssetErrors.ExternalSessionIdNotFound()
 
     if asset['lock_user'] != external_user_id:
-        raise SamsAssetErrors.ExternalUserIdNotFound
+        raise SamsAssetErrors.ExternalUserIdNotFound()
 
     if asset['lock_session'] != external_session_id:
-        raise SamsAssetErrors.ExternalSessionIdNotFound
+        raise SamsAssetErrors.ExternalSessionIdNotFound()
 
     updates['lock_action'] = None
     updates['lock_user'] = None

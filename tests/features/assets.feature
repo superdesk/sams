@@ -844,7 +844,7 @@ Feature: Assets
         {"item_id": "#ASSETS._id#"}
         """
         Then we get error 404
-    Scenario: Lock asset
+    Scenario: Lock an asset with external_user_id and external_session_id
        When we send client.sets.create
         """
         {
@@ -926,6 +926,12 @@ Feature: Assets
         }
         """
         Then we get error 400
+        """
+        {
+            "error": "08007",
+            "description": "Can not Lock asset which is already locked"
+        }
+        """
         When we lock/unlock an asset with client.assets.unlock_asset
         """
         {
@@ -940,10 +946,10 @@ Feature: Assets
         Then we get existing resource
         """
         {
-            "lock_action": "None",
-            "lock_user": "None",
-            "lock_session": "None",
-            "lock_time": "None"
+            "lock_action": null,
+            "lock_user": null,
+            "lock_session": null,
+            "lock_time": null
         }
         """
         When we lock/unlock an asset with client.assets.unlock_asset
@@ -958,3 +964,9 @@ Feature: Assets
         }
         """
         Then we get error 400
+        """
+        {
+            "error": "08008",
+            "description": "Can not Unlock asset which is already unlocked"
+        }
+        """
