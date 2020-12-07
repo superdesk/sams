@@ -184,7 +184,7 @@ ASSET_SCHEMA = {
         'empty': True
     },
     'lock_time': {
-        'type': 'datetime'
+        'type': 'datetime',
         'required': False,
         'nullable': True,
         'empty': True
