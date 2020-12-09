@@ -54,13 +54,7 @@ def lock_asset(asset_id: str):
     asset = service.get_by_id(asset_id)
     updates = {}
 
-    try:
-        lock_action = asset['lock_action']
-    except KeyError:
-        lock_action = None
-        pass
-
-    if lock_action:
+    if asset.get('lock_action') is not None:
         raise SamsAssetErrors.LockingAssetLocked()
 
     external_user_id = get_external_user_id()
@@ -90,13 +84,7 @@ def unlock_asset(asset_id: str):
     asset = service.get_by_id(asset_id)
     updates = {}
 
-    try:
-        lock_action = asset['lock_action']
-    except KeyError:
-        lock_action = None
-        pass
-
-    if not lock_action:
+    if asset.get('lock_action') is None:
         raise SamsAssetErrors.UnlockingAssetUnlocked()
 
     external_user_id = get_external_user_id()

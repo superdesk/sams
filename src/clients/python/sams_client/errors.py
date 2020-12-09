@@ -413,18 +413,18 @@ class SamsAssetErrors:
             })
 
     class ExternalUserIdNotFound(SamsException):
-        """Raised when attempting to create a new Asset without External User Id"""
+        """Raised when attempting to create/update Asset without External User Id"""
 
         app_code = '08005'
         http_code = 400
-        description = 'Can not Lock asset without External User ID'
+        description = 'External User ID not found'
 
     class ExternalSessionIdNotFound(SamsException):
-        """Raised when attempting to create a new Asset without External Session Id"""
+        """Raised when attempting to create/update Asset without External Session Id"""
 
         app_code = '08006'
         http_code = 400
-        description = 'Can not Lock asset without External Session ID'
+        description = 'External Session ID not found'
 
     class LockingAssetLocked(SamsException):
         """Raised when attempting to lock an already locked asset"""
