@@ -750,8 +750,8 @@ Feature: Assets
             "filename": "file_example-jpg.jpg",
             "name": "Jpeg Example",
             "description": "Jpeg file asset example",
-            "firstcreated": "#DATE#",
-            "versioncreated": "#DATE#",
+            "firstcreated": "__now__",
+            "versioncreated": "__now__",
             "original_creator": "test_user",
             "version_creator": "test_user",
             "state": "draft",
@@ -807,7 +807,7 @@ Feature: Assets
             "filename": "file_example-jpg.jpg",
             "name": "Jpeg Example",
             "description": "Updated Jpeg file asset example",
-            "versioncreated": "#DATE#",
+            "versioncreated": "__now__",
             "version_creator": "test_user"
         }
         """
@@ -827,7 +827,7 @@ Feature: Assets
             "name": "Updated Jpeg Example",
             "length": 16549,
             "mimetype": "image/jpeg",
-            "versioncreated": "#DATE#",
+            "versioncreated": "__now__",
             "version_creator": "test_user"
         }
         """
@@ -875,8 +875,8 @@ Feature: Assets
             "filename": "file_example-jpg.jpg",
             "name": "Jpeg Example",
             "description": "Jpeg file asset example",
-            "firstcreated": "#DATE#",
-            "versioncreated": "#DATE#",
+            "firstcreated": "__now__",
+            "versioncreated": "__now__",
             "original_creator": "test_user",
             "version_creator": "test_user",
             "state": "draft",
@@ -909,8 +909,8 @@ Feature: Assets
             "lock_action": "edit",
             "lock_user": "test_user",
             "lock_session": "test_1234",
-            "lock_time": "#DATE#",
-            "versioncreated": "#DATE#",
+            "lock_time": "__now__",
+            "versioncreated": "__now__",
             "version_creator": "test_user"
         }
         """
