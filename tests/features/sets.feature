@@ -631,8 +631,8 @@ Feature: Sets
         """
         {
             "name": "foo",
-            "firstcreated": "#DATE#",
-            "versioncreated": "#DATE#",
+            "firstcreated": "__now__",
+            "versioncreated": "__now__",
             "original_creator": "test_user",
             "version_creator": "test_user",
             "destination_name": "internal",
@@ -676,7 +676,7 @@ Feature: Sets
             "name": "foo",
             "destination_name": "internal",
             "description": "testing",
-            "versioncreated": "#DATE#",
+            "versioncreated": "__now__",
             "version_creator": "test_user"
         }
         """
