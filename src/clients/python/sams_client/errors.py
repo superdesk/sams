@@ -426,17 +426,31 @@ class SamsAssetErrors:
         http_code = 400
         description = 'External Session ID not found'
 
+    class ExternalUserIdDoNotMatch(SamsException):
+        """Raised when attempting to create/update Asset with different External User Id"""
+
+        app_code = '08007'
+        http_code = 400
+        description = 'External User ID does not match'
+
+    class ExternalSessionIdDoNotMatch(SamsException):
+        """Raised when attempting to create/update Asset with different External Session Id"""
+
+        app_code = '08008'
+        http_code = 400
+        description = 'External Session ID does not match'
+
     class LockingAssetLocked(SamsException):
         """Raised when attempting to lock an already locked asset"""
 
-        app_code = '08007'
+        app_code = '08009'
         http_code = 400
         description = 'Can not Lock asset which is already locked'
 
     class UnlockingAssetUnlocked(SamsException):
         """Raised when attempting to unlock an already unlocked asset"""
 
-        app_code = '08008'
+        app_code = '08010'
         http_code = 400
         description = 'Can not Unlock asset which is already unlocked'
 

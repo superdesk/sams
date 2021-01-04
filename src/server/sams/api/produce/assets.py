@@ -52,9 +52,10 @@ def lock_asset(asset_id: str):
 
     service = get_asset_service()
     asset = service.get_by_id(asset_id)
+    lock_action = request.json.get('lock_action', None)
     updates = {}
 
-    if asset.get('lock_action') is not None:
+    if asset.get('lock_action', None) is not None:
         raise SamsAssetErrors.LockingAssetLocked()
 
     external_user_id = get_external_user_id()
@@ -66,7 +67,7 @@ def lock_asset(asset_id: str):
     if not external_session_id:
         raise SamsAssetErrors.ExternalSessionIdNotFound()
 
-    updates['lock_action'] = request.json['lock_action']
+    updates['lock_action'] = lock_action
     updates['lock_user'] = external_user_id
     updates['lock_session'] = external_session_id
     updates['lock_time'] = utcnow()
@@ -84,28 +85,36 @@ def unlock_asset(asset_id: str):
     asset = service.get_by_id(asset_id)
     updates = {}
 
-    if asset.get('lock_action') is None:
-        raise SamsAssetErrors.UnlockingAssetUnlocked()
+    force = request.json.get('force', None)
+    if force:
+        updates['lock_action'] = None
+        updates['lock_user'] = None
+        updates['lock_session'] = None
+        updates['lock_time'] = None
 
-    external_user_id = get_external_user_id()
-    external_session_id = get_external_session_id()
+    else:
+        if asset.get('lock_action', None) is None:
+            raise SamsAssetErrors.UnlockingAssetUnlocked()
 
-    if not external_user_id:
-        raise SamsAssetErrors.ExternalUserIdNotFound()
+        external_user_id = get_external_user_id()
+        external_session_id = get_external_session_id()
 
-    if not external_session_id:
-        raise SamsAssetErrors.ExternalSessionIdNotFound()
+        if not external_user_id:
+            raise SamsAssetErrors.ExternalUserIdNotFound()
 
-    if asset['lock_user'] != external_user_id:
-        raise SamsAssetErrors.ExternalUserIdNotFound()
+        if not external_session_id:
+            raise SamsAssetErrors.ExternalSessionIdNotFound()
 
-    if asset['lock_session'] != external_session_id:
-        raise SamsAssetErrors.ExternalSessionIdNotFound()
+        if asset['lock_user'] != external_user_id:
+            raise SamsAssetErrors.ExternalUserIdDoNotMatch()
 
-    updates['lock_action'] = None
-    updates['lock_user'] = None
-    updates['lock_session'] = None
-    updates['lock_time'] = None
+        if asset['lock_session'] != external_session_id:
+            raise SamsAssetErrors.ExternalSessionIdDoNotMatch()
+
+        updates['lock_action'] = None
+        updates['lock_user'] = None
+        updates['lock_session'] = None
+        updates['lock_time'] = None
 
     return service.patch(ObjectId(asset_id), updates)
 
