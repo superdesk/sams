@@ -32,6 +32,7 @@ class SamsAssetEndpoint(Endpoint):
     _read_binary_zip_url = '/consume/assets/compressed_binary'
     _lock_asset_url = _write_url + '/lock'
     _unlock_asset_url = _write_url + '/unlock'
+    _unlock_user_url = _write_url + '/user'
 
     def get_by_ids(
         self,
@@ -283,4 +284,30 @@ class SamsAssetEndpoint(Endpoint):
             callback=callback,
             external_user_id=external_user_id,
             external_session_id=external_session_id,
+        )
+
+    def unlock_assets_by_user(
+        self,
+        headers: Dict[str, Any] = None,
+        external_user_id: str = None,
+        external_session_id: str = None,
+        callback: Callable[[requests.Response], requests.Response] = None
+    ) -> requests.Response:
+        """Helper method to unlock assets by user Id
+
+        :param dict headers: Dictionary of headers to apply
+        :param str external_user_id: External user id
+        :param callback: A callback function to manipulate the response
+        :rtype: requests.Response
+        :return: 200 status code if all assets unlocked
+        """
+
+        if not self._unlock_user_url:
+            return self._return_405()
+
+        url = '{}/{}'.format(self._unlock_user_url, external_user_id)
+        return self._client.patch(
+            url=url,
+            headers=headers,
+            callback=callback,
         )

@@ -119,6 +119,32 @@ def unlock_asset(asset_id: str):
     return service.patch(ObjectId(asset_id), updates)
 
 
+@assets_produce_bp.route('/produce/assets/user/<user_id>', methods=['PATCH'])
+def unlock_asset_by_user(user_id: str):
+    """
+    Uses user_id and unlocks the corresponding assets
+    """
+
+    service = get_asset_service()
+    query = {
+        'lock_user': user_id
+    }
+    assets = service.get(req=None, lookup=query)
+    for asset in assets:
+        updates = {}
+        updates['lock_action'] = None
+        updates['lock_user'] = None
+        updates['lock_session'] = None
+        updates['lock_time'] = None
+
+        service.patch(ObjectId(asset['_id']), updates)
+
+    response = app.response_class(
+        status=200,
+    )
+    return response
+
+
 class ProduceAssetResource(Resource):
     endpoint_name = 'produce_assets'
     resource_title = 'Asset'
