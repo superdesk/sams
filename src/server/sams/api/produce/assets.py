@@ -119,17 +119,27 @@ def unlock_asset(asset_id: str):
     return service.patch(ObjectId(asset_id), updates)
 
 
-@assets_produce_bp.route('/produce/assets/user/<user_id>', methods=['PATCH'])
-def unlock_asset_by_user(user_id: str):
+@assets_produce_bp.route('/produce/assets/user/<Ids>', methods=['PATCH'])
+def unlock_asset_by_user(Ids: list):
     """
-    Uses user_id and unlocks the corresponding assets
+    Uses user_id, session_id and unlocks the corresponding assets
     """
-
+    Ids = Ids.split(',')
+    user_id = Ids[0]
+    session_id = Ids[1]
     service = get_asset_service()
-    query = {
-        'lock_user': user_id
-    }
-    assets = service.get(req=None, lookup=query)
+
+    assets = service.search({
+        'query': {
+            'bool': {
+                'must': [
+                    {'term': {'lock_user': user_id}},
+                    {'term': {'lock_session': session_id}}
+                ]
+            }
+        }
+    })
+
     for asset in assets:
         updates = {}
         updates['lock_action'] = None

@@ -297,6 +297,7 @@ class SamsAssetEndpoint(Endpoint):
 
         :param dict headers: Dictionary of headers to apply
         :param str external_user_id: External user id
+        :param str external_session_id: External session id
         :param callback: A callback function to manipulate the response
         :rtype: requests.Response
         :return: 200 status code if all assets unlocked
@@ -305,7 +306,7 @@ class SamsAssetEndpoint(Endpoint):
         if not self._unlock_user_url:
             return self._return_405()
 
-        url = '{}/{}'.format(self._unlock_user_url, external_user_id)
+        url = '{}/{},{}'.format(self._unlock_user_url, external_user_id, external_session_id)
         return self._client.patch(
             url=url,
             headers=headers,
