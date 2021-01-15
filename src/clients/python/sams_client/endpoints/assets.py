@@ -32,7 +32,7 @@ class SamsAssetEndpoint(Endpoint):
     _read_binary_zip_url = '/consume/assets/compressed_binary'
     _lock_asset_url = _write_url + '/lock'
     _unlock_asset_url = _write_url + '/unlock'
-    _unlock_user_url = _write_url + '/user'
+    _unlock_user_session_url = _write_url + '/unlock_user_session'
 
     def get_by_ids(
         self,
@@ -303,12 +303,13 @@ class SamsAssetEndpoint(Endpoint):
         :return: 200 status code if all assets unlocked
         """
 
-        if not self._unlock_user_url:
+        if not self._unlock_user_session_url:
             return self._return_405()
 
-        url = '{}/{},{}'.format(self._unlock_user_url, external_user_id, external_session_id)
         return self._client.patch(
-            url=url,
+            url=self._unlock_user_session_url,
             headers=headers,
             callback=callback,
+            external_user_id=external_user_id,
+            external_session_id=external_session_id,
         )
