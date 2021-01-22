@@ -119,6 +119,42 @@ def unlock_asset(asset_id: str):
     return service.patch(ObjectId(asset_id), updates)
 
 
+@assets_produce_bp.route('/produce/assets/unlock_user_session', methods=['PATCH'])
+def unlock_asset_by_user():
+    """
+    Uses user_id, session_id and unlocks the corresponding assets
+    """
+
+    external_user_id = get_external_user_id()
+    external_session_id = get_external_session_id()
+    service = get_asset_service()
+
+    assets = service.search({
+        'query': {
+            'bool': {
+                'must': [
+                    {'term': {'lock_user': external_user_id}},
+                    {'term': {'lock_session': external_session_id}}
+                ]
+            }
+        }
+    })
+
+    for asset in assets:
+        updates = {}
+        updates['lock_action'] = None
+        updates['lock_user'] = None
+        updates['lock_session'] = None
+        updates['lock_time'] = None
+
+        service.patch(ObjectId(asset['_id']), updates)
+
+    response = app.response_class(
+        status=200,
+    )
+    return response
+
+
 class ProduceAssetResource(Resource):
     endpoint_name = 'produce_assets'
     resource_title = 'Asset'
