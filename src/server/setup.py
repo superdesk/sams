@@ -17,7 +17,7 @@ with open('README.md', 'r') as f:
 LONG_DESCRIPTION = 'Super Asset Management Service'
 
 install_requires = [
-    'superdesk-core @ https://github.com/superdesk/superdesk-core/tarball/sams#egg=Superdesk-Core',
+    'superdesk-core',
 ]
 
 setup(
@@ -33,6 +33,9 @@ setup(
     platforms=['any'],
     packages=find_packages(exclude=['tests']),
     install_requires=install_requires,
+    dependency_links=[
+        'git+https://github.com/superdesk/superdesk-core@sams#egg=Superdesk-Core'
+    ],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
