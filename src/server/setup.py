@@ -34,7 +34,7 @@ setup(
     packages=find_packages(exclude=['tests']),
     install_requires=install_requires,
     dependency_links=[
-        'git+https://github.com/superdesk/superdesk-core@sams#egg=Superdesk-Core'
+        'git+https://github.com/superdesk/superdesk-core@develop#egg=Superdesk-Core'
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
