@@ -1,5 +1,24 @@
 # SAMS Changelog
 
+## [0.2.0] 2021-02-17
+### Features
+- [SDESK-5638] New File Server app (#23)
+- [SDESK-5668] Endpoints to lock and unlock assets (#30)
+
+### Improvements
+- [SDESK-5656] Client function to get list of Asset tags (#25)
+- chore(packages): Clean up requirement and setup files (#28)
+- [SDESK-5667] Provide external user IDs to requests. (#27)
+- [SDESK-5710] Force attribute to unlock asset endpoint. (#35)
+- [SDESK-5713] Endpoint to unlock assets based on user ID. (#36)
+
+### Fixes
+- [SDESK-5594] Custom elastic tokenizer for name and filename fields (#24)
+- [SDESK-5265] updated asset name schema. (#26)
+- fix(unit_tests): Add test request context (#29)
+- [SDESK-5668] fix: Modified error description (#32)
+- [SDESK-5668] fix: replaced #DATE# with __now__ in test features. (#34)
+
 ## [0.1.0] 2020-10-30
 - [SDESK-5579] Configurable Asset size validation (#22)
 - [SDESK-5291] Add AmazonS3 StorageProvider (#20)

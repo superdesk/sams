@@ -22,7 +22,7 @@ install_requires = [
 
 setup(
     name='sams',
-    version='0.1.0',
+    version='0.2.0',
     description='Super Asset Management Service',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -37,7 +37,7 @@ setup(
         'git+https://github.com/superdesk/superdesk-core@sams#egg=Superdesk-Core'
     ],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
         'Framework :: Flask',
         'Intended Audience :: Developers',
