@@ -95,6 +95,14 @@ class SamsClient(object):
         base_url = self.config.get('base_url')
         url = f'{base_url}{api}'
         headers = self.auth.apply_headers(headers)
+
+        if isinstance(data, dict):
+            tags = data.get('tags')
+            if tags is not None:
+                if len(tags) >= 0:
+                    headers.update({'Content-Type': 'application/json'})
+                    data = dumps(data)
+
         response = request(
             url,
             headers=headers,
