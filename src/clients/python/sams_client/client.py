@@ -95,6 +95,7 @@ class SamsClient(object):
         base_url = self.config.get('base_url')
         url = f'{base_url}{api}'
         headers = self.auth.apply_headers(headers)
+
         response = request(
             url,
             headers=headers,
@@ -236,11 +237,11 @@ class SamsClient(object):
             headers = {}
 
         # In case of multipart form data don't send Content-Type
-        if 'Content-Type' not in headers and files is None:
+        if 'Content-Type' not in headers and (files is None or not bool(files)):
             headers['Content-Type'] = 'application/json'
 
         # In case of multipart form data don't dump
-        if not isinstance(data, str) and files is None:
+        if not isinstance(data, str) and (files is None or not bool(files)):
             data = dumps(data)
 
         return self.request(

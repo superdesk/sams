@@ -649,6 +649,39 @@ Feature: Assets
             }]
         }
         """
+        Then we get OK response
+        When we upload a binary file with client.assets.create
+        """
+        {
+            "docs": {
+                "set_id": "#SETS._id#",
+                "filename": "file_example-jpg.jpg",
+                "name": "Jpeg Example",
+                "description": "Jpeg file asset example"
+            },
+            "filename": "file_example-jpg.jpg"
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "set_id": "#SETS._id#",
+            "filename": "file_example-jpg.jpg",
+            "name": "Jpeg Example",
+            "description": "Jpeg file asset example",
+            "state": "draft",
+            "binary": null,
+            "_media_id": "#ASSETS._media_id#",
+            "length": 12186,
+            "mimetype": "image/jpeg",
+            "_links": {
+                "self": {
+                    "title": "Asset",
+                    "href": "consume/assets/#ASSETS._id#"
+                }
+            }
+        }
+        """
         When we upload a binary file with client.assets.create
         """
         {
@@ -662,29 +695,97 @@ Feature: Assets
             "filename": "file_example-jpg.jpg"
         }
         """
-        Then we get OK response
-        When we upload a binary file with client.assets.create
+        Then we get existing resource
         """
         {
-            "docs": {
-                "set_id": "#SETS._id#",
-                "filename": "file_example-docx.docx",
-                "name": "Docx Example",
-                "description": "Docx file asset example",
-                "tags": [
-                    {"code": "publication", "name": "Publication"},
-                    {"code": "docs", "name": "Documents"}
-                ]
-            },
-            "filename": "file_example-docx.docx"
+            "set_id": "#SETS._id#",
+            "filename": "file_example-jpg.jpg",
+            "name": "Jpeg Example",
+            "description": "Jpeg file asset example",
+            "state": "draft",
+            "binary": null,
+            "_media_id": "#ASSETS._media_id#",
+            "length": 12186,
+            "mimetype": "image/jpeg",
+            "tags": [{"code": "publication", "name": "Publication"}],
+            "_links": {
+                "self": {
+                    "title": "Asset",
+                    "href": "consume/assets/#ASSETS._id#"
+                }
+            }
         }
         """
-        Then we get OK response
+        When we send client.assets.update
+        """
+        {
+            "item_id": "#ASSETS._id#",
+            "headers": {"If-Match": "#ASSETS._etag#"},
+            "updates": {
+                "tags": [{"code": "item1", "name": "item1"}]
+            }
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "set_id": "#SETS._id#",
+            "filename": "file_example-jpg.jpg",
+            "name": "Jpeg Example",
+            "tags": [{"code": "item1", "name": "item1"}],
+            "filename": "file_example-jpg.jpg"
+        }
+        """
+        When we send client.assets.update
+        """
+        {
+            "item_id": "#ASSETS._id#",
+            "headers": {"If-Match": "#ASSETS._etag#"},
+            "updates": {
+                "tags": [
+                    {"code": "item2", "name": "item2"},
+                    {"code": "item3", "name": "item3"}],
+                "filename": "file_example2-jpg.jpg"
+            }
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "set_id": "#SETS._id#",
+            "filename": "file_example2-jpg.jpg",
+            "name": "Jpeg Example",
+            "tags": [
+                    {"code": "item2", "name": "item2"},
+                    {"code": "item3", "name": "item3"}]
+        }
+        """
+        When we send client.assets.update
+        """
+        {
+            "item_id": "#ASSETS._id#",
+            "headers": {"If-Match": "#ASSETS._etag#"},
+            "updates": {
+                "filename": "file_example-jpg.jpg"
+            }
+        }
+        """
+        Then we get existing resource
+        """
+        {
+            "set_id": "#SETS._id#",
+            "filename": "file_example-jpg.jpg",
+            "name": "Jpeg Example",
+            "tags": [
+                    {"code": "item2", "name": "item2"},
+                    {"code": "item3", "name": "item3"}]
+        }
+        """
         When we send client.assets.get_tag_codes
         Then we get existing resource
         """
         {
-            "tags": ["publication", "docs"]
+            "tags": ["item2", "item3"]
         }
         """
         When we send client.assets.get_tag_codes
@@ -702,7 +803,7 @@ Feature: Assets
         Then we get existing resource
         """
         {
-            "tags": ["publication"]
+            "tags": ["item2", "item3"]
         }
         """
          When we send client.assets.get_tag_codes
@@ -714,7 +815,7 @@ Feature: Assets
         Then we get existing resource
         """
         {
-            "tags": ["publication"]
+            "tags": ["item2"]
         }
         """
 
