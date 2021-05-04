@@ -7,10 +7,6 @@ build:
     image: latest
 
 python:
-  version: 3.7
+  version: 3.6
   install:
     - requirements: docs/requirements.txt
-    - method: pip
-      path: src/server
-    - method: pip
-      path: src/clients/python

@@ -1,3 +1,7 @@
 sphinx==1.8.5
 sphinx-autobuild==0.7.1
 sphinxcontrib-plantuml
+
+git+git://github.com/superdesk/superdesk-core.git@develop#egg=Superdesk-Core
+./src/server/
+./src/clients/python

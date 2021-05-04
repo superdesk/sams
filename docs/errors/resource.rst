@@ -2,7 +2,7 @@
 ============================================
 
 .. autoclass:: sams_client.errors.SamsResourceErrors.ValidationError
-    :members: app_code,http_code,message,errors
+    :members: app_code,http_code,errors
     :member-order: bysource
     :undoc-members:
 

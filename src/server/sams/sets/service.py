@@ -88,7 +88,7 @@ class SetsService(SamsService):
         The following additional validation is performed on Sets being updated:
             * Once a set has changed from ``draft`` state, it can never return to ``draft``
             * Once a set has changed from ``draft`` state, ``destination_name`` and \
-            ``destination_config`` cannot be changed
+                ``destination_config`` cannot be changed
             * The ``destination_name`` must exist in a ``STORAGE_DESTINATION_`` config attribute
 
         :param original: The original document from the database
