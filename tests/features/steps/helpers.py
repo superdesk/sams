@@ -67,7 +67,7 @@ def assert_is_now(val, key):
     """
     now = arrow.get()
     val = arrow.get(val)
-    assert val + timedelta(seconds=2) > now, '%s should be %s, it is %s' % (key, now, val)
+    assert val + timedelta(seconds=5) > now, '%s should be %s, it is %s' % (key, now, val)
 
 
 def format_date(date_to_format):
