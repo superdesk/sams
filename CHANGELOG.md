@@ -1,5 +1,12 @@
 # SAMS Changelog
 
+## [0.2.1] 2021-05-04
+### Improvements
+- [SDESK-5581] Ability to add Tags to Asset Metadata (#37)
+
+### Fixes
+- Use superdesk-core/develop branch (#169fd8f)
+
 ## [0.2.0] 2021-02-17
 ### Features
 - [SDESK-5638] New File Server app (#23)

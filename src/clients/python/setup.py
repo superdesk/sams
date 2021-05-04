@@ -11,9 +11,6 @@
 
 from setuptools import setup, find_packages
 
-with open('README.md', 'r') as f:
-    long_description = f.read()
-
 LONG_DESCRIPTION = 'Super Asset Management Service Client'
 
 install_requires = [
@@ -22,10 +19,9 @@ install_requires = [
 
 setup(
     name='sams-client',
-    version='0.2.0',
+    version='0.2.1',
     description='Super Asset Management Service Client',
-    long_description=long_description,
-    long_description_content_type='text/markdown',
+    long_description=LONG_DESCRIPTION,
     author='Tanuj Soni',
     author_email='tanuj.soni@sourcefabric.org',
     url='https://github.com/superdesk/sams',

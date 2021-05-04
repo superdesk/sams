@@ -11,4 +11,5 @@
 
 from .client import SamsClient # noqa
 
-__all__ = ('SamsClient')
+__version__ = '2.2.1'
+__all__ = 'SamsClient'
