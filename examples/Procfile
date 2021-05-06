@@ -1,0 +1,2 @@
+api: gunicorn -c api/gunicorn_config.py wsgi_api
+file_server: gunicorn -c file_server/gunicorn_config.py wsgi_file_server

@@ -1,5 +1,12 @@
 # SAMS Changelog
 
+## [0.2.3] 2021-05-06
+### Improvements
+- fix(run): Allow apps to be started without gunicorn (#91cdb3a)
+
+### Fixes
+- fix(file_server): Allow python modules for config (#48a9ef6)
+
 ## [0.2.2] 2021-05-06
 ### Improvements
 - Support Python 3.8
