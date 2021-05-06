@@ -14,11 +14,12 @@ from setuptools import setup, find_packages
 LONG_DESCRIPTION = 'Super Asset Management Service'
 
 install_requires = [
-    'superdesk-core',
+    'superdesk-core>=2.2.0',
+    'sams-client>=0.2.1,<0.3',
 ]
 
 setup(
-    name='sams',
+    name='sams-server',
     version='0.2.1',
     description='Super Asset Management Service',
     long_description=LONG_DESCRIPTION,
@@ -29,9 +30,6 @@ setup(
     platforms=['any'],
     packages=find_packages(exclude=['tests']),
     install_requires=install_requires,
-    dependency_links=[
-        'git+https://github.com/superdesk/superdesk-core@develop#egg=Superdesk-Core'
-    ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
@@ -44,6 +42,7 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.8',
         'Topic :: Database',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
