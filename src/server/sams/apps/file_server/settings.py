@@ -34,3 +34,9 @@ INSTALLED_APPS = [
 
 # Specify the type of authentication
 SAMS_AUTH_TYPE = env('SAMS_PUBLIC_AUTH_TYPE', 'sams.auth.public')
+
+# Specify api keys for basic auth
+CLIENT_API_KEYS = env('SAMS_PUBLIC_API_KEYS', '')
+
+# Specify the location of the log config file
+LOG_CONFIG_FILE = env('SAMS_PUBLIC_LOG_CONFIG', 'logging_config.yml')

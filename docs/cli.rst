@@ -1,5 +1,5 @@
-:mod:`sams.commands` -- SAMS CLI
-================================
+CLI
+===
 
 Delete Elastic Indices
 ----------------------

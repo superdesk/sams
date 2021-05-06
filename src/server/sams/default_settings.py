@@ -137,7 +137,7 @@ CLIENT_API_KEYS = env('SAMS_CLIENT_API_KEYS', '')
 MAX_ASSET_SIZE = int(env('SAMS_MAX_ASSET_SIZE', '0'))
 
 # Specify the location of the log config file
-LOG_CONFIG_FILE = 'logging_config.yml'
+LOG_CONFIG_FILE = env('SAMS_LOG_CONFIG', 'logging_config.yml')
 
 #: Sentry DSN - will report exceptions there
 SENTRY_DSN = env('SAMS_SENTRY_DSN')

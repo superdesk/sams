@@ -1,6 +1,6 @@
-sphinx==1.8.5
-sphinx-autobuild==0.7.1
-sphinxcontrib-plantuml
+sphinx==3.5.4
+sphinx-autobuild==2021.3.14
+sphinxcontrib-plantuml==0.20.1
 
-./src/server/
 ./src/clients/python
+./src/server/

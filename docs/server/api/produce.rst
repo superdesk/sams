@@ -1,5 +1,5 @@
-:mod:`sams.api.produce` -- Product API
-======================================
+:mod:`sams.api.produce` -- Production API
+=========================================
 .. automodule:: sams.api.produce
     :members:
 
