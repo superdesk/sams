@@ -43,6 +43,9 @@ def get_app(import_name: Optional[str] = __package__, config: Optional[Dict[str,
     app_config.from_object('sams.apps.file_server.settings')
 
     if config:
-        app_config.update(config)
+        try:
+            app_config.update(config)
+        except TypeError:
+            app_config.from_object(config)
 
     return SamsApp(import_name=import_name, config=app_config)
