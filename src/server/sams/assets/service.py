@@ -134,12 +134,18 @@ class AssetsService(SamsService, MimetypeMixin):
 
         set_id = asset.get('set_id')
         filename = asset.get('filename')
-        mimetype = self._get_mimetype(content, filename, asset.get('mimetype'))
 
+        # Seek the buffer to the beginning
+        # If `seek` is not available, then we have received an instance of `bytes`
+        # so convert it to an `io.BytesIO` instance
         try:
             content.seek(0)
         except AttributeError:
             content = BytesIO(content)
+
+        mimetype = self._get_mimetype(content, filename, asset.get('mimetype'))
+
+        content.seek(0)
 
         self._validate_upload_size(set_id, content)
 
