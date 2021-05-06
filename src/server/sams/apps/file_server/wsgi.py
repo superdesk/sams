@@ -12,3 +12,12 @@
 from .app import get_app
 
 application = get_app(__name__)
+
+
+if __name__ == '__main__':
+    application.run(
+        host=application.config['HOST'],
+        port=application.config['PORT'],
+        debug=application.config['DEBUG'],
+        use_reloader=application.config['DEBUG']
+    )

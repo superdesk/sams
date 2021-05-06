@@ -11,7 +11,7 @@
 
 from superdesk.default_settings import strtobool, env, urlparse
 
-HOST = env('SAMS_HOST', '0.0.0.0')
+HOST = env('SAMS_HOST', 'localhost')
 PORT = int(env('SAMS_PORT', '5700'))
 
 SERVER_URL = env('SAMS_URL', 'http://localhost:5700')
@@ -144,9 +144,9 @@ SENTRY_DSN = env('SAMS_SENTRY_DSN')
 SENTRY_INCLUDE_PATHS = ['sams']
 
 # Flask/Application variables
-FLASK_ENV = env('SAMS_FLASK_ENV', 'development')
-DEBUG = strtobool(env('SAMS_DEBUG', 'true'))
-SAMS_TESTING = strtobool(env('SAMS_TESTING', 'true'))
+FLASK_ENV = env('SAMS_FLASK_ENV', '')
+DEBUG = strtobool(env('SAMS_DEBUG', 'false'))
+SAMS_TESTING = strtobool(env('SAMS_TESTING', 'false'))
 
 # Fix bug in Superdesk-Core/notification not using .get
 CELERY_BROKER_URL = None

@@ -11,7 +11,7 @@
 
 from sams.default_settings import env, urlparse
 
-HOST = env('SAMS_PUBLIC_HOST', '0.0.0.0')
+HOST = env('SAMS_PUBLIC_HOST', 'localhost')
 PORT = int(env('SAMS_PUBLIC_PORT', '5750'))
 
 SERVER_URL = env('SAMS_PUBLIC_URL', 'http://localhost:5750')
