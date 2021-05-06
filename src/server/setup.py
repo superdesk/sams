@@ -15,12 +15,12 @@ LONG_DESCRIPTION = 'Super Asset Management Service'
 
 install_requires = [
     'superdesk-core>=2.2.0',
-    'sams-client>=0.2.1,<0.3',
+    'sams-client>=0.2.2,<0.3',
 ]
 
 setup(
     name='sams-server',
-    version='0.2.1',
+    version='0.2.2',
     description='Super Asset Management Service',
     long_description=LONG_DESCRIPTION,
     author='Mark Pittaway',

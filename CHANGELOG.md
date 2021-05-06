@@ -1,5 +1,15 @@
 # SAMS Changelog
 
+## [0.2.2] 2021-05-06
+### Improvements
+- Support Python 3.8
+
+### Fixes
+- fix(api): Convert uploaded bytes to BytesIO before processing (#1428499)
+- Use official pypi package for Superdesk-Core (#ee45aff)
+- fix(docs): Fix building for readthedocs (#e2157f3)
+- fix(behave-tests): Increase timedelta for __now__ value (#572db66)
+
 ## [0.2.1] 2021-05-04
 ### Improvements
 - [SDESK-5581] Ability to add Tags to Asset Metadata (#37)
