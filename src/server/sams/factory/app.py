@@ -77,9 +77,7 @@ class SamsApp(Eve):
         if self.config.get('INSTALLED_APPS'):
             self.setup_apps(self.config.get('INSTALLED_APPS', []))
 
-        # Mock sending websocket notifications
-        # As parts of superdesk-core depends on this (i.e. resource:updated)
-        self.notification_client = ClosedSocket()
+        self.notification_client = None
 
     def load_app_config(self):
         self.config.from_object('sams.default_settings')
