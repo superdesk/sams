@@ -17,7 +17,6 @@ from eve import Eve
 from eve.io.mongo import MongoJSONEncoder
 
 from superdesk.datalayer import SuperdeskDataLayer
-from superdesk.notification import ClosedSocket
 from superdesk.validator import SuperdeskValidator
 
 from sams.storage.sams_media_storage import SamsMediaStorage
