@@ -1,5 +1,13 @@
 # SAMS Changelog
 
+## [0.2.4] 2021-06-23
+### Improvements
+- chore(docs): Update docs (#2113664)
+
+### Fixes
+- fix(docs): Fix documentation for StorageProviders (#e07d925)
+- [SDESK-6002] fix: Slow responses due to mocked notification_client (#38)
+
 ## [0.2.3] 2021-05-06
 ### Improvements
 - fix(run): Allow apps to be started without gunicorn (#91cdb3a)

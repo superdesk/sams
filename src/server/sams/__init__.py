@@ -9,4 +9,4 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-__version__ = '0.2.3'
+__version__ = '0.2.4'
