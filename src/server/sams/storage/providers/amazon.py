@@ -11,8 +11,9 @@
 
 """Amazon S3 Storage Provider
 
-In order for this provider to be available, AmazonS3Provider needs to be added
-to the list of STORAGE_PROVIDERS in your settings.py. For example::
+This provider is enabled by default in the ``STORAGE_PROVIDERS`` config.
+If you need to override this default, make sure to include AmazonS3Provider.
+For example::
 
     STORAGE_PROVIDERS = [
         'sams.storage.providers.amazon.AmazonS3Provider'
@@ -20,14 +21,14 @@ to the list of STORAGE_PROVIDERS in your settings.py. For example::
 
 This will then allow destinations to be configured for Sets to use. For example::
 
-    STORAGE_DESTINATION_1 = 'AmazonS3Provider,Default,access=access123,secret=secret456,region=eu-west-3,bucket=test'
+    STORAGE_DESTINATION_1 = 'AmazonS3,Default,access=access123,secret=secret456,region=eu-west-3,bucket=test'
 
 The following is a list of the supported config attributes
 
 =====================   ======================================================================
 **Attribute Name**      Description
 =====================   ======================================================================
-access_key*             Access key ID for authentication
+access*                 Access key ID for authentication
 secret*                 Secret key for authentication
 region*                 Amazon region to use
 bucket*                 The name of the bucket to use

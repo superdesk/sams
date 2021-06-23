@@ -134,7 +134,7 @@ html_theme = 'alabaster'
 # documentation.
 #
 html_theme_options = {
-    'description': 'SAMS server & client reference v0.0.1.dev2',
+    'description': 'SAMS server & client reference v0.2.3',
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
@@ -143,7 +143,7 @@ html_theme_options = {
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
 #
-# html_title = 'SAMS v0.0.1.dev2'
+# html_title = 'SAMS v0.2.3'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #

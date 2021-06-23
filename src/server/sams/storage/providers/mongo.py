@@ -11,8 +11,9 @@
 
 """MongoDB GridFS Storage Provider
 
-In order for this provider to be available, MongoGridFSProvider needs to be added
-to the list of STORAGE_PROVIDERS in your settings.py. For example::
+This provider is enabled by default in the ``STORAGE_PROVIDERS`` config.
+If you need to override this default, make sure to include MongoGridFSProvider.
+For example::
 
     STORAGE_PROVIDERS = [
         'sams.storage.providers.mongo.MongoGridFSProvider'
