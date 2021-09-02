@@ -210,7 +210,7 @@ ASSET_SCHEMA = {
             'properties': {
                 '_media_id': {
                     'type': 'string',
-                    'mapping': not_analyzed,
+                    'index': 'not_analyzed',
                 },
                 'width': {'type': 'integer'},
                 'height': {'type': 'integer'},
@@ -219,17 +219,12 @@ ASSET_SCHEMA = {
                     'properties': {
                         'width': {'type': 'integer'},
                         'height': {'type': 'integer'},
-                        'keep_proportions': {'type': 'bool'},
+                        'keep_proportions': {'type': 'boolean'},
                     },
                 },
-                'versioncreated': {'type': 'datetime'},
+                'versioncreated': {'type': 'date'},
                 'filename': {'type': 'string'},
-                'length': {
-                    'type': 'integer',
-                    'mapping': {
-                        'type': 'long',
-                    },
-                },
+                'length': {'type': 'long'},
             }
         }
     },
