@@ -536,3 +536,12 @@ class SamsAmazonS3Errors:
 
         def __init__(self, exception: Exception):
             super().__init__({'error': str(exception)}, exception)
+
+
+class SamsAssetImageErrors:
+    class RenditionDimensionsNotProvided(SamsException):
+        """Raised when an Image Rendition is requested without supplying a width and/or height"""
+
+        app_code = '10001'
+        http_code = 400
+        description = 'Image Rendition requested without supplying a width and/or height'

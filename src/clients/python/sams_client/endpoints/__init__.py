@@ -12,5 +12,6 @@
 from .assets import SamsAssetEndpoint
 from .sets import SamsSetEndpoint
 from .storage_destinations import SamsStorageDestinationsEndpoint
+from .images import SamsImagesEndpoint
 
-__all__ = ('SamsSetEndpoint', 'SamsStorageDestinationsEndpoint', 'SamsAssetEndpoint')
+__all__ = ('SamsSetEndpoint', 'SamsStorageDestinationsEndpoint', 'SamsAssetEndpoint', 'SamsImagesEndpoint')

@@ -15,7 +15,7 @@ from json import dumps
 from typing import Dict, Any, Callable
 
 from .utils import load_config
-from .endpoints import SamsSetEndpoint, SamsStorageDestinationsEndpoint, SamsAssetEndpoint
+from .endpoints import SamsSetEndpoint, SamsStorageDestinationsEndpoint, SamsAssetEndpoint, SamsImagesEndpoint
 
 
 class SamsClient(object):
@@ -52,6 +52,7 @@ class SamsClient(object):
         self.sets: SamsSetEndpoint = SamsSetEndpoint(self)
         self.destinations: SamsStorageDestinationsEndpoint = SamsStorageDestinationsEndpoint(self)
         self.assets: SamsAssetEndpoint = SamsAssetEndpoint(self)
+        self.images: SamsImagesEndpoint = SamsImagesEndpoint(self)
 
     def request(
         self,
@@ -161,6 +162,7 @@ class SamsClient(object):
     def post(
         self,
         url: str,
+        params: Dict[str, Any] = None,
         headers: Dict[str, Any] = None,
         external_user_id: str = None,
         external_session_id: str = None,
@@ -201,6 +203,7 @@ class SamsClient(object):
         return self.request(
             api=url,
             method='post',
+            params=params,
             headers=headers,
             data=data,
             files=files,
