@@ -33,8 +33,9 @@ from sams.sets import get_service as get_sets_service
 from sams.assets import get_service as get_asset_service
 from sams.storage.sams_media_storage import get_request_id
 from superdesk.resource import Resource, build_custom_hateoas
-from sams_client.errors import SamsAssetErrors
+from sams_client.errors import SamsAssetErrors, SamsAssetImageErrors
 from sams.utils import get_external_user_id, get_external_session_id
+from sams.default_settings import strtobool
 
 from superdesk import Blueprint
 from superdesk.utc import utcnow
@@ -148,6 +149,30 @@ def unlock_asset_by_user():
         updates['lock_time'] = None
 
         service.patch(ObjectId(asset['_id']), updates)
+
+    response = app.response_class(
+        status=200,
+    )
+    return response
+
+
+@assets_produce_bp.route('/produce/assets/images/<asset_id>', methods=['POST'])
+def generate_image_rendition(asset_id: str):
+    width = int(request.args['width']) if request.args.get('width') else None
+    height = int(request.args['height']) if request.args.get('height') else None
+    keep_proportions = strtobool(request.args.get('keep_proportions', 'True'))
+
+    if not width and not height:
+        raise SamsAssetImageErrors.RenditionDimensionsNotProvided()
+
+    service = get_asset_service()
+    asset = service.get_by_id(asset_id)
+
+    if not asset:
+        raise SamsAssetErrors.AssetNotFound(asset_id)
+
+    if not service.get_asset_rendition_metadata(asset, width, height, keep_proportions):
+        service.add_rendition(asset, width, height, keep_proportions)
 
     response = app.response_class(
         status=200,

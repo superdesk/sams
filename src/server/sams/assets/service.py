@@ -9,7 +9,8 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from typing import BinaryIO, Dict, Any, List, Union
+from typing import BinaryIO, Dict, Any, List, Union, Optional
+from os import path
 from bson import ObjectId
 from io import BytesIO
 from copy import deepcopy
@@ -18,12 +19,14 @@ from superdesk.services import Service
 from superdesk.storage.mimetype_mixin import MimetypeMixin
 from superdesk.storage.superdesk_file import SuperdeskFile
 from superdesk.utc import utcnow
+from superdesk.media.renditions import _resize_image
 
 from sams.factory.service import SamsService
 from sams.sets import get_service
 from sams.utils import get_binary_stream_size, get_external_user_id
 
-from sams_client.errors import SamsAssetErrors
+from sams_client.schemas.assets import IAsset, IAssetRendition, IAssetRenditionArgs
+from sams_client.errors import SamsAssetErrors, SamsAssetImageErrors
 
 
 class AssetsService(SamsService, MimetypeMixin):
@@ -89,7 +92,96 @@ class AssetsService(SamsService, MimetypeMixin):
 
         return super(Service, self).patch(item_id, updates)
 
-    def on_deleted(self, doc: Dict[str, Any]):
+    def add_rendition(
+        self,
+        asset: IAsset,
+        width: int,
+        height: int = None,
+        keep_proportions: bool = True
+    ) -> IAssetRendition:
+        # Download the original image, then create the new rendition from it
+        original = self.download_binary(asset['_id'])
+        [rendition_binary, new_width, new_height] = _resize_image(
+            original,
+            (width, height),
+            keepProportions=keep_proportions
+        )
+
+        # Generate a new filename which includes the dimensions
+        filename, extension = path.splitext(asset['filename'])
+        asset['filename'] = f'{filename}-{new_width}x{new_height}{extension}'
+
+        # Upload the new rendition to the same StorageDestination as the original image
+        upload_response = self.upload_binary(asset, rendition_binary, delete_original=False)
+
+        # Add the rendition details to the Asset document in the DB
+        renditions = asset.get('renditions') or []
+        rendition = IAssetRendition(
+            _media_id=upload_response['_media_id'],
+            width=new_width,
+            height=new_height,
+            params=IAssetRenditionArgs(
+                width=width,
+                height=height,
+                keep_proportions=keep_proportions,
+            ),
+            versioncreated=utcnow(),
+            filename=asset['filename'],
+            length=upload_response['length']
+        )
+        renditions.append(rendition)
+        self.patch(ObjectId(asset['_id']), {'renditions': renditions})
+
+        return rendition
+
+    def get_asset_rendition_metadata(
+        self,
+        asset: IAsset,
+        width: Optional[int] = None,
+        height: Optional[int] = None,
+        keep_proportions: Optional[bool] = True
+    ) -> Optional[IAssetRendition]:
+        return next(
+            (
+                rend
+                for rend in asset.get('renditions') or []
+                if (
+                    (not width or width == (rend.get('params') or {}).get('width')) and
+                    (not height or height == (rend.get('params') or {}).get('height')) and
+                    keep_proportions == (rend.get('params') or {}).get('keep_proportions')
+                )
+            ),
+            None
+        )
+
+    def download_rendition(
+        self,
+        asset_id: Union[ObjectId, str],
+        width: Optional[int] = None,
+        height: Optional[int] = None,
+        keep_proportions: Optional[bool] = True
+    ):
+        if not width and not height:
+            raise SamsAssetImageErrors.RenditionDimensionsNotProvided()
+
+        asset: IAsset = self.get_by_id(asset_id)
+
+        if not asset:
+            raise SamsAssetErrors.AssetNotFound(asset_id)
+
+        rendition = self.get_asset_rendition_metadata(asset, width, height, keep_proportions)
+
+        if not rendition:
+            # If the rendition does not exist, then create it now
+            rendition = self.add_rendition(asset, width, height, keep_proportions)
+
+        set_service = get_service()
+        provider = set_service.get_provider_instance(asset.get('set_id'))
+        asset_file = provider.get(rendition.get('_media_id'))
+        asset_file.filename = asset['filename']
+        return asset_file, rendition
+
+    def on_deleted(self, doc: IAsset):
         """Delete the Asset Binary after the Metadata is deleted
 
         :param dict doc: The Asset that was deleted
@@ -99,6 +191,11 @@ class AssetsService(SamsService, MimetypeMixin):
             set_service = get_service()
             provider = set_service.get_provider_instance(doc.get('set_id'))
             provider.delete(doc['_media_id'])
+
+            # Make sure to also delete any renditions that were created
+            for rendition in doc.get('renditions') or []:
+                if rendition.get('_media_id'):
+                    provider.delete(rendition['_media_id'])
 
     def _validate_upload_size(self, set_id: ObjectId, content: BinaryIO):
         """Validates the size of the upload against the Set or App config

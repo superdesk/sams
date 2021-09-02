@@ -154,6 +154,7 @@ from sams.default_settings import strtobool
 from sams.utils import construct_asset_download_response
 
 from sams_client.schemas import SET_STATES, ASSET_STATES
+from sams_client.errors import SamsAssetErrors
 
 assets_bp = Blueprint('assets', __name__)
 
@@ -168,6 +169,29 @@ def download_binary(asset_id: str):
     service = get_asset_service()
     asset = service.get_by_id(asset_id)
     file = service.download_binary(asset_id)
+
+    return construct_asset_download_response(asset, file)
+
+
+@assets_bp.route('/consume/assets/images/<asset_id>', methods=['GET'])
+def download_image(asset_id: str):
+    width = int(request.args['width']) if request.args.get('width') else None
+    height = int(request.args['height']) if request.args.get('height') else None
+    keep_proportions = strtobool(request.args.get('keep_proportions', 'True'))
+
+    if not width and not height:
+        return download_binary(asset_id)
+
+    service = get_asset_service()
+    asset = service.get_by_id(asset_id)
+
+    if not asset:
+        raise SamsAssetErrors.AssetNotFound(asset_id)
+
+    file, rendition = service.download_rendition(asset_id, width, height, keep_proportions)
+    asset['length'] = rendition['length']
+    asset['filename'] = rendition['filename']
+    asset['_updated'] = rendition['versioncreated']
 
     return construct_asset_download_response(asset, file)
 
