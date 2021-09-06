@@ -14,14 +14,57 @@
 This service and resource is intended to be used by external clients.
 To access Assets inside the SAMS application, use the :mod:`sams.assets` module instead
 
-=====================   =================================================================
-**endpoint name**        'produce/assets'
-**resource title**       'Asset'
-**resource url**         [POST] '/produce/assets'
-**item url**             [PATCH, DELETE] '/produce/assets/<:class:`~bson.objectid.ObjectId`>'
-**schema**               :attr:`sams_client.schemas.assets.ASSET_SCHEMA`
-=====================   =================================================================
+Asset Resource
+^^^^^^^^^^^^^^
+
+=====================   =====================================================================
+**endpoint name**       'produce/assets'
+**resource title**      'Asset'
+**resource url**        [POST] '/produce/assets'
+**item url**            [PATCH, DELETE] '/produce/assets/<:class:`~bson.objectid.ObjectId`>'
+**schema**              :class:`sams_client.schemas.assets.IAsset`
+=====================   =====================================================================
+
+Lock Asset
+^^^^^^^^^^
+=====================   =====================================================================
+**endpoint name**       'produce/assets/lock'
+**resource title**      'Lock Asset'
+**item url**            [PATCH] '/produce/assets/lock/<:class:`~bson.objectid.ObjectId`>'
+=====================   =====================================================================
+
+Unlock Asset
+^^^^^^^^^^^^
+=====================   =====================================================================
+**endpoint name**       'produce/assets/unlock'
+**resource title**      'Unlock Asset'
+**item url**            [PATCH] '/produce/assets/unlock/<:class:`~bson.objectid.ObjectId`>'
+=====================   =====================================================================
+
+Unlock Assets by User Session
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+=====================   =====================================================================
+**endpoint name**       'produce/assets/unlock_user_session'
+**resource title**      'Unlock Asset by Session'
+**item url**            [PATCH] '/produce/assets/unlock_user_session'
+**url args**            * ``external_user_id``: <:class:`str`>
+                        * ``external_session_id``: <:class:`str`>
+=====================   =====================================================================
+
+Generate Rendition for Image Asset
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+=====================   =====================================================================
+**endpoint name**       'produce/assets/images'
+**resource title**      'Generate Image Rendition'
+**item url**            [POST] '/produce/assets/images/<:class:`~bson.objectid.ObjectId`>'
+**url args**            * :class:`str`: ``width`` [optional*]
+                        * :class:`str`: ``height`` [optional*]
+                        * :class:`bool`: ``keep_proportions`` [optional]
+=====================   =====================================================================
+
+[*] Must supply at least a width and/or height in the url arguments
 """
+
 from bson import ObjectId
 from flask import current_app as app, json
 from flask import request

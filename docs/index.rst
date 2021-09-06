@@ -12,8 +12,40 @@ Welcome to SAMS documentation!
    :alt: Superdesk
    :class: floatinglogo
 
-Welcome. This is the home of SAMS technical documentation. You will learn
+Welcome. This is the home of the SAMS technical documentation. You will learn
 here mainly about the SAMS server application and client library.
+
+What is SAMS
+------------
+
+Super Asset Management Service (a.k.a. SAMS) is an API that provides the
+administration, production and consumption of Assets. In SAMS, an Asset is a
+file and it's associated metadata.
+
+Assets are stored in a Set, which can be thought of like a storage drive.
+Each Set has a dedicated Storage Destination, which can be one of the following:
+
+* Amazon Simple Storage Service (S3)
+* MongoDB GridFS
+
+The Asset's binary will be stored using the Set's configured Storage Destination,
+while the metadata will be stored in MongoDB and Elasticsearch.
+
+Managing Assets
+---------------
+
+All Assets must be managed (created, updated and deleted) through SAMS,
+as SAMS contains metadata and actions that are not available across all
+storage destination types.
+
+There are two ways to manage these Assets:
+
+* Using the :class:`~sams_client.client.SamsClient` Python client library
+* Using the Superdesk SAMS Workspace - a UI to manage Assets in SAMS
+
+We currently do not have a mechanism to import, or synchronise,
+existing Assets from S3 or GridFS into SAMS.
+
 
 Contents
 --------
@@ -26,6 +58,8 @@ Contents
     config
     cli
     technical_reference
+    api_reference
+    client_reference
     errors
     changelog
 

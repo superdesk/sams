@@ -17,3 +17,4 @@ The following is a list of all the known errors that can occur.
    errors/sets
    errors/assets
    errors/amazon_s3
+   errors/asset_image

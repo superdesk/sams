@@ -2,6 +2,25 @@
 SAMS Changelog
 ==============
 
+0.3.0 - 2021-09-06
+==================
+
+**Features**
+
+- [SDESK-6144] New endpoints for image renditions (#44)
+
+0.2.4 - 2021-06-23
+==================
+
+**Improvements**
+
+- chore(docs): Update docs (#2113664)
+
+**Fixes**
+
+- fix(docs): Fix documentation for StorageProviders (#e07d925)
+- [SDESK-6002] fix: Slow responses due to mocked notification_client (#38)
+
 0.2.3 - 2021-05-06
 ==================
 

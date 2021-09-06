@@ -9,3 +9,4 @@
     endpoint
     storage_destinations
     sets
+    images
