@@ -15,7 +15,7 @@ LONG_DESCRIPTION = 'Super Asset Management Service'
 
 install_requires = [
     'superdesk-core>=2.2.0',
-    'sams-client>=0.2.3,<0.3',
+    'sams-client>=0.3.0,<0.4',
 ]
 
 setup(
