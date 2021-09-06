@@ -9,7 +9,10 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
-from typing import NamedTuple
+from typing import NamedTuple, List, Dict, Any, Union
+from typing_extensions import TypedDict
+from datetime import datetime
+from bson import ObjectId
 
 from sams_client.utils import schema_relation, not_analyzed
 
@@ -32,6 +35,53 @@ An *Asset* can be in any one of the following states:
 
 * **PUBLIC:** Marks an Asset for public consumption
 """
+
+
+class IAssetTag(TypedDict):
+    code: str
+    name: str
+
+
+class IAssetRenditionArgs(TypedDict):
+    width: int
+    height: int
+    keep_proportions: bool
+
+
+class IAssetRendition(TypedDict):
+    _media_id: str
+    width: int
+    height: int
+    params: IAssetRenditionArgs
+    versioncreated: datetime
+    filename: str
+    length: int
+
+
+class IAsset(TypedDict):
+    _id: Union[ObjectId, str]
+    _media_id: str
+    original_creator: str
+    version_creator: str
+    firstcreated: datetime
+    versioncreated: datetime
+    _version: int
+    set_id: ObjectId
+    parent_id: ObjectId
+    state: str
+    filename: str
+    length: int
+    mimetype: str
+    name: str
+    description: str
+    tags: List[IAssetTag]
+    extra: Dict[str, Any]
+    binary: ObjectId
+    lock_user: str
+    lock_session: str
+    lock_action: str
+    lock_time: datetime
+    renditions: List[IAssetRendition]
 
 
 ASSET_SCHEMA = {
@@ -152,6 +202,31 @@ ASSET_SCHEMA = {
                 }
             }
         },
+    },
+    'renditions': {
+        'type': 'list',
+        'mapping': {
+            'type': 'object',
+            'properties': {
+                '_media_id': {
+                    'type': 'string',
+                    'index': 'not_analyzed',
+                },
+                'width': {'type': 'integer'},
+                'height': {'type': 'integer'},
+                'params': {
+                    'type': 'object',
+                    'properties': {
+                        'width': {'type': 'integer'},
+                        'height': {'type': 'integer'},
+                        'keep_proportions': {'type': 'boolean'},
+                    },
+                },
+                'versioncreated': {'type': 'date'},
+                'filename': {'type': 'string'},
+                'length': {'type': 'long'},
+            }
+        }
     },
     'extra': {
         'type': 'dict',
