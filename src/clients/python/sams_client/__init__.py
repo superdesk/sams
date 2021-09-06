@@ -12,5 +12,5 @@
 from .client import SamsClient # noqa
 from .schemas.assets import IAsset, IAssetTag, IAssetRendition, IAssetRenditionArgs # noqa
 
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 __all__ = ('SamsClient', 'IAsset', 'IAssetTag', 'IAssetRendition', 'IAssetRenditionArgs')

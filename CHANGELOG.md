@@ -1,5 +1,9 @@
 # SAMS Changelog
 
+## [0.3.1] 2021-09-06
+### Fixes
+- fix(setup): Bump sams-client version requirement in sams-server
+
 ## [0.3.0] 2021-09-06
 ### Features
 - [SDESK-6144] New endpoints for image renditions (#44)
