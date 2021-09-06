@@ -1,5 +1,12 @@
 # SAMS Changelog
 
+## [0.3.0] 2021-09-06
+### Features
+- [SDESK-6144] New endpoints for image renditions (#44)
+
+### Improvements
+- chore(docs): Update docs
+
 ## [0.2.4] 2021-06-23
 ### Improvements
 - chore(docs): Update docs (#2113664)

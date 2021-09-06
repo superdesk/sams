@@ -17,16 +17,16 @@ To access Assets inside the SAMS application, use the :mod:`sams.assets` module 
 Endpoint Attributes
 ^^^^^^^^^^^^^^^^^^^
 
-=====================   =========================================================
+=====================   ===========================================================
 **endpoint name**        'consume_assets'
 **resource title**       'Asset'
 **resource url**         [GET] '/consume/assets'
 **item url**             [GET] '/consume/assets/<:class:`~bson.objectid.ObjectId`>'
-**schema**               :attr:`sams_client.schemas.assets.ASSET_SCHEMA`
-=====================   =========================================================
+**schema**               :attr:`sams_client.schemas.assets.IAsset`
+=====================   ===========================================================
 
-HATEOAS
-^^^^^^^
+**HATEOAS:**
+
 The following is a list of extra HATEOAS entries for each Asset returned.
 
 ============   ===============   ==========================================================
@@ -34,6 +34,33 @@ The following is a list of extra HATEOAS entries for each Asset returned.
 ============   ===============   ==========================================================
 public         Public Asset      Full url to download the file using the SAMS FileServer
 ============   ===============   ==========================================================
+
+Download Asset Binary
+^^^^^^^^^^^^^^^^^^^^^
+=====================   ==================================================================
+**endpoint name**        'download_asset_binary'
+**resource title**       'Download Asset'
+**item url**             [GET] '/consume/assets/binary/<:class:`~bson.objectid.ObjectId`>'
+=====================   ==================================================================
+
+Download Asset Image Rendition
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+=====================   ==================================================================
+**endpoint name**        'download_asset_image_rendition'
+**resource title**       'Download Asset Image Rendition'
+**item url**             [GET] '/consume/assets/images/<:class:`~bson.objectid.ObjectId`>'
+**url args**            * :class:`str`: ``width`` [optional]
+                        * :class:`str`: ``height`` [optional]
+                        * :class:`bool`: ``keep_proportions`` [optional]
+=====================   ==================================================================
+
+Download Multiple Asset Binaries
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+=====================   ==================================================================
+**endpoint name**        'download_assets_binary'
+**resource title**       'Download Multiple Assets'
+**item url**             [GET] '/consume/assets/compressed_binary/<:class:`list`[:class:`~bson.objectid.ObjectId`]>'
+=====================   ==================================================================
 
 Example Responses
 ^^^^^^^^^^^^^^^^^

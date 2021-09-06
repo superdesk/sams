@@ -19,7 +19,7 @@ install_requires = [
 
 setup(
     name='sams-client',
-    version='0.2.4',
+    version='0.3.0',
     description='Super Asset Management Service Client',
     long_description=LONG_DESCRIPTION,
     author='Tanuj Soni',

@@ -10,6 +10,7 @@
 # at https://www.sourcefabric.org/superdesk/license
 
 from .client import SamsClient # noqa
+from .schemas.assets import IAsset, IAssetTag, IAssetRendition, IAssetRenditionArgs # noqa
 
-__version__ = '0.2.4'
-__all__ = 'SamsClient'
+__version__ = '0.3.0'
+__all__ = ('SamsClient', 'IAsset', 'IAssetTag', 'IAssetRendition', 'IAssetRenditionArgs')

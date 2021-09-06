@@ -7,5 +7,3 @@ Technical Reference
 
     apps_reference
     server_reference
-    api_reference
-    client_reference
