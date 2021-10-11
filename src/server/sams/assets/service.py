@@ -97,27 +97,31 @@ class AssetsService(SamsService, MimetypeMixin):
         asset: IAsset,
         width: int,
         height: int = None,
-        keep_proportions: bool = True
+        keep_proportions: bool = True,
+        name: Optional[str] = None
     ) -> IAssetRendition:
-        # Download the original image, then create the new rendition from it
-        original = self.download_binary(asset['_id'])
-        [rendition_binary, new_width, new_height] = _resize_image(
-            original,
-            (width, height),
-            keepProportions=keep_proportions
-        )
+        original_dimensions = True if name and name == 'original' else False
 
-        # Generate a new filename which includes the dimensions
-        filename, extension = path.splitext(asset['filename'])
-        asset['filename'] = f'{filename}-{new_width}x{new_height}{extension}'
+        if not original_dimensions:
+            # Download the original image, then create the new rendition from it
+            original = self.download_binary(asset['_id'])
+            [rendition_binary, new_width, new_height] = _resize_image(
+                original,
+                (width, height),
+                keepProportions=keep_proportions
+            )
 
-        # Upload the new rendition to the same StorageDestination as the original image
-        upload_response = self.upload_binary(asset, rendition_binary, delete_original=False)
-
+            # Generate a new filename which includes the dimensions
+            filename, extension = path.splitext(asset['filename'])
+            asset['filename'] = f'{filename}-{new_width}x{new_height}{extension}'
+            # Upload the new rendition to the same StorageDestination as the original image
+            upload_response = self.upload_binary(asset, rendition_binary, delete_original=False)
+            asset['_media_id'] = upload_response['_media_id']
+            asset['length'] = upload_response['length']
         # Add the rendition details to the Asset document in the DB
         renditions = asset.get('renditions') or []
         rendition = IAssetRendition(
-            _media_id=upload_response['_media_id'],
+            _media_id=asset['_media_id'],
             width=new_width,
             height=new_height,
             params=IAssetRenditionArgs(
@@ -127,7 +131,7 @@ class AssetsService(SamsService, MimetypeMixin):
             ),
             versioncreated=utcnow(),
             filename=asset['filename'],
-            length=upload_response['length']
+            length=asset['length']
         )
         renditions.append(rendition)
         self.patch(ObjectId(asset['_id']), {'renditions': renditions})
