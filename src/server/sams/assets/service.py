@@ -100,9 +100,13 @@ class AssetsService(SamsService, MimetypeMixin):
         keep_proportions: bool = True,
         name: Optional[str] = None
     ) -> IAssetRendition:
-        original_dimensions = True if name and name == 'original' else False
-
-        if not original_dimensions:
+        if name and name == 'original':
+            # If rendition is original,
+            # Use original _media_id, filename, length and dimensions
+            new_width = width
+            new_height = height
+        else:
+            # If rendition is not original,
             # Download the original image, then create the new rendition from it
             original = self.download_binary(asset['_id'])
             [rendition_binary, new_width, new_height] = _resize_image(
@@ -114,13 +118,16 @@ class AssetsService(SamsService, MimetypeMixin):
             # Generate a new filename which includes the dimensions
             filename, extension = path.splitext(asset['filename'])
             asset['filename'] = f'{filename}-{new_width}x{new_height}{extension}'
+
             # Upload the new rendition to the same StorageDestination as the original image
             upload_response = self.upload_binary(asset, rendition_binary, delete_original=False)
             asset['_media_id'] = upload_response['_media_id']
             asset['length'] = upload_response['length']
+
         # Add the rendition details to the Asset document in the DB
         renditions = asset.get('renditions') or []
         rendition = IAssetRendition(
+            name=name,
             _media_id=asset['_media_id'],
             width=new_width,
             height=new_height,

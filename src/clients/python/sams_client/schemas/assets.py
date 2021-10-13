@@ -67,6 +67,9 @@ class IAssetRendition(TypedDict):
     .. versionadded:: 0.3.0
     """
 
+    # Name of this rendition
+    name: str
+
     #: Internal media id (used by StorageProvider)
     _media_id: str
 
@@ -305,6 +308,7 @@ ASSET_SCHEMA = {
         'mapping': {
             'type': 'object',
             'properties': {
+                'name': {'type': 'string'},
                 '_media_id': {
                     'type': 'string',
                     'index': 'not_analyzed',

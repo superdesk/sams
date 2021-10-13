@@ -204,7 +204,7 @@ def generate_image_rendition(asset_id: str):
     width = int(request.args['width']) if request.args.get('width') else None
     height = int(request.args['height']) if request.args.get('height') else None
     keep_proportions = strtobool(request.args.get('keep_proportions', 'True'))
-    name = request.args.get('name') if request.args.get('name') == 'original' else None
+    name = request.args.get('name') if request.args.get('name') else None
 
     if not width and not height:
         raise SamsAssetImageErrors.RenditionDimensionsNotProvided()
