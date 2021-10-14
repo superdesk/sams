@@ -77,7 +77,7 @@ class AssetsService(SamsService, MimetypeMixin):
                 )
                 renditions.append(rendition)
                 doc['renditions'] = renditions
-            except PIL.UnidentifiedImageError:
+            except Exception:
                 pass
 
         return super(Service, self).post(docs, **kwargs)
