@@ -57,25 +57,28 @@ class AssetsService(SamsService, MimetypeMixin):
             file_meta = self.upload_binary(doc, content)
             doc.update(file_meta)
 
-            # Add original rendition to the asset renditions
-            width, height = PIL.Image.open(content).size
-            renditions = []
-            rendition = IAssetRendition(
-                name='original',
-                _media_id=doc['_media_id'],
-                width=width,
-                height=height,
-                params=IAssetRenditionArgs(
+            try:
+                # Add original rendition to the asset renditions
+                width, height = PIL.Image.open(content).size
+                renditions = []
+                rendition = IAssetRendition(
+                    name='original',
+                    _media_id=doc['_media_id'],
                     width=width,
                     height=height,
-                    keep_proportions=True,
-                ),
-                versioncreated=utcnow(),
-                filename=doc['filename'],
-                length=doc['length']
-            )
-            renditions.append(rendition)
-            doc['renditions'] = renditions
+                    params=IAssetRenditionArgs(
+                        width=width,
+                        height=height,
+                        keep_proportions=True,
+                    ),
+                    versioncreated=utcnow(),
+                    filename=doc['filename'],
+                    length=doc['length']
+                )
+                renditions.append(rendition)
+                doc['renditions'] = renditions
+            except PIL.UnidentifiedImageError:
+                pass
 
         return super(Service, self).post(docs, **kwargs)
 
