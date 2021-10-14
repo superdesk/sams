@@ -14,6 +14,7 @@ from os import path
 from bson import ObjectId
 from io import BytesIO
 from copy import deepcopy
+import PIL
 
 from superdesk.services import Service
 from superdesk.storage.mimetype_mixin import MimetypeMixin
@@ -55,6 +56,26 @@ class AssetsService(SamsService, MimetypeMixin):
             self.validate_post(doc)
             file_meta = self.upload_binary(doc, content)
             doc.update(file_meta)
+
+            # Add original rendition to the asset renditions
+            width, height = PIL.Image.open(content).size
+            renditions = []
+            rendition = IAssetRendition(
+                name='original',
+                _media_id=doc['_media_id'],
+                width=width,
+                height=height,
+                params=IAssetRenditionArgs(
+                    width=width,
+                    height=height,
+                    keep_proportions=True,
+                ),
+                versioncreated=utcnow(),
+                filename=doc['filename'],
+                length=doc['length']
+            )
+            renditions.append(rendition)
+            doc['renditions'] = renditions
 
         return super(Service, self).post(docs, **kwargs)
 
@@ -100,35 +121,26 @@ class AssetsService(SamsService, MimetypeMixin):
         keep_proportions: bool = True,
         name: Optional[str] = None
     ) -> IAssetRendition:
-        if name and name == 'original':
-            # If rendition is original,
-            # Use original _media_id, filename, length and dimensions
-            new_width = width
-            new_height = height
-        else:
-            # If rendition is not original,
-            # Download the original image, then create the new rendition from it
-            original = self.download_binary(asset['_id'])
-            [rendition_binary, new_width, new_height] = _resize_image(
-                original,
-                (width, height),
-                keepProportions=keep_proportions
-            )
+        # Download the original image, then create the new rendition from it
+        original = self.download_binary(asset['_id'])
+        [rendition_binary, new_width, new_height] = _resize_image(
+            original,
+            (width, height),
+            keepProportions=keep_proportions
+        )
 
-            # Generate a new filename which includes the dimensions
-            filename, extension = path.splitext(asset['filename'])
-            asset['filename'] = f'{filename}-{new_width}x{new_height}{extension}'
+        # Generate a new filename which includes the dimensions
+        filename, extension = path.splitext(asset['filename'])
+        asset['filename'] = f'{filename}-{new_width}x{new_height}{extension}'
 
-            # Upload the new rendition to the same StorageDestination as the original image
-            upload_response = self.upload_binary(asset, rendition_binary, delete_original=False)
-            asset['_media_id'] = upload_response['_media_id']
-            asset['length'] = upload_response['length']
+        # Upload the new rendition to the same StorageDestination as the original image
+        upload_response = self.upload_binary(asset, rendition_binary, delete_original=False)
 
         # Add the rendition details to the Asset document in the DB
         renditions = asset.get('renditions') or []
         rendition = IAssetRendition(
             name=name,
-            _media_id=asset['_media_id'],
+            _media_id=upload_response['_media_id'],
             width=new_width,
             height=new_height,
             params=IAssetRenditionArgs(
@@ -138,7 +150,7 @@ class AssetsService(SamsService, MimetypeMixin):
             ),
             versioncreated=utcnow(),
             filename=asset['filename'],
-            length=asset['length']
+            length=upload_response['length']
         )
         renditions.append(rendition)
         self.patch(ObjectId(asset['_id']), {'renditions': renditions})
