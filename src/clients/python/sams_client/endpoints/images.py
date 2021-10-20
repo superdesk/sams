@@ -132,6 +132,7 @@ class SamsImagesEndpoint:
         width: Optional[int] = None,
         height: Optional[int] = None,
         keep_proportions: Optional[bool] = True,
+        name: Optional[str] = None,
         headers: Dict[str, Any] = None,
         callback: Callable[[requests.Response], requests.Response] = None
     ) -> requests.Response:
@@ -148,6 +149,9 @@ class SamsImagesEndpoint:
         """
 
         params = {}
+
+        if name:
+            params['name'] = name
 
         if width:
             params['width'] = width

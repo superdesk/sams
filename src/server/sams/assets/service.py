@@ -14,6 +14,7 @@ from os import path
 from bson import ObjectId
 from io import BytesIO
 from copy import deepcopy
+import PIL
 
 from superdesk.services import Service
 from superdesk.storage.mimetype_mixin import MimetypeMixin
@@ -56,6 +57,29 @@ class AssetsService(SamsService, MimetypeMixin):
             file_meta = self.upload_binary(doc, content)
             doc.update(file_meta)
 
+            try:
+                # Add original rendition to the asset renditions
+                width, height = PIL.Image.open(content).size
+                renditions = []
+                rendition = IAssetRendition(
+                    name='original',
+                    _media_id=doc['_media_id'],
+                    width=width,
+                    height=height,
+                    params=IAssetRenditionArgs(
+                        width=width,
+                        height=height,
+                        keep_proportions=True,
+                    ),
+                    versioncreated=utcnow(),
+                    filename=doc['filename'],
+                    length=doc['length']
+                )
+                renditions.append(rendition)
+                doc['renditions'] = renditions
+            except Exception:
+                pass
+
         return super(Service, self).post(docs, **kwargs)
 
     def patch(self, item_id: ObjectId, updates: Dict[str, Any]) -> Dict[str, Any]:
@@ -97,7 +121,8 @@ class AssetsService(SamsService, MimetypeMixin):
         asset: IAsset,
         width: int,
         height: int = None,
-        keep_proportions: bool = True
+        keep_proportions: bool = True,
+        name: Optional[str] = None
     ) -> IAssetRendition:
         # Download the original image, then create the new rendition from it
         original = self.download_binary(asset['_id'])
@@ -117,6 +142,7 @@ class AssetsService(SamsService, MimetypeMixin):
         # Add the rendition details to the Asset document in the DB
         renditions = asset.get('renditions') or []
         rendition = IAssetRendition(
+            name=name,
             _media_id=upload_response['_media_id'],
             width=new_width,
             height=new_height,
