@@ -13,11 +13,10 @@ from flask import current_app as app
 import PIL
 from sams.assets import get_service as get_asset_service
 from sams_client.schemas.assets import IAssetRendition, IAssetRenditionArgs
-from superdesk.utc import utcnow
-
-from superdesk import Command, command
-
 from sams.logger import logger
+
+from superdesk.utc import utcnow
+from superdesk import Command, command
 
 
 class AddOriginalRenditions(Command):
