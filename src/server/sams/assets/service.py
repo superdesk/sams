@@ -99,13 +99,10 @@ class AssetsService(SamsService, MimetypeMixin):
         self.validate_patch(original, updates)
 
         updates['versioncreated'] = utcnow()
-        try:
-            external_user_id = get_external_user_id()
+        external_user_id = get_external_user_id()
 
-            if external_user_id:
-                updates['version_creator'] = external_user_id
-        except RuntimeError:
-            pass
+        if external_user_id:
+            updates['version_creator'] = external_user_id
 
         if content:
             asset = deepcopy(original)
