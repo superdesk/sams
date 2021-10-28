@@ -9,6 +9,7 @@
 # AUTHORS and LICENSE files distributed with this source code, or
 # at https://www.sourcefabric.org/superdesk/license
 
+from .add_renditions_to_existing_assets import AddOriginalRenditions  # noqa
 from .delete_elastic_index import DeleteElasticIndex  # noqa
 from .index_from_mongo import IndexFromMongo  # noqa
 from .flush_elastic_index import FlushElasticIndex  # noqa
