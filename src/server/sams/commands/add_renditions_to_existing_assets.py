@@ -57,22 +57,25 @@ class AddOriginalRenditions(Command):
 
             original = service.download_binary(asset['_id'])
 
-            width, height = PIL.Image.open(original).size
-            rendition = IAssetRendition(
-                name='original',
-                _media_id=asset['_media_id'],
-                width=width,
-                height=height,
-                params=IAssetRenditionArgs(
+            try:
+                width, height = PIL.Image.open(original).size
+                rendition = IAssetRendition(
+                    name='original',
+                    _media_id=asset['_media_id'],
                     width=width,
                     height=height,
-                    keep_proportions=True,
-                ),
-                versioncreated=utcnow(),
-                filename=asset['filename'],
-                length=asset['length']
-            )
-            updates['renditions'].append(rendition)
+                    params=IAssetRenditionArgs(
+                        width=width,
+                        height=height,
+                        keep_proportions=True,
+                    ),
+                    versioncreated=utcnow(),
+                    filename=asset['filename'],
+                    length=asset['length']
+                )
+                updates['renditions'].append(rendition)
+            except Exception:
+                pass
 
             for rendition in asset['renditions']:
                 if rendition['params']['width'] == 220:
