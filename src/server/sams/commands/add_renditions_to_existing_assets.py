@@ -37,7 +37,7 @@ class AddOriginalRenditions(Command):
         self.add_original_rendition()
 
     @classmethod
-    def add_original_rendition():
+    def add_original_rendition(cls):
         """Adds original rendition to the existing assets
         """
 
@@ -82,13 +82,8 @@ class AddOriginalRenditions(Command):
                 if rendition['params']['width'] == 640:
                     rendition['name'] = 'viewImage'
                     updates['renditions'].append(rendition)
-            app.data.get_mongo_collection('assets').update(
-                {'_id': asset['_id']},
-                {
-                    '$set':
-                        {'renditions': updates['renditions']}
-                }
-            )
+
+            get_asset_service().system_update(asset['_id'], {'renditions': updates['renditions']}, asset)
 
 
 command('app:add_original_renditions', AddOriginalRenditions())
