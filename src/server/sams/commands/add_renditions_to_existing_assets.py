@@ -45,7 +45,7 @@ class AddOriginalRenditions(Command):
         db_assets = app.data.get_mongo_collection('assets').find()
         assets_without_original_rendition = []
         for asset in db_assets:
-            renditions = asset['renditions']
+            renditions = asset.get('renditions', [])
             for rendition in renditions:
                 if not rendition.get('name'):
                     assets_without_original_rendition.append(asset)
