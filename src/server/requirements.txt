@@ -1,2 +1,2 @@
-git+git://github.com/superdesk/superdesk-core.git@develop#egg=superdesk-core
+git+https://github.com/superdesk/superdesk-core.git@develop#egg=superdesk-core
 
