@@ -20,7 +20,7 @@ install_requires = [
 
 setup(
     name='sams-server',
-    version='0.3.1',
+    version='0.3.2',
     description='Super Asset Management Service',
     long_description=LONG_DESCRIPTION,
     author='Mark Pittaway',

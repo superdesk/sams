@@ -2,6 +2,19 @@
 SAMS Changelog
 ==============
 
+0.3.2 - 2022-03-09
+==================
+
+**Improvements**
+
+- [SDESK-6145] images: Support named renditions and store metadata for original rendition on post
+- [SDESK-6145] Script to add original rendition to existing assets
+
+**Fixes**
+
+- fix(build): Replace git with https in requirements.txt
+
+
 0.3.1 - 2021-09-06
 ==================
 

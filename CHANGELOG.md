@@ -1,8 +1,13 @@
 # SAMS Changelog
 
+## [0.3.2] 2022-03-09
+- [SDESK-6145] images: Support named renditions and store metadata for original rendition on post (#47)
+- [SDESK-6145] Script to add original rendition to existing assets (#48)
+- fix(build): Replace git with https in requirements.txt (23901bc)
+
 ## [0.3.1] 2021-09-06
 ### Fixes
-- fix(setup): Bump sams-client version requirement in sams-server
+- fix(setup): Bump sams-client version requirement in sams-server (96cd6bf)
 
 ## [0.3.0] 2021-09-06
 ### Features
@@ -16,32 +21,32 @@
 - chore(docs): Update docs (#2113664)
 
 ### Fixes
-- fix(docs): Fix documentation for StorageProviders (#e07d925)
+- fix(docs): Fix documentation for StorageProviders (e07d925)
 - [SDESK-6002] fix: Slow responses due to mocked notification_client (#38)
 
 ## [0.2.3] 2021-05-06
 ### Improvements
-- fix(run): Allow apps to be started without gunicorn (#91cdb3a)
+- fix(run): Allow apps to be started without gunicorn (91cdb3a)
 
 ### Fixes
-- fix(file_server): Allow python modules for config (#48a9ef6)
+- fix(file_server): Allow python modules for config (48a9ef6)
 
 ## [0.2.2] 2021-05-06
 ### Improvements
 - Support Python 3.8
 
 ### Fixes
-- fix(api): Convert uploaded bytes to BytesIO before processing (#1428499)
-- Use official pypi package for Superdesk-Core (#ee45aff)
-- fix(docs): Fix building for readthedocs (#e2157f3)
-- fix(behave-tests): Increase timedelta for __now__ value (#572db66)
+- fix(api): Convert uploaded bytes to BytesIO before processing (1428499)
+- Use official pypi package for Superdesk-Core (ee45aff)
+- fix(docs): Fix building for readthedocs (e2157f3)
+- fix(behave-tests): Increase timedelta for __now__ value (572db66)
 
 ## [0.2.1] 2021-05-04
 ### Improvements
 - [SDESK-5581] Ability to add Tags to Asset Metadata (#37)
 
 ### Fixes
-- Use superdesk-core/develop branch (#169fd8f)
+- Use superdesk-core/develop branch (169fd8f)
 
 ## [0.2.0] 2021-02-17
 ### Features

@@ -19,7 +19,7 @@ install_requires = [
 
 setup(
     name='sams-client',
-    version='0.3.1',
+    version='0.3.2',
     description='Super Asset Management Service Client',
     long_description=LONG_DESCRIPTION,
     author='Tanuj Soni',
@@ -40,6 +40,7 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.8',
         'Topic :: Database',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
