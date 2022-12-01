@@ -16,6 +16,7 @@ from flask import Config
 from eve import Eve
 from eve.io.mongo import MongoJSONEncoder
 
+import superdesk
 from superdesk.datalayer import SuperdeskDataLayer
 from superdesk.validator import SuperdeskValidator
 
@@ -58,6 +59,7 @@ class SamsApp(Eve):
             **kwargs
         )
         self.json_encoder = MongoJSONEncoder
+        superdesk.app = self
 
         if config:
             try:
